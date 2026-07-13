@@ -7,7 +7,7 @@ export default function Home() {
         Share your photos with ease
       </span>
       <span className="text-xs italic text-muted-foreground">
-        Created by Abir Dutta
+        Created by Shantanu
       </span>
     </div>
   );
