@@ -26,10 +26,11 @@ export async function createEvent(formData: FormData) {
     userId: user.id,
     name: eventName,
     date: new Date(eventDate),
+    createdAt: new Date(), 
     createdBy: user.email,
   });
   console.log("MongoDB connection established and event inserted successfully.");
   console.log(`New event created with the following id: ${result.insertedId}`);
-  redirect("/event");
+  redirect("/dashboard");
 
 }
