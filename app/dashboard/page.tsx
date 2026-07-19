@@ -9,7 +9,8 @@ interface MongoEvent {
   _id: ObjectId;
   userId: string;
   name: string;
-  date: Date; // 1. Change this from string to Date
+  date: Date;
+  qrCodeUrl?: string; // 1. Added this so TypeScript knows the URL can exist
 }
 
 export default async function Page() {
@@ -34,19 +35,24 @@ export default async function Page() {
     .toArray();
   
   return (
-    <div className='p-4 space-y-4'>
-      {events.map((event) => (
-        <EventCard 
-          key={event._id.toString()}          
-          name={event.name}                 
-          // 2. Convert the Date object to a string format here
-          date={event.date.toLocaleDateString()} 
-          eId={event._id.toString()} 
-        />
-      ))}
+    <div className='p-4 space-y-4 max-w-4xl mx-auto'>
+      <h1 className="text-2xl font-bold mb-4">Your Events</h1>
+      
+      {/* Responsive layout wrapper for cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {events.map((event) => (
+          <EventCard 
+            key={event._id.toString()}          
+            name={event.name}                  
+            date={event.date.toLocaleDateString()} 
+            eId={event._id.toString()} 
+            qrCodeUrl={event.qrCodeUrl || ""} // 2. Pass the Cloudinary URL down to the card
+          />
+        ))}
+      </div>
 
       {events.length === 0 && (
-        <p className="text-gray-500 text-center py-4">You havent created any events yet.</p>
+        <p className="text-gray-500 text-center py-4">You haven&apos;t created any events yet.</p>
       )}
     </div>
   );
