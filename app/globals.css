@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@theme {
+  --animate-float-slow: float-slow 6s ease-in-out infinite;
+  --animate-float-delayed: float-delayed 8s ease-in-out infinite;
+  --animate-float-fast: float-fast 4s ease-in-out infinite;
+
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(3deg); }
+  }
+  @keyframes float-delayed {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(-3deg); }
+  }
+  @keyframes float-fast {
+    0%, 100% { transform: translateY(0px) translate(0px); }
+    50% { transform: translateY(-8px) translateX(5px); }
+  }
+}
+
+.bg-grid-dots {
+  background-image: radial-gradient(#6366f1 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
