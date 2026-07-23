@@ -1,12 +1,34 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Link from 'next/link';
+import { showToast } from "nextjs-toast-notify";
 
 const Header = () => {
   const { isAuthenticated, isLoading } = useKindeBrowserClient();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const prevAuth = localStorage.getItem("last_auth_state");
+    if (prevAuth === "false" && isAuthenticated) {
+      showToast.success("Logged in successfully!", {
+        duration: 4000,
+        position: "top-right",
+        transition: "bounceIn",
+      });
+    } else if (prevAuth === "true" && !isAuthenticated) {
+      showToast.success("Logged out successfully!", {
+        duration: 4000,
+        position: "top-right",
+        transition: "bounceIn",
+      });
+    }
+
+    localStorage.setItem("last_auth_state", isAuthenticated ? "true" : "false");
+  }, [isAuthenticated, isLoading]);
 
   if (isLoading) {
     return (

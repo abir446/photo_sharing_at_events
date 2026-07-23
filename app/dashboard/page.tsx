@@ -3,15 +3,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import EventCard from '@/components/EventCard';
 import { redirect } from 'next/navigation';
 import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
-
-interface MongoEvent {
-  _id: ObjectId;
-  userId: string;
-  name: string;
-  date: Date;
-  qrCodeUrl?: string; // 1. Added this so TypeScript knows the URL can exist
-}
+import { MongoEvent } from '@/utils/typescript/types';
 
 export default async function Page() {
   const { getUser, isAuthenticated } = getKindeServerSession();

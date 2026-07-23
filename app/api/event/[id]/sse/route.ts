@@ -1,14 +1,6 @@
 import { NextRequest } from "next/server";
 import { uploadEvents } from "@/lib/emitter";
-
-interface MediaItem {
-  _id: string;
-  eventId: string;
-  url: string;
-  publicId: string;
-  resourceType: "image" | "video";
-  createdAt: string | Date;
-}
+import { MediaItem } from "@/utils/typescript/types";
 
 export async function GET(
   request: NextRequest,

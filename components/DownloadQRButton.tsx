@@ -1,18 +1,14 @@
 // components/DownloadQRButton.tsx
 "use client";
 
+import { DownloadQRButtonProps } from "@/utils/typescript/types";
 import { useState } from "react";
 
-interface DownloadQRButtonProps {
-  qrCodeUrl: string;
-  eventName: string;
-}
 
-// ⚠️ REMOVED 'async' from this line:
+
 export default function DownloadQRButton({ qrCodeUrl, eventName }: DownloadQRButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // The async keyword belongs safely down here on the event handler
   const handleDownload = async () => {
     try {
       setIsDownloading(true);

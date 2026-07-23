@@ -2,24 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { uploadMedia } from "@/app/actions/media";
-
-interface MediaItem {
-  _id: string;
-  eventId: string;
-  url: string;
-  publicId: string;
-  resourceType: "image" | "video";
-  createdAt: string;
-}
-
-interface GalleryClientProps {
-  eventId: string;
-  eventName: string;
-  eventDate: string;
-  initialMedia: MediaItem[];
-}
+import {uploadMedia} from "@/app/actions/media";
+import {GalleryClientProps, MediaItem} from "@/utils/typescript/types";
 
 export default function GalleryClient({
   eventId,

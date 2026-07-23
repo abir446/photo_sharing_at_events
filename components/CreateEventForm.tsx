@@ -1,9 +1,49 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createEvent } from "@/app/actions/event"
+import { showToast } from "nextjs-toast-notify"
 
 export default function CreateEventForm() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      const res = await createEvent(formData);
+      if (res.success) {
+        showToast.success("Event created successfully!", {
+          duration: 4000,
+          position: "top-right",
+          transition: "bounceIn",
+        });
+        router.push("/dashboard");
+      } else {
+        showToast.error(res.error || "Failed to create event", {
+          duration: 4000,
+          position: "top-right",
+          transition: "bounceIn",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      showToast.error(errorMessage, {
+        duration: 4000,
+        position: "top-right",
+        transition: "bounceIn",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-tr from-[#ebeefc] via-[#f5f6ff] to-[#faf8ff] text-slate-900 px-4 py-8 sm:px-6 sm:py-12 md:py-16 relative overflow-hidden">
       
@@ -102,8 +142,8 @@ export default function CreateEventForm() {
               <div className="flex-grow border-t border-slate-100"></div>
             </div>
 
-            {/* The action attribute calls our server function directly */}
-            <form action={createEvent} className="space-y-5 mt-2">
+            {/* The onSubmit handler handles validation, showing toast notifications, and client-side routing */}
+            <form onSubmit={handleSubmit} className="space-y-5 mt-2">
               
               {/* Event Name Field */}
               <div className="space-y-1.5">
@@ -198,12 +238,23 @@ export default function CreateEventForm() {
                 </div>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit Button with loading animation and disabled state */}
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold tracking-wide shadow-md shadow-indigo-900/10 hover:shadow-indigo-500/20 active:scale-[0.99] transition-all duration-200 text-sm mt-2 cursor-pointer flex justify-center items-center"
+                disabled={isSubmitting}
+                className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-400 text-white font-bold tracking-wide shadow-md shadow-indigo-900/10 hover:shadow-indigo-500/20 active:scale-[0.99] transition-all duration-200 text-sm mt-2 cursor-pointer flex justify-center items-center gap-2"
               >
-                Create Event & Generate QR
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Creating Event...</span>
+                  </>
+                ) : (
+                  "Create Event & Generate QR"
+                )}
               </button>
 
             </form>
