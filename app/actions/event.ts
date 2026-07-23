@@ -42,7 +42,7 @@ export async function createEvent(formData: FormData) {
 
   const eventId = result.insertedId.toString();
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const uploadUrl = `${baseUrl}/events/${eventId}/upload`;
+  const uploadUrl = `${baseUrl}/event/${eventId}/upload`;
 
   try {
     // 2. Generate the QR code as a Base64 Data URL
