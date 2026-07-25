@@ -68,7 +68,7 @@ const Header = () => {
 
         {/* Desktop Menu (hidden on mobile/tablet) */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/#about" className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200">
+          <Link href="/about" className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200">
             <svg className="w-5 h-5 mr-1.5 text-slate-400 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
             </svg>
@@ -135,7 +135,7 @@ const Header = () => {
       {isOpen && (
         <div className="md:hidden bg-[#050814]/98 border-t border-white/5 px-6 py-4 flex flex-col space-y-4 animate-fadeIn">
           <Link 
-            href="/#about" 
+            href="/about" 
             onClick={() => setIsOpen(false)}
             className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200 py-1"
           >
