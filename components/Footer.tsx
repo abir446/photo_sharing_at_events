@@ -6,15 +6,37 @@ import Link from "next/link";
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setStatus("loading");
-    setTimeout(() => {
-      setStatus("success");
-      setEmail("");
-    }, 1200);
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStatus("success");
+        setEmail("");
+      } else {
+        setStatus("error");
+        setErrorMessage(data.message || "Something went wrong.");
+      }
+    } catch (err) {
+      console.error("Subscription error:", err);
+      setStatus("error");
+      setErrorMessage("Could not connect to the server.");
+    }
   };
 
   return (
@@ -102,7 +124,7 @@ export default function Footer() {
           </div>
           <ul className="space-y-3">
             <li>
-              <Link href="/#about" className="text-slate-500 hover:text-indigo-600 text-sm font-medium transition-colors">
+              <Link href="/about" className="text-slate-500 hover:text-indigo-600 text-sm font-medium transition-colors">
                 About Us
               </Link>
             </li>
@@ -174,6 +196,16 @@ export default function Footer() {
                 Thank you for subscribing!
               </p>
             )}
+
+            {status === "error" && (
+              <p className="text-rose-600 text-xs mt-2 font-semibold flex items-center gap-1.5 transition-all">
+                <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                {errorMessage}
+              </p>
+            )}
+
             
             <div className="flex items-center space-x-2 text-xs text-slate-500 mt-3 font-medium">
               <span className="flex-shrink-0 flex items-center justify-center w-4 h-4 rounded-full bg-indigo-600">
