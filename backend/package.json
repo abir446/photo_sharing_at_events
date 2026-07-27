@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
     "@mailchimp/mailchimp_marketing": "^3.0.80",
