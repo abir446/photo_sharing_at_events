@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '50mb', // Increases the limit to 5MB
+    },
+  },
   images: {
     remotePatterns: [
       {
