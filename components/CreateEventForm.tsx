@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createEvent } from "@/app/actions/event"
 import { showToast } from "nextjs-toast-notify"
 
 export default function CreateEventForm() {
@@ -17,7 +16,11 @@ export default function CreateEventForm() {
     const formData = new FormData(event.currentTarget);
 
     try {
-      const res = await createEvent(formData);
+      const response = await fetch("/api/event", {
+        method: "POST",
+        body: formData,
+      });
+      const res = await response.json();
       if (res.success) {
         showToast.success("Event created successfully!", {
           duration: 4000,

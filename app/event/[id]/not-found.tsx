@@ -70,7 +70,7 @@ export default function EventNotFound() {
         </h1>
         
         <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-10 max-w-sm">
-          The photo sharing event you're looking for doesn't exist, has been removed, or has a typo in its link.
+          The photo sharing event you&apos;re looking for doesn&apos;t exist, has been removed, or has a typo in its link.
         </p>
 
         {/* Actions Section */}

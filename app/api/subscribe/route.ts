@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-// @ts-ignore
+// @ts-expect-error: mailchimp_marketing does not have official typescript definitions
 import mailchimp from "@mailchimp/mailchimp_marketing";
 
 mailchimp.setConfig({
@@ -36,11 +36,12 @@ export async function POST(req: NextRequest) {
       success: true,
     });
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Mailchimp API Error:", err);
     
+    const error = err as { response?: { body?: { detail?: string } }; message?: string };
     // Extract a human-readable detail from Mailchimp response if present
-    const detail = err.response?.body?.detail || err.message || "Something went wrong.";
+    const detail = error.response?.body?.detail || error.message || "Something went wrong.";
     
     return NextResponse.json({
       success: false,
