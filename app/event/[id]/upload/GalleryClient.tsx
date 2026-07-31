@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import {uploadMedia} from "@/app/actions/media";
 import {GalleryClientProps, MediaItem} from "@/utils/typescript/types";
 
 export default function GalleryClient({
@@ -87,7 +86,15 @@ export default function GalleryClient({
       const uploadPromises = fileList.map(async (file) => {
         const formData = new FormData();
         formData.append("file", file);
-        return uploadMedia(eventId, formData);
+        const res = await fetch(`/api/event/${eventId}/upload`, {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || `Upload failed with status ${res.status}`);
+        }
+        return res.json();
       });
 
       await Promise.all(uploadPromises);

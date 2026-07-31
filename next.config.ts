@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '50mb', // Increases the limit to 5MB
-    },
-  },
   images: {
     remotePatterns: [
       {
@@ -13,6 +8,12 @@ const nextConfig = {
         pathname: '/**', // Allows all paths under the Cloudinary domain
       },
     ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '50mb', // Increases the limit to 5MB
+    },
+    proxyClientMaxBodySize: '50mb',
   },
 };
 

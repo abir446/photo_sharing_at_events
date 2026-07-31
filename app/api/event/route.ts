@@ -1,10 +1,8 @@
-"use server";
-
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import QRCode from "qrcode";
 import { v2 as cloudinary } from "cloudinary";
-
 
 // Configure Cloudinary
 if (process.env.CLOUDINARY_CLOUD_NAME) {
@@ -15,20 +13,21 @@ if (process.env.CLOUDINARY_CLOUD_NAME) {
   });
 }
 
-export async function createEvent(formData: FormData) {
+export async function POST(request: NextRequest) {
   try {
     const { getUser } = getKindeServerSession();
     const user = await getUser();
 
     if (!user || !user.email) {
-      return { success: false, error: "User not authenticated" };
+      return NextResponse.json({ success: false, error: "User not authenticated" }, { status: 401 });
     }
 
+    const formData = await request.formData();
     const eventName = formData.get("eventName") as string;
     const eventDate = formData.get("eventDate") as string;
 
     if (!eventName || !eventDate) {
-      return { success: false, error: "Event name and date are required" };
+      return NextResponse.json({ success: false, error: "Event name and date are required" }, { status: 400 });
     }
 
     const client = await clientPromise;
@@ -74,13 +73,13 @@ export async function createEvent(formData: FormData) {
       );
     } catch (error) {
       console.error("Failed to generate or upload QR code:", error);
-      return { success: false, error: "Failed to generate or upload QR code" };
+      return NextResponse.json({ success: false, error: "Failed to generate or upload QR code" }, { status: 500 });
     }
 
-    return { success: true, eventId };
+    return NextResponse.json({ success: true, eventId });
   } catch (error: unknown) {
     console.error("Error creating event:", error);
     const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
-    return { success: false, error: errorMessage };
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }

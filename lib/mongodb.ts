@@ -14,15 +14,7 @@ const options = {
   }
 }
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-// if (process.env.NODE_ENV === "development") {
-
-
-// }
-
-client = new MongoClient(uri);
-clientPromise = client.connect();
+const client = new MongoClient(uri);
+const clientPromise = client.connect();
 
 export default clientPromise;

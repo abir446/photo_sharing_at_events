@@ -21,7 +21,7 @@ export default function About() {
           </h2>
           
           <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-            DropCast is designed to bring people together through collaborative storytelling. Whether it's a wedding, concert, birthday party, or corporate retreat, our platform lets hosts and guests share photos instantly without the hassle of downloads, social media tags, or complex group chats.
+            DropCast is designed to bring people together through collaborative storytelling. Whether it&apos;s a wedding, concert, birthday party, or corporate retreat, our platform lets hosts and guests share photos instantly without the hassle of downloads, social media tags, or complex group chats.
           </p>
 
           {/* Quick Value Props */}
@@ -100,7 +100,7 @@ export default function About() {
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
               </div>
-              <span className="block font-extrabold text-slate-800 text-xs sm:text-sm">Sarah & Leo's Wedding</span>
+              <span className="block font-extrabold text-slate-800 text-xs sm:text-sm">Sarah &amp; Leo&apos;s Wedding</span>
               <span className="block text-[10px] sm:text-xs text-slate-400 font-medium mt-0.5">348 photos • 12 contributors</span>
             </div>
 
