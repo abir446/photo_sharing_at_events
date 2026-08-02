@@ -1,31 +1,33 @@
+// app/admin/page.tsx
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
-import React from "react";
 
-interface KindeRole {
-  key: string;
-  name: string;
-  id?: string;
-}
+export default async function AdminDashboard() {
+  const { isAuthenticated, getRoles } = getKindeServerSession();
 
-const AdminPage = async () => {
-  const { isAuthenticated, getRoles, getOrganization } = getKindeServerSession();
-
-  const authenticated = await isAuthenticated();
-  if (!authenticated) {
-    redirect("/api/auth/login?post_login_redirect_url=/admin");
+  // 1. Check if authenticated
+  if (!(await isAuthenticated())) {
+    redirect("/api/auth/login");
   }
-  const roles: KindeRole[] | null = await getRoles();
 
+  // 2. Fetch roles assigned to this user
+  const roles = await getRoles();
+  const isAdmin = roles?.some((role) => role.key === "admin");
   console.log("User Roles:", roles);
 
-  const isAdmin = roles?.some((role) => role.key === "admin");
-
-  if (isAdmin) {
-    return <div>AdminPage</div>;
+  if (!isAdmin) {
+    return (
+      <main className="p-8">
+        <h1 className="text-xl font-bold text-red-600">Access Denied</h1>
+        <p>You do not have permission to view this page.</p>
+      </main>
+    );
   }
 
-  return <div>Access Denied | You are not authorized to access this page</div>;
-};
-
-export default AdminPage;
+  return (
+    <main className="p-8">
+      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+      <p>Welcome back, Admin!</p>
+    </main>
+  );
+}
