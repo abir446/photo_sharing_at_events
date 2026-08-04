@@ -3,8 +3,7 @@
 
 import { DownloadQRButtonProps } from "@/utils/typescript/types";
 import { useState } from "react";
-
-
+import Button from "./ui/Button";
 
 export default function DownloadQRButton({ qrCodeUrl, eventName }: DownloadQRButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -37,15 +36,18 @@ export default function DownloadQRButton({ qrCodeUrl, eventName }: DownloadQRBut
   };
 
   return (
-    <button
+    <Button
       onClick={handleDownload}
-      disabled={isDownloading}
-      className="mt-4 flex items-center justify-center gap-2 w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium text-sm py-2.5 px-4 rounded-xl transition-colors disabled:opacity-50"
+      isLoading={isDownloading}
+      variant="light"
+      className="mt-4 w-full"
+      leftIcon={
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+      }
     >
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-      </svg>
-      {isDownloading ? "Downloading..." : "Download QR Code"}
-    </button>
+      Download QR Code
+    </Button>
   );
 }
