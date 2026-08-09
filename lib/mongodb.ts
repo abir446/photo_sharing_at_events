@@ -149,6 +149,19 @@ class MockCollection {
     }
     return { modifiedCount: item ? 1 : 0 };
   }
+
+  async deleteOne(query: any) {
+    const dbData = readLocalDb();
+    const collectionData = dbData[this.name] || [];
+    const index = collectionData.findIndex((item: any) => matches(item, query));
+    if (index !== -1) {
+      collectionData.splice(index, 1);
+      dbData[this.name] = collectionData;
+      writeLocalDb(dbData);
+      return { deletedCount: 1 };
+    }
+    return { deletedCount: 0 };
+  }
 }
 
 class MockDb {
