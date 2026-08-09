@@ -30,17 +30,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        "bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white disabled:bg-indigo-400 shadow-md shadow-indigo-900/10 hover:shadow-indigo-500/20",
+        "bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white disabled:bg-white/10 disabled:text-slate-500 shadow-glow focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
       secondary:
-        "bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-white disabled:bg-slate-600 shadow-sm",
+        "bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-white disabled:bg-slate-600 shadow-sm focus:outline-none",
       outline:
-        "border border-slate-200 bg-transparent hover:bg-slate-50 active:bg-slate-100 text-slate-700 disabled:opacity-50",
+        "border border-white/15 bg-white/5 hover:bg-white/10 active:bg-white/15 text-white disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
       ghost:
-        "bg-transparent hover:bg-slate-100 active:bg-slate-200 text-slate-700 disabled:opacity-50",
+        "bg-transparent hover:bg-white/5 active:bg-white/10 text-slate-300 hover:text-white disabled:opacity-50 focus:outline-none",
       danger:
-        "bg-red-600 hover:bg-red-500 active:bg-red-700 text-white disabled:bg-red-400 shadow-md shadow-red-900/10",
+        "bg-rose-500/20 hover:bg-rose-500/30 active:bg-rose-500/40 text-rose-200 border border-rose-400/40 disabled:opacity-50 focus:outline-none",
       light:
-        "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 disabled:opacity-50",
+        "bg-white/10 hover:bg-white/20 active:bg-white/25 text-white disabled:opacity-50 focus:outline-none",
     };
 
     const sizes = {

@@ -39,7 +39,7 @@ export default function DownloadQRButton({ qrCodeUrl, eventName }: DownloadQRBut
     <Button
       onClick={handleDownload}
       isLoading={isDownloading}
-      variant="light"
+      variant="primary"
       className="mt-4 w-full"
       leftIcon={
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

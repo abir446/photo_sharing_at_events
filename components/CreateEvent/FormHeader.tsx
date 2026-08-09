@@ -5,7 +5,7 @@ export default function FormHeader() {
   return (
     <>
       {/* Top Icon Badge */}
-      <div className="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 mx-auto mb-4">
+      <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4">
         <svg
           className="w-7 h-7"
           viewBox="0 0 24 24"
@@ -25,10 +25,10 @@ export default function FormHeader() {
       </div>
 
       {/* Headers */}
-      <h2 className="text-center text-2xl font-black text-slate-800 tracking-tight mb-1">
+      <h2 className="text-center text-2xl font-extrabold text-white tracking-tight mb-1">
         Create a New Event
       </h2>
-      <p className="text-center text-xs md:text-sm text-slate-500 max-w-xs mx-auto leading-relaxed">
+      <p className="text-center text-xs md:text-sm text-slate-400 max-w-xs mx-auto leading-relaxed">
         Set up your event page and instantly generate guest QR codes.
       </p>
 

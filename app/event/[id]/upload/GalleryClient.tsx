@@ -39,6 +39,9 @@ export default function GalleryClient({
         try {
           const newMedia = JSON.parse(event.data);
           setMediaList((prev) => {
+            if (newMedia.state === "hidden") {
+              return prev.filter((item) => item._id !== newMedia._id);
+            }
             // Avoid duplicate items
             if (prev.some((item) => item._id === newMedia._id)) {
               return prev;
@@ -131,24 +134,47 @@ export default function GalleryClient({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-[#0b0f19] via-[#111827] to-[#1e1b4b] text-slate-100 px-4 py-8 md:py-12 relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-ink-900 text-slate-100 relative overflow-hidden flex flex-col justify-between pb-12">
       {/* Background glow animations */}
       <div className="w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-3xl absolute -top-40 -right-40 -z-10"></div>
       <div className="w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-3xl absolute -bottom-40 -left-40 -z-10"></div>
 
-      {/* Main Container */}
-      <div className="max-w-5xl mx-auto w-full space-y-8 flex-grow">
-        {/* Navigation & Header */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
-          <div className="space-y-1 text-center sm:text-left">
-            <span className="inline-block text-xs font-bold text-indigo-400 uppercase tracking-widest">
-              Live Guest Upload & Gallery
-            </span>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{eventName}</h1>
-            <p className="text-sm text-slate-400">{eventDate}</p>
-          </div>
+      {/* Header Invitation Block */}
+      <header className="w-full px-6 pb-12 pt-12 text-center bg-brand-500 rounded-b-[2rem] shadow-glow relative z-10">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/80">
+          You&apos;re invited to share
+        </p>
+        <h1 className="mt-2 text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+          {eventName}
+        </h1>
+        <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-white/85">
+          <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          {eventDate}
+        </p>
+      </header>
 
-          {/* Connection status subcomponent */}
+      {/* Main Container */}
+      <div className="max-w-md mx-auto w-full px-4 space-y-6 flex-grow z-10 -mt-6">
+        
+        {/* Heart Greetings Card */}
+        <section className="rounded-2xl border border-white/10 bg-ink-800/90 p-5 text-center backdrop-blur-xl shadow-2xl">
+          <svg className="mx-auto h-5 w-5 text-brand-400 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <p className="mt-2 text-sm leading-relaxed text-slate-200">
+            &ldquo;Help us capture the night — share every photo you take. No app,
+            no sign-up, just tap below.&rdquo;
+          </p>
+        </section>
+
+        {/* Real-time sync connection status */}
+        <div className="flex justify-between items-center bg-white/[0.02] border border-white/10 rounded-xl px-4 py-2.5">
+          <span className="text-xs text-slate-400">Live Status</span>
           <ConnectionStatus sseStatus={sseStatus} />
         </div>
 
@@ -171,12 +197,14 @@ export default function GalleryClient({
         />
 
         {/* Gallery grid subcomponent */}
-        <GalleryGrid mediaList={mediaList} />
+        <div className="pt-4">
+          <GalleryGrid mediaList={mediaList} />
+        </div>
       </div>
 
       {/* Footer Branding */}
-      <footer className="max-w-5xl mx-auto w-full pt-12 text-center text-xs text-slate-600">
-        <p>DropCast Live Console &bull; Secured with Kinde & Cloudinary &bull; MongoDB Cloud</p>
+      <footer className="max-w-md mx-auto w-full pt-12 px-4 text-center text-xs text-slate-600">
+        <p>DropCast &bull; Shared securely with this event only &bull; Powered by Cloudinary</p>
       </footer>
     </div>
   );

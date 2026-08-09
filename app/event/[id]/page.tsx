@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import DownloadQRButton from "@/components/DownloadQRButton";
 
 interface PageProps {
@@ -37,65 +38,98 @@ export default async function EventDetailPage({ params }: PageProps) {
     : String(event.date);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 md:p-12 flex flex-col items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6 text-center">
+    <div className="min-h-screen bg-ink-900 p-6 md:p-12 flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Background Glows */}
+      <div className="w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-3xl absolute -top-40 -right-40 -z-10"></div>
+      <div className="w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-3xl absolute -bottom-40 -left-40 -z-10"></div>
+
+      <div className="max-w-md w-full rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl shadow-2xl flex flex-col space-y-6">
         
-        {/* Event Meta Metadata Header */}
-        <div className="space-y-2">
-          <span className="inline-block bg-indigo-50 text-indigo-600 text-xs font-semibold px-3 py-1 rounded-full">
+        {/* Printable Stand Card Header */}
+        <div className="flex items-center justify-between">
+          <span className="inline-block bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold px-3 py-1 rounded-full">
             Event Live Console
           </span>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{event.name}</h1>
-          <p className="text-sm text-gray-500">{formattedDate}</p>
+          <span className="text-[10px] text-slate-500 font-medium">Event ID: {id}</span>
         </div>
 
-        <hr className="border-gray-100" />
-
-        {/* QR Code Presentation Container */}
-        <div className="bg-gray-50/50 rounded-xl p-6 border border-gray-100 flex flex-col items-center">
-          <p className="text-sm font-medium text-gray-700 mb-4">
-            Guest Photo Upload Access
-          </p>
+        {/* Printable Card Stand Wrapper */}
+        <div className="rounded-2xl bg-white p-8 text-center shadow-2xl flex flex-col items-center select-none">
+          {/* Top accent line */}
+          <div className="h-1.5 w-16 rounded-full bg-brand-500 mb-5" />
           
+          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-500">
+            Share your photos
+          </p>
+          <h1 className="mt-2 text-2xl font-extrabold text-ink-950 tracking-tight leading-tight">
+            {event.name}
+          </h1>
+          <p className="mt-1.5 text-xs font-medium text-slate-500">
+            {formattedDate}
+          </p>
+
+          {/* QR Code Frame */}
           {event.qrCodeUrl ? (
-            <div className="w-full flex flex-col items-center">
-              {/* Next.js Optimized External Image Element */}
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div className="mt-6 flex flex-col items-center">
+              <div className="bg-white p-3 rounded-xl border border-slate-100 flex justify-center shadow-sm">
                 <Image
                   src={event.qrCodeUrl}
                   alt={`QR Code for ${event.name}`}
-                  width={240}
-                  height={240}
+                  width={200}
+                  height={200}
                   className="object-contain rounded"
                   priority
                 />
               </div>
 
-              {/* Client Component Button to trigger the blob download */}
-              <DownloadQRButton 
-                qrCodeUrl={event.qrCodeUrl} 
-                eventName={event.name} 
-              />
+              <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-4.5 py-2 text-xs font-bold text-white shadow-glow">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+                </svg>
+                Scan to upload — no app needed
+              </span>
             </div>
           ) : (
-            <div className="w-full h-48 bg-gray-100 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
-              <p className="text-sm text-red-500 font-medium">QR Code image url is missing.</p>
+            <div className="w-[200px] h-[200px] bg-slate-100 flex items-center justify-center rounded-xl border border-dashed border-slate-200 mt-6">
+              <p className="text-xs text-red-500 font-medium">QR Code image is missing.</p>
             </div>
           )}
+
+          <p className="mt-5 text-[10px] font-semibold text-slate-400 uppercase tracking-widest leading-none">
+            Powered by DropCast
+          </p>
         </div>
 
-        {/* Informational Subtext */}
-        <div className="space-y-1 text-xs text-gray-400">
-          <p>Guests can point their smartphone cameras here to instantly share photos.</p>
-          {event.uploadUrl && (
-            <p className="text-indigo-500 font-medium break-all mt-1">{event.uploadUrl}</p>
-          )}
-        </div>
+        {/* Download Stand Trigger */}
+        {event.qrCodeUrl && (
+          <div className="w-full">
+            <DownloadQRButton 
+              qrCodeUrl={event.qrCodeUrl} 
+              eventName={event.name} 
+            />
+          </div>
+        )}
 
-        <div className="border-t border-gray-100 pt-4 flex items-center justify-between text-xs text-gray-400">
-          <span>Target System: MongoDB</span>
-          <span>Event ID: {id}</span>
-        </div>
+        {/* Quick share link info */}
+        {event.uploadUrl && (
+          <div className="pt-4 border-t border-white/5 space-y-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              Quick share link
+            </span>
+            <code className="block w-full truncate rounded-xl border border-white/10 bg-ink-950/60 px-3.5 py-2.5 text-xs text-slate-300 text-left font-mono">
+              {event.uploadUrl}
+            </code>
+            <Link 
+              href={`/event/${id}/upload`}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-400 hover:text-brand-300 transition-colors mt-2"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+              Preview the guest experience
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

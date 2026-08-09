@@ -1,13 +1,29 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { showToast } from "nextjs-toast-notify";
+import {
+  SparklesIcon,
+  ChevronDownIcon,
+  LogOutIcon,
+  UserIcon,
+  PlusIcon,
+  CalendarIcon,
+  InfoIcon,
+  MenuIcon,
+  XIcon,
+  ImageIcon
+} from 'lucide-react';
 
 const Header = () => {
-  const { isAuthenticated, isLoading } = useKindeBrowserClient();
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading, user } = useKindeBrowserClient();
   const [isOpen, setIsOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isLoading) return;
@@ -30,16 +46,39 @@ const Header = () => {
     localStorage.setItem("last_auth_state", isAuthenticated ? "true" : "false");
   }, [isAuthenticated, isLoading]);
 
+  useEffect(() => {
+    function onClick(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
+
+  const initials = ((user?.given_name?.[0] || "") + (user?.family_name?.[0] || "")).toUpperCase() || "DC";
+  const fullName = user?.given_name ? `${user.given_name} ${user.family_name || ""}`.trim() : "Event Host";
+
+  // Navigation Links
+  const links = [
+    { label: 'Marketplace', to: '/marketplace', icon: SparklesIcon },
+    ...(isAuthenticated ? [
+      { label: 'QR Gallery', to: '/qr-gallery', icon: ImageIcon },
+      { label: 'Bookings', to: '/booking', icon: CalendarIcon },
+      { label: 'My Events', to: '/dashboard', icon: CalendarIcon }
+    ] : []),
+    { label: 'About', to: '/about', icon: InfoIcon }
+  ];
+
   if (isLoading) {
     return (
-      <header className="bg-[#050814] border-b border-white/5 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-white font-bold text-xl">
-            <svg className="w-8 h-8 text-indigo-400 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-              <circle cx="12" cy="13" r="3" />
-            </svg>
-            <span className="bg-gradient-to-r from-white via-slate-200 to-indigo-200 bg-clip-text text-transparent font-extrabold tracking-tight">DropCast</span>
+      <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-ink-900/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
+          <div className="flex items-center gap-2.5 text-white font-bold text-lg">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 animate-pulse">
+              <SparklesIcon className="h-5 w-5 text-white" />
+            </span>
+            <span>DropCast</span>
           </div>
           <div className="animate-pulse flex space-x-6">
             <div className="h-5 w-20 bg-slate-800 rounded"></div>
@@ -52,140 +91,182 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-[#050814]/95 backdrop-blur-md border-b border-white/5 sticky top-0 z-50 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-ink-900/80 backdrop-blur-xl transition-all duration-300">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
         
-        {/* Logo */}
-        <Link href="/" className="group flex items-center space-x-2.5">
-          <svg className="w-8 h-8 text-indigo-500 group-hover:text-indigo-400 group-hover:scale-105 transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-            <circle cx="12" cy="13" r="3" />
-          </svg>
-          <span className="bg-gradient-to-r from-white via-slate-100 to-indigo-100 bg-clip-text text-transparent text-xl font-extrabold tracking-tight group-hover:from-white group-hover:to-indigo-300 transition-all duration-300">
-            DropCast
-          </span>
-        </Link>
-
-        {/* Desktop Menu (hidden on mobile/tablet) */}
-        <div className="hidden md:flex items-center space-x-6">
-          <Link href="/about" className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200">
-            <svg className="w-5 h-5 mr-1.5 text-slate-400 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-            </svg>
-            About
+        {/* Left Logo and Menu */}
+        <div className="flex items-center gap-10">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 shadow-glow group-hover:scale-105 transition-transform duration-300">
+              <SparklesIcon className="h-5 w-5 text-white" aria-hidden="true" />
+            </span>
+            <span className="text-lg font-bold tracking-tight text-white">
+              DropCast
+            </span>
           </Link>
+
+          {/* Desktop Navigation Links */}
+          <nav aria-label="Primary" className="hidden md:flex items-center gap-1">
+            {links.map((link) => {
+              const active = pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  href={link.to}
+                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
+                    active ?
+                    'bg-white/10 text-white' :
+                    'text-slate-400 hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Right Section Profile / Login */}
+        <div className="hidden md:flex items-center gap-3">
           {isAuthenticated ? (
-            <>
-              <Link href="/dashboard/create" className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200">
-                <svg className="w-5 h-5 mr-1.5 text-slate-400 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8m-4-4h8" />
-                </svg>
-                New Event
-              </Link>
-              <Link href="/dashboard" className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200">
-                <svg className="w-5 h-5 mr-1.5 text-slate-400 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                  <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" strokeLinecap="round" />
-                </svg>
-                My Events
-              </Link>
-              <LogoutLink 
-                className="px-5 py-1.5 rounded-full border border-white/20 text-slate-200 font-medium hover:bg-white/10 hover:border-white/40 hover:text-white transition-all duration-200 text-sm" 
-                postLogoutRedirectURL="http://localhost:3000/"
+            <div className="relative" ref={menuRef}>
+              <button
+                type="button"
+                onClick={() => setIsUserMenuOpen((v) => !v)}
+                aria-haspopup="menu"
+                aria-expanded={isUserMenuOpen}
+                className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
               >
-                Sign out
-              </LogoutLink>
-            </>
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-xs font-bold text-white">
+                  {initials}
+                </span>
+                <span className="leading-tight">
+                  <span className="block text-sm font-semibold text-white">
+                    {fullName}
+                  </span>
+                  <span className="block text-[11px] text-slate-400">
+                    Event Host
+                  </span>
+                </span>
+                <ChevronDownIcon
+                  className={`h-4 w-4 text-slate-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`}
+                  aria-hidden="true"
+                />
+              </button>
+
+              {isUserMenuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-ink-800/95 p-1.5 shadow-2xl backdrop-blur-xl z-50"
+                >
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    <CalendarIcon className="h-4 w-4 text-slate-400" />
+                    My Events
+                  </Link>
+                  <Link
+                    href="/dashboard/create"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    <PlusIcon className="h-4 w-4 text-slate-400" />
+                    New Event
+                  </Link>
+                  <div className="my-1.5 h-px bg-white/10" />
+                  <LogoutLink
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-400 transition-colors hover:bg-rose-500/10 cursor-pointer"
+                    postLogoutRedirectURL="/"
+                  >
+                    <LogOutIcon className="h-4 w-4" aria-hidden="true" />
+                    Sign out
+                  </LogoutLink>
+                </div>
+              )}
+            </div>
           ) : (
-            <>
-              <LoginLink className="text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200">
+            <div className="flex items-center gap-2.5">
+              <LoginLink className="text-slate-300 hover:text-white font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
                 Sign in
               </LoginLink>
-              <RegisterLink className="px-5 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-md shadow-indigo-900/20 hover:shadow-indigo-500/30 transition-all duration-200 text-sm">
+              <RegisterLink className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow hover:bg-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer">
                 Sign up
               </RegisterLink>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Mobile menu toggle button */}
-        <button 
-          onClick={() => setIsOpen(!isOpen)} 
-          className="md:hidden p-2 text-slate-300 hover:text-white focus:outline-none cursor-pointer"
+        {/* Mobile toggle button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden p-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:text-white focus:outline-none cursor-pointer"
           aria-label="Toggle menu"
         >
           {isOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
+            <XIcon className="w-5 h-5" />
           ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
+            <MenuIcon className="w-5 h-5" />
           )}
         </button>
-
       </div>
 
-      {/* Mobile Drawer (visible on click on mobile/tablet) */}
+      {/* Mobile Menu Drawer */}
       {isOpen && (
-        <div className="md:hidden bg-[#050814]/98 border-t border-white/5 px-6 py-4 flex flex-col space-y-4 animate-fadeIn">
-          <Link 
-            href="/about" 
-            onClick={() => setIsOpen(false)}
-            className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200 py-1"
-          >
-            <svg className="w-5 h-5 mr-2.5 text-slate-400 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-            </svg>
-            About
-          </Link>
+        <div className="md:hidden bg-ink-950/98 border-t border-white/5 px-6 py-4 flex flex-col space-y-3 shadow-2xl backdrop-blur-xl animate-fadeIn">
+          {links.map((link) => {
+            const active = pathname === link.to;
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.to}
+                href={link.to}
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+                  active ?
+                  'bg-white/10 text-white' :
+                  'text-slate-400 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <Icon className="h-4 w-4 text-slate-400" />
+                {link.label}
+              </Link>
+            );
+          })}
+
+          <div className="my-1.5 h-px bg-white/5" />
+
           {isAuthenticated ? (
-            <>
-              <Link 
-                href="/dashboard/create" 
-                onClick={() => setIsOpen(false)}
-                className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200 py-1"
-              >
-                <svg className="w-5 h-5 mr-2.5 text-slate-400 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8m-4-4h8" />
-                </svg>
-                New Event
-              </Link>
-              <Link 
-                href="/dashboard" 
-                onClick={() => setIsOpen(false)}
-                className="group flex items-center text-slate-300 hover:text-white font-medium text-sm transition-colors duration-200 py-1"
-              >
-                <svg className="w-5 h-5 mr-2.5 text-slate-400 group-hover:text-white transition-colors duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                  <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" strokeLinecap="round" />
-                </svg>
-                My Events
-              </Link>
-              <div className="pt-2 border-t border-white/5">
-                <LogoutLink 
-                  className="flex justify-center w-full px-5 py-2 rounded-full border border-white/20 text-slate-200 font-medium hover:bg-white/10 hover:border-white/40 hover:text-white text-center transition-all duration-200 text-sm" 
-                  postLogoutRedirectURL="http://localhost:3000/"
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5 px-4 py-1.5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-xs font-bold text-white">
+                  {initials}
+                </span>
+                <span className="leading-tight">
+                  <span className="block text-sm font-semibold text-white">
+                    {fullName}
+                  </span>
+                  <span className="block text-[11px] text-slate-400">
+                    {user?.email || "Event Host"}
+                  </span>
+                </span>
+              </div>
+              <div className="border-t border-white/5 pt-2">
+                <LogoutLink
+                  className="flex justify-center w-full px-4 py-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-400 font-semibold hover:bg-rose-500/20 text-center transition-colors text-sm cursor-pointer"
+                  postLogoutRedirectURL="/"
                 >
                   Sign out
                 </LogoutLink>
               </div>
-            </>
+            </div>
           ) : (
-            <div className="flex flex-col space-y-2.5 pt-2 border-t border-white/5">
-              <LoginLink className="flex justify-center w-full text-slate-300 hover:text-white font-medium text-sm py-2 text-center transition-colors duration-200">
+            <div className="flex flex-col space-y-2 pt-2 border-t border-white/5">
+              <LoginLink className="flex justify-center w-full text-slate-300 hover:text-white font-semibold text-sm py-2.5 text-center transition-colors cursor-pointer">
                 Sign in
               </LoginLink>
-              <RegisterLink className="flex justify-center w-full px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-center shadow-md shadow-indigo-900/20 hover:shadow-indigo-500/30 transition-all duration-200 text-sm">
+              <RegisterLink className="flex justify-center w-full px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-center shadow-glow transition-all duration-200 text-sm cursor-pointer">
                 Sign up
               </RegisterLink>
             </div>
@@ -193,8 +274,9 @@ const Header = () => {
         </div>
       )}
     </header>
-  )
+  );
 }
 
 export default Header
+
 
