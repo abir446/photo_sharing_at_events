@@ -9,11 +9,12 @@ interface EventCardProps {
   date: string;
   eId: string;
   qrCodeUrl: string; // Cloudinary link
+  planName?: string; // Optional storage plan name
   onDelete?: () => void;
   onEdit?: () => void;
 }
 
-export default function EventCard({ name, date, eId, qrCodeUrl, onDelete, onEdit }: EventCardProps) {
+export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDelete, onEdit }: EventCardProps) {
   if (onDelete || onEdit) {
     return (
       <div className="relative group h-full">
@@ -21,7 +22,14 @@ export default function EventCard({ name, date, eId, qrCodeUrl, onDelete, onEdit
         <Link href={`/event/${eId}`} className="block h-full">
           <Card className="hover:shadow-md transition-shadow cursor-pointer flex flex-col items-center overflow-hidden border border-slate-100 bg-white h-full">
             <CardHeader className="w-full text-left p-4 pb-2">
-              <CardTitle className="text-lg font-bold text-gray-900 leading-tight">{name}</CardTitle>
+              <div className="flex items-start justify-between gap-2">
+                <CardTitle className="text-lg font-bold text-gray-900 leading-tight">{name}</CardTitle>
+                {planName && (
+                  <span className="shrink-0 inline-flex items-center rounded-full bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-600 border border-indigo-500/20">
+                    {planName}
+                  </span>
+                )}
+              </div>
               <CardDescription className="text-sm text-gray-500">{date}</CardDescription>
               <span className="text-xs text-indigo-600/70 font-mono mt-1.5 block">ID: {eId}</span>
             </CardHeader>
@@ -93,7 +101,16 @@ export default function EventCard({ name, date, eId, qrCodeUrl, onDelete, onEdit
     <Link href={`/event/${eId}`} className="block group">
       <Card className="hover:shadow-glow hover:border-brand-500/40 transition-all duration-300 cursor-pointer flex flex-col items-center overflow-hidden bg-white/[0.03] border border-white/10 text-white h-full">
         <CardHeader className="w-full text-left p-6 pb-3">
-          <CardTitle className="text-xl font-bold text-white leading-tight group-hover:text-brand-400 transition-colors">{name}</CardTitle>
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle className="text-xl font-bold text-white leading-tight group-hover:text-brand-400 transition-colors">
+              {name}
+            </CardTitle>
+            {planName && (
+              <span className="shrink-0 inline-flex items-center rounded-full bg-brand-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-brand-400 border border-brand-500/20">
+                {planName}
+              </span>
+            )}
+          </div>
           <CardDescription className="text-sm text-slate-400 mt-1">{date}</CardDescription>
         </CardHeader>
         

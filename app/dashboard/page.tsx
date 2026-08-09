@@ -109,6 +109,7 @@ export default async function Page() {
             date={event.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} 
             eId={event._id.toString()} 
             qrCodeUrl={event.qrCodeUrl || ""}
+            planName={event.plan?.name}
           />
         ))}
       </div>

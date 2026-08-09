@@ -25,9 +25,17 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const eventName = formData.get("eventName") as string;
     const eventDate = formData.get("eventDate") as string;
+    const paymentId = formData.get("paymentId") as string;
+    const planId = formData.get("planId") as string;
+    const planName = formData.get("planName") as string;
+    const planStorage = formData.get("planStorage") as string;
+    const planPrice = formData.get("planPrice") as string;
 
-    if (!eventName || !eventDate) {
-      return NextResponse.json({ success: false, error: "Event name and date are required" }, { status: 400 });
+    if (!eventName || !eventDate || !paymentId || !planId) {
+      return NextResponse.json(
+        { success: false, error: "Event details, selected plan, and payment confirmation are required" },
+        { status: 400 }
+      );
     }
 
     const client = await clientPromise;
@@ -40,6 +48,13 @@ export async function POST(request: NextRequest) {
       date: new Date(eventDate),
       createdAt: new Date(),
       createdBy: user.email,
+      paymentId,
+      plan: {
+        id: planId,
+        name: planName,
+        storage: planStorage,
+        price: Number(planPrice),
+      },
     });
 
     const eventId = result.insertedId.toString();

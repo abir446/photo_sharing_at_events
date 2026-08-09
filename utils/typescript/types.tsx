@@ -23,6 +23,13 @@ export interface MongoEvent {
   date: Date;
   qrCodeUrl?: string;
   uploadUrl?: string;
+  paymentId?: string;
+  plan?: {
+    id: string;
+    name: string;
+    storage: string;
+    price: number;
+  };
 }
 
 export interface DownloadQRButtonProps {

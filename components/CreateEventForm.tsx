@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { showToast } from "nextjs-toast-notify";
 
@@ -15,48 +15,258 @@ import PolaroidCollage from "./CreateEvent/PolaroidCollage";
 import FormHeader from "./CreateEvent/FormHeader";
 import SecureBanner from "./CreateEvent/SecureBanner";
 
-export default function CreateEventForm() {
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void | Promise<void>;
+  prefill: {
+    name: string;
+    email: string;
+  };
+  theme: {
+    color: string;
+  };
+  modal: {
+    ondismiss: () => void;
+  };
+}
+
+interface RazorpayInstance {
+  open: () => void;
+}
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
+
+interface StoragePlan {
+  id: string;
+  name: string;
+  storage: string;
+  price: number;
+  photos: string;
+  tagline: string;
+  recommended?: boolean;
+}
+
+const plans: StoragePlan[] = [
+  {
+    id: "starter",
+    name: "Starter",
+    storage: "2 GB",
+    price: 199,
+    photos: "Up to 500 photos",
+    tagline: "Perfect for casual gatherings",
+  },
+  {
+    id: "standard",
+    name: "Standard",
+    storage: "10 GB",
+    price: 499,
+    photos: "Up to 2,500 photos",
+    tagline: "Ideal for weddings & major parties",
+    recommended: true,
+  },
+  {
+    id: "premium",
+    name: "Premium",
+    storage: "50 GB",
+    price: 999,
+    photos: "Unlimited photos",
+    tagline: "For large events & festivals",
+  },
+];
+
+interface CreateEventFormProps {
+  defaultName?: string;
+  defaultEmail?: string;
+}
+
+export default function CreateEventForm({
+  defaultName = "",
+  defaultEmail = "",
+}: CreateEventFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<StoragePlan>(plans[1]);
+  const [error, setError] = useState<string | null>(null);
+
+  // Dynamically load Razorpay checkout script on client mount
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isSubmitting) return;
 
     setIsSubmitting(true);
-    const formData = new FormData(event.currentTarget);
+    setError(null);
+
+    const currentForm = event.currentTarget;
+    const formData = new FormData(currentForm);
+
+    const eventName = formData.get("eventName") as string;
+    const eventDate = formData.get("eventDate") as string;
+
+    if (!eventName?.trim() || !eventDate) {
+      setError("Please fill out event name and date.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
+      // 1. Create order on the server-side (chosen plan price in paise)
+      const orderResponse = await fetch("/api/createOrder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: selectedPlan.price * 100 }),
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error("Failed to establish Razorpay order.");
+      }
+
+      const orderData = await orderResponse.json();
+
+      // 2. Configure and open Razorpay modal checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder",
+        amount: orderData.amount,
+        currency: orderData.currency || "INR",
+        name: "DropCast Event Space",
+        description: `${selectedPlan.name} Storage Plan (${selectedPlan.storage})`,
+        order_id: orderData.id,
+        handler: async function (response: RazorpayResponse) {
+          try {
+            // Append paymentId and plan details to the formData
+            formData.append("paymentId", response.razorpay_payment_id);
+            formData.append("planId", selectedPlan.id);
+            formData.append("planName", selectedPlan.name);
+            formData.append("planStorage", selectedPlan.storage);
+            formData.append("planPrice", selectedPlan.price.toString());
+
+            const eventResponse = await fetch("/api/event", {
+              method: "POST",
+              body: formData,
+            });
+
+            const res = await eventResponse.json();
+            if (res.success) {
+              showToast.success("Event created & QR generated successfully!", {
+                duration: 4000,
+                position: "top-right",
+                transition: "bounceIn",
+              });
+              router.push("/dashboard");
+            } else {
+              throw new Error(res.error || "Failed to create event");
+            }
+          } catch (err) {
+            console.error("Save event error:", err);
+            const msg = err instanceof Error ? err.message : undefined;
+            setError(msg || "Payment was successful, but establishing event failed. Please contact support.");
+            setIsSubmitting(false);
+          }
+        },
+        prefill: {
+          name: defaultName,
+          email: defaultEmail,
+        },
+        theme: {
+          color: "#6366f1",
+        },
+        modal: {
+          ondismiss: function () {
+            setIsSubmitting(false);
+          },
+        },
+      };
+
+      if (!window.Razorpay) {
+        throw new Error("Razorpay SDK failed to load. Please try again.");
+      }
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error("Checkout error:", err);
+      const msg = err instanceof Error ? err.message : undefined;
+      setError(msg || "Something went wrong. Please try again.");
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSimulateSuccess = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    setError(null);
+    const formElement = document.getElementById("create-event-form") as HTMLFormElement;
+    if (!formElement) return;
+
+    const formData = new FormData(formElement);
+    const eventName = formData.get("eventName") as string;
+    const eventDate = formData.get("eventDate") as string;
+
+    if (!eventName?.trim() || !eventDate) {
+      setError("Please fill out event name and date.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      formData.append("paymentId", "mock_pay_success_" + Math.random().toString(36).substring(2, 9));
+      formData.append("planId", selectedPlan.id);
+      formData.append("planName", selectedPlan.name);
+      formData.append("planStorage", selectedPlan.storage);
+      formData.append("planPrice", selectedPlan.price.toString());
+
       const response = await fetch("/api/event", {
         method: "POST",
         body: formData,
       });
+
       const res = await response.json();
       if (res.success) {
-        showToast.success("Event created successfully!", {
+        showToast.success("Event created successfully (Simulated)!", {
           duration: 4000,
           position: "top-right",
           transition: "bounceIn",
         });
         router.push("/dashboard");
       } else {
-        showToast.error(res.error || "Failed to create event", {
-          duration: 4000,
-          position: "top-right",
-          transition: "bounceIn",
-        });
+        throw new Error(res.error || "Failed to create event");
       }
     } catch (err) {
       console.error(err);
-      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
-      showToast.error(errorMessage, {
-        duration: 4000,
-        position: "top-right",
-        transition: "bounceIn",
-      });
-    } finally {
+      const msg = err instanceof Error ? err.message : undefined;
+      setError(msg || "Failed to simulate event creation.");
       setIsSubmitting(false);
     }
+  };
+
+  const handleSimulateFailure = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError("Payment failed (Simulated). Checkout cancelled or card declined.");
   };
 
   return (
@@ -79,7 +289,13 @@ export default function CreateEventForm() {
               {/* Form Title & Subtitle */}
               <FormHeader />
 
-              <form onSubmit={handleSubmit} className="space-y-5 mt-2">
+              {error && (
+                <div role="alert" className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-semibold text-rose-300">
+                  {error}
+                </div>
+              )}
+
+              <form id="create-event-form" onSubmit={handleSubmit} className="space-y-5 mt-2">
                 
                 {/* Event Name Field */}
                 <Input
@@ -134,6 +350,52 @@ export default function CreateEventForm() {
                   <option value="other">Other</option>
                 </Select>
 
+                {/* Storage Plan Selection */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-slate-300">
+                    Select Storage Plan
+                  </label>
+                  <div className="grid grid-cols-1 gap-2.5">
+                    {plans.map((plan) => {
+                      const isSelected = selectedPlan.id === plan.id;
+                      return (
+                        <div
+                          key={plan.id}
+                          onClick={() => setSelectedPlan(plan)}
+                          className={`relative rounded-xl border p-3.5 cursor-pointer flex flex-col justify-between transition-all duration-300 bg-white/[0.02] ${
+                            isSelected
+                              ? "border-brand-500 bg-brand-500/5 shadow-glow"
+                              : "border-white/10 hover:border-white/20 hover:bg-white/[0.04]"
+                          }`}
+                        >
+                          {plan.recommended && (
+                            <span className="absolute top-3.5 right-4 rounded-full bg-brand-500 px-2 py-0.5 text-[8px] font-extrabold tracking-wider uppercase text-white shadow-glow">
+                              Popular
+                            </span>
+                          )}
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                                {plan.name}
+                                {isSelected && (
+                                  <svg className="w-4 h-4 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                  </svg>
+                                )}
+                              </h4>
+                              <p className="text-[11px] text-slate-400 mt-0.5">{plan.tagline}</p>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-sm font-extrabold text-white">₹{plan.price}</span>
+                              <p className="text-[9px] text-slate-500">{plan.storage} / {plan.photos}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Secure Info Banner */}
                 <SecureBanner />
 
@@ -143,10 +405,39 @@ export default function CreateEventForm() {
                   isLoading={isSubmitting}
                   className="w-full mt-2"
                 >
-                  Create Event & Generate QR
+                  Pay ₹{selectedPlan.price} &amp; Create Event
                 </Button>
 
               </form>
+
+              {/* Developer Test Controls */}
+              <div className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/[0.01] p-4 text-center backdrop-blur-sm">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                  🔧 Developer Test Controls
+                </p>
+                <p className="mt-1 text-[11px] text-slate-400">
+                  Bypass the Razorpay checkout overlay to test successful database persistence or failure UI screens.
+                </p>
+                <div className="mt-3.5 grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleSimulateSuccess}
+                    disabled={isSubmitting}
+                    className="inline-flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Simulate Success
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSimulateFailure}
+                    disabled={isSubmitting}
+                    className="inline-flex items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs font-bold text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Simulate Failure
+                  </button>
+                </div>
+              </div>
+
             </CardContent>
           </Card>
         </div>
