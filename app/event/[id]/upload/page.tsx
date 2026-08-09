@@ -21,6 +21,7 @@ interface MongoMedia {
   publicId: string;
   resourceType: "image" | "video";
   createdAt: Date;
+  state?: string;
 }
 
 export default async function GuestUploadPage({ params }: PageProps) {
@@ -42,10 +43,10 @@ export default async function GuestUploadPage({ params }: PageProps) {
     notFound();
   }
 
-  // Fetch existing media for this event
+  // Fetch existing media for this event that are approved (or not hidden/flagged)
   const mediaDocs = await db
     .collection<MongoMedia>("media")
-    .find({ eventId: id })
+    .find({ eventId: id, state: { $ne: "hidden" } })
     .sort({ createdAt: -1 })
     .toArray();
 
@@ -57,6 +58,7 @@ export default async function GuestUploadPage({ params }: PageProps) {
     publicId: doc.publicId,
     resourceType: doc.resourceType,
     createdAt: doc.createdAt.toISOString(),
+    state: doc.state || "approved",
   }));
 
   const formattedDate = event.date instanceof Date

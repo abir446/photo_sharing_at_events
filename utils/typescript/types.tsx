@@ -21,7 +21,8 @@ export interface MongoEvent {
   userId: string;
   name: string;
   date: Date;
-  qrCodeUrl?: string; 
+  qrCodeUrl?: string;
+  uploadUrl?: string;
 }
 
 export interface DownloadQRButtonProps {

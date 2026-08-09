@@ -60,7 +60,7 @@ export default function CreateEventForm() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-tr from-[#ebeefc] via-[#f5f6ff] to-[#faf8ff] text-slate-900 px-4 py-8 sm:px-6 sm:py-12 md:py-16 relative overflow-hidden">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-ink-900 text-slate-200 px-4 py-8 sm:px-6 sm:py-12 md:py-16 relative overflow-hidden">
       
       {/* Background Decor Component */}
       <BackgroundDecorations />
