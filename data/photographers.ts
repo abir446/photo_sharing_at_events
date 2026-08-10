@@ -18,6 +18,7 @@ export type Photographer = {
   portfolio: string[];
   verified: boolean;
   responseTime: string;
+  userId?: string | null;
 };
 
 const IMAGES = {

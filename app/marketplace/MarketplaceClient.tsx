@@ -80,12 +80,6 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
               </div>
             ))}
           </dl>
-          <Link
-            href="/photographer/register"
-            className="inline-flex items-center justify-center rounded-2xl bg-brand-500 hover:bg-brand-600 px-6 py-4 font-semibold text-white text-sm shadow-glow transition-colors cursor-pointer self-stretch text-center"
-          >
-            List as Creator
-          </Link>
         </div>
       </header>
 

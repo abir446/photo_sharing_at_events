@@ -45,7 +45,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
         
         {/* Brand Info & Features */}
-        <div className="lg:col-span-4 flex flex-col space-y-4">
+        <div className="lg:col-span-3 flex flex-col space-y-4">
           <Link href="/" className="flex items-center space-x-2.5 group">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 shadow-glow">
               <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -143,8 +143,30 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Creators Links */}
+        <div className="lg:col-span-2 flex flex-col space-y-4">
+          <div>
+            <h3 className="text-white font-extrabold text-base relative pb-2 inline-block">
+              For Creators
+              <span className="absolute bottom-0 left-0 w-6 h-[2.5px] bg-brand-500 rounded-full"></span>
+            </h3>
+          </div>
+          <ul className="space-y-3">
+            <li>
+              <Link href="/photographer/register" className="text-slate-400 hover:text-brand-400 text-sm font-medium transition-colors">
+                List your business
+              </Link>
+            </li>
+            <li>
+              <Link href="/marketplace" className="text-slate-400 hover:text-brand-400 text-sm font-medium transition-colors">
+                Marketplace
+              </Link>
+            </li>
+          </ul>
+        </div>
+
         {/* Stay in the Loop (Newsletter) */}
-        <div className="lg:col-span-4 flex flex-col space-y-4">
+        <div className="lg:col-span-3 flex flex-col space-y-4">
           <div>
             <h3 className="text-white font-extrabold text-base relative pb-2 inline-block">
               Stay in the loop
