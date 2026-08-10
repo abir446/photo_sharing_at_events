@@ -35,6 +35,7 @@ export default async function Page({ params }: PageProps) {
     portfolio: photographer.portfolio,
     verified: photographer.verified,
     responseTime: photographer.responseTime,
+    userId: photographer.userId || null,
   };
 
   // Fetch sample portfolio images from other listed creators

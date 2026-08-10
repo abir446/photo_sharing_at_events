@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { showToast } from "nextjs-toast-notify";
 import {
   ArrowLeftIcon,
   BadgeCheckIcon,
@@ -10,6 +13,7 @@ import {
   CloudIcon,
   ClockIcon,
   LockIcon,
+  Loader2Icon,
   MapPinIcon,
   MessageSquareIcon,
   PackageIcon,
@@ -17,6 +21,42 @@ import {
   ShieldCheckIcon,
   StarIcon
 } from 'lucide-react';
+
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void | Promise<void>;
+  prefill: {
+    name: string;
+    email: string;
+  };
+  theme: {
+    color: string;
+  };
+  modal: {
+    ondismiss: () => void;
+  };
+}
+
+interface RazorpayInstance {
+  open: () => void;
+}
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
 import type { Photographer } from '@/data/photographers';
 
 type AddOn = {
@@ -76,7 +116,22 @@ interface BookingClientProps {
 }
 
 export default function BookingClient({ photographer }: BookingClientProps) {
+  const router = useRouter();
+  const { user } = useKindeBrowserClient();
   const [selected, setSelected] = useState<AddOn['id'][]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Dynamically load Razorpay checkout script on client mount
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const packagePrice = photographer.startingPrice;
   const addOnTotal = ADD_ONS.filter((a) => selected.includes(a.id)).reduce(
@@ -92,6 +147,153 @@ export default function BookingClient({ photographer }: BookingClientProps) {
         ? prev.filter((x) => x !== addOnId)
         : [...prev, addOnId]
     );
+
+  // Razorpay Checkout Handlers
+  const handlePayAndBook = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setError(null);
+
+    const defaultName = user?.given_name ? `${user.given_name} ${user.family_name || ""}`.trim() : "Event Host";
+    const defaultEmail = user?.email || "";
+
+    try {
+      // Convert USD dueToday to INR (e.g. 1 USD = 83 INR)
+      const dueTodayINR = dueToday * 83;
+      const orderResponse = await fetch("/api/createOrder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: Math.round(dueTodayINR * 100) }),
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error("Failed to establish Razorpay order.");
+      }
+
+      const orderData = await orderResponse.json();
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder",
+        amount: orderData.amount,
+        currency: orderData.currency || "INR",
+        name: "DropCast Book Photographer",
+        description: `Deposit for ${photographer.name}`,
+        order_id: orderData.id,
+        handler: async function (response: RazorpayResponse) {
+          try {
+            const bookingResponse = await fetch("/api/booking", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                photographerId: photographer.id,
+                photographerName: photographer.name,
+                packagePrice,
+                addOns: selected,
+                totalAmount: total,
+                dueToday,
+                paymentId: response.razorpay_payment_id,
+                eventDetails: {
+                  date: "Sat, Oct 18, 2026",
+                  location: "Laurel Hall, " + photographer.location,
+                  skew: "6 hours · 2pm–8pm",
+                  packageName: "Signature Event Coverage",
+                },
+              }),
+            });
+
+            const res = await bookingResponse.json();
+            if (res.success) {
+              showToast.success("Photographer booked successfully!", {
+                duration: 4000,
+                position: "top-right",
+                transition: "bounceIn",
+              });
+              router.push("/booking");
+            } else {
+              throw new Error(res.error || "Failed to save booking");
+            }
+          } catch (err) {
+            console.error("Save booking error:", err);
+            const msg = err instanceof Error ? err.message : undefined;
+            setError(msg || "Payment was successful, but establishing booking failed. Please contact support.");
+            setIsSubmitting(false);
+          }
+        },
+        prefill: {
+          name: defaultName,
+          email: defaultEmail,
+        },
+        theme: {
+          color: "#6366f1",
+        },
+        modal: {
+          ondismiss: function () {
+            setIsSubmitting(false);
+          },
+        },
+      };
+
+      if (!window.Razorpay) {
+        throw new Error("Razorpay SDK failed to load. Please try again.");
+      }
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error("Booking payment error:", err);
+      const msg = err instanceof Error ? err.message : undefined;
+      setError(msg || "Something went wrong. Please try again.");
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSimulateSuccess = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          photographerId: photographer.id,
+          photographerName: photographer.name,
+          packagePrice,
+          addOns: selected,
+          totalAmount: total,
+          dueToday,
+          paymentId: "mock_pay_success_" + Math.random().toString(36).substring(2, 9),
+          eventDetails: {
+            date: "Sat, Oct 18, 2026",
+            location: "Laurel Hall, " + photographer.location,
+            coverage: "6 hours · 2pm–8pm",
+            packageName: "Signature Event Coverage",
+          },
+        }),
+      });
+
+      const res = await response.json();
+      if (res.success) {
+        showToast.success("Photographer booked successfully (Simulated)!", {
+          duration: 4000,
+          position: "top-right",
+          transition: "bounceIn",
+        });
+        router.push("/booking");
+      } else {
+        throw new Error(res.error || "Failed to simulate booking creation");
+      }
+    } catch (err) {
+      console.error(err);
+      const msg = err instanceof Error ? err.message : undefined;
+      setError(msg || "Failed to simulate booking creation.");
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSimulateFailure = () => {
+    setError("Booking payment failed (Simulated). Insufficient funds or checkout cancelled.");
+  };
 
   return (
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10">
@@ -387,6 +589,13 @@ export default function BookingClient({ photographer }: BookingClientProps) {
             <h2 id="summary-heading" className="sr-only">
               Order summary
             </h2>
+
+            {error && (
+              <div role="alert" className="mb-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-semibold text-rose-300 text-left">
+                {error}
+              </div>
+            )}
+
             <dl className="space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <dt className="text-slate-400">Signature Event Coverage</dt>
@@ -422,13 +631,52 @@ export default function BookingClient({ photographer }: BookingClientProps) {
               </div>
               <button
                 type="button"
-                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+                onClick={handlePayAndBook}
+                disabled={isSubmitting}
+                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <LockIcon className="h-4 w-4" aria-hidden="true" />
-                Proceed to Payment
+                {isSubmitting ? (
+                  <>
+                    <Loader2Icon className="h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <LockIcon className="h-4 w-4" aria-hidden="true" />
+                    Proceed to Payment
+                  </>
+                )}
               </button>
             </div>
           </section>
+
+          {/* Developer Test Controls */}
+          <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.01] p-5 text-center backdrop-blur-sm">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+              🔧 Developer Test Controls
+            </p>
+            <p className="mt-1 text-xs text-slate-400">
+              Bypass the Razorpay checkout overlay to test successful database persistence or failure UI screens.
+            </p>
+            <div className="mt-3.5 grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={handleSimulateSuccess}
+                disabled={isSubmitting}
+                className="inline-flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Simulate Success
+              </button>
+              <button
+                type="button"
+                onClick={handleSimulateFailure}
+                disabled={isSubmitting}
+                className="inline-flex items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs font-bold text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Simulate Failure
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </main>

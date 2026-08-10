@@ -244,6 +244,29 @@ export default async function Home() {
           </div>
         ))}
       </section>
+
+      {/* Creator Registration Section */}
+      <section className="mt-9 rounded-3xl border border-brand-500/20 bg-brand-500/5 p-8 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-2 text-left">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 px-3 py-1 text-xs font-semibold text-brand-400">
+            <CameraIcon className="h-3.5 w-3.5" />
+            For Professional Creators
+          </span>
+          <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+            Are you an event photographer?
+          </h2>
+          <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
+            List your business on DropCast to reach premium hosts, manage milestones, and secure payments in escrow.
+          </p>
+        </div>
+        <Link
+          href="/photographer/register"
+          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+        >
+          Join as Creator
+          <ArrowRightIcon className="h-4 w-4" />
+        </Link>
+      </section>
     </main>
   );
 }

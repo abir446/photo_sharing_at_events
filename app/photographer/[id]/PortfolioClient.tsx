@@ -12,6 +12,7 @@ import {
   StarIcon,
   XIcon
 } from 'lucide-react';
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import type { Photographer } from '@/data/photographers';
 
 interface PortfolioClientProps {
@@ -21,6 +22,9 @@ interface PortfolioClientProps {
 
 export default function PortfolioClient({ photographer, otherPortfolios }: PortfolioClientProps) {
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const { user } = useKindeBrowserClient();
+
+  const isOwner = photographer.userId && user && photographer.userId === user.id;
 
   // Blend photographer's own portfolio with sample other shots for high density
   const samples = [
@@ -80,19 +84,28 @@ export default function PortfolioClient({ photographer, otherPortfolios }: Portf
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
-          >
-            <MessageSquareIcon className="h-4 w-4" aria-hidden="true" />
-            Message
-          </button>
-          <Link
-            href={`/booking/${photographer.id}`}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
-          >
-            Book from ${photographer.startingPrice.toLocaleString()}
-          </Link>
+          {!isOwner && (
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+            >
+              <MessageSquareIcon className="h-4 w-4" aria-hidden="true" />
+              Message
+            </button>
+          )}
+          {isOwner ? (
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-brand-500/20 bg-brand-500/10 px-5 py-3 text-sm font-bold text-brand-400">
+              <CameraIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+              Your Creator Listing
+            </span>
+          ) : (
+            <Link
+              href={`/booking/${photographer.id}`}
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+            >
+              Book from ${photographer.startingPrice.toLocaleString()}
+            </Link>
+          )}
         </div>
       </header>
 
