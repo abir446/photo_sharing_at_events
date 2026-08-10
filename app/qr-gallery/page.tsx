@@ -1,7 +1,7 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from 'next/navigation';
 import clientPromise from "@/lib/mongodb";
-import { MongoEvent } from '@/utils/typescript/types';
+import { MongoEvent, MediaItem } from '@/utils/typescript/types';
 import QRGalleryClient from './QRGalleryClient';
 
 export default async function Page() {
@@ -25,7 +25,7 @@ export default async function Page() {
     .sort({ _id: -1 })
     .toArray();
 
-  const eventMediaMap: Record<string, any[]> = {};
+  const eventMediaMap: Record<string, MediaItem[]> = {};
   for (const event of events) {
     const eId = event._id.toString();
     const mediaDocs = await db
@@ -39,7 +39,7 @@ export default async function Page() {
       eventId: doc.eventId,
       url: doc.url,
       publicId: doc.publicId,
-      resourceType: doc.resourceType || "image",
+      resourceType: (doc.resourceType || "image") as "image" | "video",
       createdAt: doc.createdAt.toISOString(),
     }));
   }
