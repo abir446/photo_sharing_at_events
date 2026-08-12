@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import "@mantine/core/styles.css";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "DropCast",
@@ -16,14 +18,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="h-full antialiased font-sans"
+      className="dark h-full antialiased font-sans"
     >
       <body className="min-h-full flex flex-col bg-ink-900 text-slate-200">
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        <Providers>
+          <Header />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
 }
-

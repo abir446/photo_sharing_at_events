@@ -1,4 +1,7 @@
-import React from 'react';
+"use client";
+
+import React from "react";
+import { RangeSlider as MantineRangeSlider } from "@mantine/core";
 
 type RangeSliderProps = {
   min: number;
@@ -15,44 +18,57 @@ export function RangeSlider({
   step = 50,
   value,
   onChange,
-  label
+  label,
 }: RangeSliderProps) {
-  const [low, high] = value;
-  const toPct = (v: number) => ((v - min) / (max - min)) * 100;
-
   return (
-    <div>
-      <div className="relative h-6">
-        <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-white/10" />
-        <div
-          className="absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-brand-500"
-          style={{ left: `${toPct(low)}%`, right: `${100 - toPct(high)}%` }}
-        />
-        <input
-          type="range"
-          className="evermore-range absolute inset-x-0 top-1/2 h-6 w-full -translate-y-1/2"
-          min={min}
-          max={max}
-          step={step}
-          value={low}
-          aria-label={`${label} minimum`}
-          onChange={(e) =>
-            onChange([Math.min(Number(e.target.value), high - step), high])
-          }
-        />
-        <input
-          type="range"
-          className="evermore-range absolute inset-x-0 top-1/2 h-6 w-full -translate-y-1/2"
-          min={min}
-          max={max}
-          step={step}
-          value={high}
-          aria-label={`${label} maximum`}
-          onChange={(e) =>
-            onChange([low, Math.max(Number(e.target.value), low + step)])
-          }
-        />
-      </div>
+    <div className="py-2.5">
+      <MantineRangeSlider
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(val) => onChange(val as [number, number])}
+        color="brand"
+        label={(val) => `$${val.toLocaleString()}`}
+        classNames={{
+          track: "before:bg-transparent",
+          thumb: "active:cursor-grabbing active:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
+        }}
+        styles={{
+          root: {
+            paddingTop: "4px",
+            paddingBottom: "4px",
+          },
+          track: {
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            height: "6px",
+            borderRadius: "9999px",
+          },
+          bar: {
+            backgroundColor: "var(--color-brand-500)",
+            height: "6px",
+          },
+          thumb: {
+            backgroundColor: "#ffffff",
+            border: "2px solid var(--color-brand-500)",
+            height: "16px",
+            width: "16px",
+            boxShadow: "0 2px 8px rgba(99, 102, 241, 0.6)",
+            transition: "transform 150ms ease, border-color 150ms ease",
+            cursor: "grab",
+          },
+          label: {
+            backgroundColor: "var(--color-ink-950)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            color: "#ffffff",
+            fontSize: "10px",
+            fontWeight: 600,
+            borderRadius: "6px",
+            padding: "3px 6px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      />
     </div>
   );
 }

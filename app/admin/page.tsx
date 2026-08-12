@@ -1,6 +1,7 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import React from "react";
+import Link from "next/link";
 import clientPromise from "@/lib/mongodb";
 import { MongoEvent } from "@/utils/typescript/types";
 import AdminDashboard from "@/components/AdminDashboard";
@@ -40,12 +41,12 @@ export default async function AdminPage() {
             </p>
           </div>
           <div className="pt-2">
-            <a
+            <Link
               href="/"
               className="inline-flex items-center justify-center font-semibold rounded-xl bg-brand-500 hover:bg-brand-600 text-white px-6 py-2.5 text-sm transition-all duration-200 shadow-glow focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
               Return Home
-            </a>
+            </Link>
           </div>
         </div>
       </div>

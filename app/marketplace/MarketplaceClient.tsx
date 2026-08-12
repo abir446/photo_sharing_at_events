@@ -5,7 +5,7 @@ import { CameraOffIcon, ChevronDownIcon, SlidersHorizontalIcon } from 'lucide-re
 import { FilterSidebar } from '@/components/marketplace/FilterSidebar';
 import { PhotographerCard } from '@/components/marketplace/PhotographerCard';
 import type { Photographer, StyleTag } from '@/data/photographers';
-import Link from 'next/link';
+import { Drawer, ScrollArea } from '@mantine/core';
 
 const SORTS = ['Recommended', 'Top rated', 'Price: low to high', 'Most reviews'];
 
@@ -18,6 +18,7 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
   const [selectedStyles, setSelectedStyles] = useState<StyleTag[]>([]);
   const [budget, setBudget] = useState<[number, number]>([500, 5000]);
   const [sort, setSort] = useState(SORTS[0]);
+  const [drawerOpened, setDrawerOpened] = useState(false);
 
   const results = useMemo(() => {
     const filtered = initialPhotographers.filter((p) => {
@@ -56,46 +57,57 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
   ).toFixed(1);
 
   return (
-    <main className="mx-auto w-full max-w-[1440px] px-8 py-10">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-white/5">
+    <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 sm:py-10">
+      {/* Mobile/Tablet responsive header */}
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/5">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-white">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
             Find Your Event Photographer
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-slate-400">
+          <p className="mt-2.5 sm:mt-3 max-w-xl text-sm sm:text-[15px] text-slate-400 leading-relaxed">
             Compare vetted creators near you, then lock in your date with a
             milestone-based deposit.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-4">
-          <dl className="flex divide-x divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl">
+        <div className="w-full lg:w-auto">
+          {/* Responsive stats counter table */}
+          <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl w-full">
             {[
               { label: 'Creators available', value: `${initialPhotographers.length}` },
               { label: 'Avg. rating', value: initialPhotographers.length > 0 ? avgRating : '0.0' },
               { label: 'Median starting price', value: '$1,475' }
             ].map(({ label, value }) => (
-              <div key={label} className="px-6 py-4">
-                <dt className="text-xs font-medium text-slate-400">{label}</dt>
-                <dd className="mt-1 text-xl font-bold text-white">{value}</dd>
+              <div key={label} className="px-5 py-3 sm:px-6 sm:py-4 text-center sm:text-left">
+                <dt className="text-[10px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">{label}</dt>
+                <dd className="mt-1 text-lg sm:text-xl font-bold text-white">{value}</dd>
               </div>
             ))}
           </dl>
         </div>
       </header>
 
-      <div className="mt-8 flex flex-col lg:flex-row items-start gap-7">
-        <FilterSidebar
-          location={location}
-          onLocationChange={setLocation}
-          selectedStyles={selectedStyles}
-          onToggleStyle={toggleStyle}
-          budget={budget}
-          onBudgetChange={setBudget}
-          onReset={reset}
-        />
+      {/* Main layout container with desktop sidebar and responsive results */}
+      <div className="mt-6 sm:mt-8 flex flex-col lg:flex-row items-start gap-7">
+        {/* Desktop filter sidebar container */}
+        <aside 
+          className="hidden lg:block sticky top-24 w-[280px] shrink-0 self-start overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl"
+          aria-label="Desktop filters"
+        >
+          <FilterSidebar
+            location={location}
+            onLocationChange={setLocation}
+            selectedStyles={selectedStyles}
+            onToggleStyle={toggleStyle}
+            budget={budget}
+            onBudgetChange={setBudget}
+            onReset={reset}
+          />
+        </aside>
 
+        {/* Results layout section */}
         <section className="min-w-0 flex-1 w-full" aria-label="Photographer results">
-          <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3.5 backdrop-blur-xl">
+          {/* Responsive search filter toolbar */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:px-5 sm:py-3.5 backdrop-blur-xl">
             <p className="flex items-center gap-2 text-sm text-slate-300">
               <SlidersHorizontalIcon
                 className="h-4 w-4 text-brand-400"
@@ -104,28 +116,42 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
               <span className="font-semibold text-white">{results.length}</span>
               creators match your filters
             </p>
-            <label className="flex items-center gap-2 text-sm text-slate-400">
-              Sort by
-              <span className="relative">
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                  className="appearance-none rounded-lg border border-white/10 bg-ink-950/60 py-1.5 pl-3 pr-8 text-sm font-medium text-white focus:border-brand-500 focus:outline-none"
-                >
-                  {SORTS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDownIcon
-                  className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-                  aria-hidden="true"
-                />
-              </span>
-            </label>
+            
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+              {/* Mobile Filter Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setDrawerOpened(true)}
+                className="lg:hidden inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3.5 py-2 text-sm font-semibold text-white hover:bg-white/10 active:bg-white/15 transition-colors cursor-pointer"
+              >
+                <SlidersHorizontalIcon className="h-4 w-4 text-brand-400" />
+                Filters
+              </button>
+              
+              <label className="flex items-center gap-2 text-sm text-slate-400">
+                Sort by
+                <span className="relative">
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                    className="appearance-none rounded-lg border border-white/10 bg-ink-950/60 py-1.5 pl-3 pr-8 text-sm font-medium text-white focus:border-brand-500 focus:outline-none cursor-pointer"
+                  >
+                    {SORTS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDownIcon
+                    className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                    aria-hidden="true"
+                  />
+                </span>
+              </label>
+            </div>
           </div>
 
+          {/* Cards Grid */}
           {results.length > 0 ? (
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {results.map((photographer) => (
@@ -159,6 +185,59 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
           )}
         </section>
       </div>
+
+      {/* Mantine Drawer for Mobile & Tablet Filters */}
+      <Drawer
+        opened={drawerOpened}
+        onClose={() => setDrawerOpened(false)}
+        title="Filters"
+        position="right"
+        size="320px"
+        scrollAreaComponent={ScrollArea.Autosize}
+        styles={{
+          content: {
+            backgroundColor: "#0B1120", // ink-950
+            color: "#ffffff",
+            borderLeft: "1px solid rgba(255, 255, 255, 0.1)",
+          },
+          header: {
+            backgroundColor: "#0B1120",
+            color: "#ffffff",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+          },
+          title: {
+            fontSize: "16px",
+            fontWeight: 700,
+          },
+          close: {
+            color: "#94a3b8",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.05)",
+              color: "#ffffff",
+            },
+          },
+          body: {
+            padding: "0px",
+          },
+        }}
+      >
+        <div className="pb-10">
+          <FilterSidebar
+            location={location}
+            onLocationChange={setLocation}
+            selectedStyles={selectedStyles}
+            onToggleStyle={toggleStyle}
+            budget={budget}
+            onBudgetChange={setBudget}
+            onReset={() => {
+              reset();
+              setDrawerOpened(false);
+            }}
+            showTitleBar={false}
+          />
+        </div>
+      </Drawer>
     </main>
   );
 }

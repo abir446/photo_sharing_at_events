@@ -57,31 +57,41 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
     return (mediaMap[selectedEventId] || []).filter((item) => !hiddenPhotoIds.has(item._id));
   }, [mediaMap, selectedEventId, hiddenPhotoIds]);
 
-  // Establish SSE connection for real-time live uploads of selected event
+  // Poll for real-time live uploads of selected event
   useEffect(() => {
     if (!selectedEventId) return;
 
-    const sseUrl = `/api/event/${selectedEventId}/sse`;
-    const eventSource = new EventSource(sseUrl);
+    let timerId: NodeJS.Timeout;
+    let isActive = true;
 
-    eventSource.onmessage = (event) => {
+    async function poll() {
+      if (!isActive) return;
+
       try {
-        const newMedia = JSON.parse(event.data);
-        setMediaMap((prev) => {
-          const currentList = prev[selectedEventId] || [];
-          if (currentList.some((item) => item._id === newMedia._id)) return prev;
-          return {
+        const res = await fetch(`/api/event/${selectedEventId}/media`);
+        if (!res.ok) throw new Error("Failed to fetch media");
+        const data = await res.json();
+
+        if (isActive) {
+          setMediaMap((prev) => ({
             ...prev,
-            [selectedEventId]: [newMedia, ...currentList]
-          };
-        });
+            [selectedEventId]: data
+          }));
+        }
       } catch (err) {
-        console.error("SSE parse error:", err);
+        console.error("Error polling event media:", err);
+      } finally {
+        if (isActive) {
+          timerId = setTimeout(poll, 5000);
+        }
       }
-    };
+    }
+
+    poll();
 
     return () => {
-      eventSource.close();
+      isActive = false;
+      clearTimeout(timerId);
     };
   }, [selectedEventId]);
 

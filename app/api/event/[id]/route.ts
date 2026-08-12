@@ -16,7 +16,7 @@ export async function DELETE(
     }
 
     const roles = await getRoles();
-    const isAdmin = roles?.some((role: any) => role.key === "admin");
+    const isAdmin = roles?.some((role: { key: string }) => role.key === "admin");
     if (!isAdmin) {
       return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }
@@ -55,7 +55,7 @@ export async function PUT(
     }
 
     const roles = await getRoles();
-    const isAdmin = roles?.some((role: any) => role.key === "admin");
+    const isAdmin = roles?.some((role: { key: string }) => role.key === "admin");
     if (!isAdmin) {
       return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }

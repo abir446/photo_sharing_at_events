@@ -66,9 +66,21 @@ export default async function BookingsDashboardPage() {
     .find({ id: { $in: photographerIds } })
     .toArray();
 
-  const photographerMap = new Map<string, any>();
+  interface PhotographerDetails {
+    id: string;
+    initials?: string;
+    accent?: string;
+    location?: string;
+  }
+
+  const photographerMap = new Map<string, PhotographerDetails>();
   photographersDocs.forEach((p) => {
-    photographerMap.set(p.id, p);
+    photographerMap.set(p.id as string, {
+      id: p.id as string,
+      initials: p.initials as string | undefined,
+      accent: p.accent as string | undefined,
+      location: p.location as string | undefined,
+    });
   });
 
   const bookings = bookingsDocs.map((b) => {
