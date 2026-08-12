@@ -20,31 +20,35 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
       <div className="relative group h-full">
         {/* We wrap only the card navigation in a Link */}
         <Link href={`/event/${eId}`} className="block h-full">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer flex flex-col items-center overflow-hidden border border-slate-100 bg-white h-full">
-            <CardHeader className="w-full text-left p-4 pb-2">
+          <Card className="hover:shadow-glow hover:border-brand-500/40 transition-all duration-300 cursor-pointer flex flex-col items-center overflow-hidden bg-white/[0.03] border border-white/10 text-white h-full">
+            <CardHeader className="w-full text-left p-6 pb-3">
               <div className="flex items-start justify-between gap-2">
-                <CardTitle className="text-lg font-bold text-gray-900 leading-tight">{name}</CardTitle>
+                <CardTitle className="text-xl font-bold text-white leading-tight group-hover:text-brand-400 transition-colors">
+                  {name}
+                </CardTitle>
                 {planName && (
-                  <span className="shrink-0 inline-flex items-center rounded-full bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-600 border border-indigo-500/20">
+                  <span className="shrink-0 inline-flex items-center rounded-full bg-brand-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-brand-400 border border-brand-500/20">
                     {planName}
                   </span>
                 )}
               </div>
-              <CardDescription className="text-sm text-gray-500">{date}</CardDescription>
-              <span className="text-xs text-indigo-600/70 font-mono mt-1.5 block">ID: {eId}</span>
+              <CardDescription className="text-sm text-slate-400 mt-1">{date}</CardDescription>
+              <span className="text-xs text-brand-400/70 font-mono mt-1.5 block">ID: {eId}</span>
             </CardHeader>
             
-            <CardContent className="p-4 pt-0 w-full flex justify-center flex-grow pb-18">
+            <CardContent className="p-6 pt-0 w-full flex justify-center flex-grow pb-20">
               {qrCodeUrl ? (
-                <Image 
-                  src={qrCodeUrl} 
-                  alt={`QR Code for ${name}`} 
-                  width={200} 
-                  height={200}
-                  className="mt-2 object-contain rounded-lg"
-                />
+                <div className="bg-white p-3.5 rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-102 mt-2">
+                  <Image 
+                    src={qrCodeUrl} 
+                    alt={`QR Code for ${name}`} 
+                    width={160} 
+                    height={160}
+                    className="object-contain rounded-lg"
+                  />
+                </div>
               ) : (
-                <div className="w-[200px] h-[200px] bg-gray-100 flex items-center justify-center text-xs text-gray-400 mt-2 rounded-lg">
+                <div className="w-[160px] h-[160px] bg-white/5 border border-dashed border-white/10 flex items-center justify-center text-xs text-slate-500 mt-2 rounded-2xl">
                   No QR Code
                 </div>
               )}
@@ -53,12 +57,12 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
         </Link>
         
         {/* Separate Action Buttons container positioned at the bottom of the card, outside the Link element to ensure valid HTML */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 pt-0 bg-gradient-to-t from-white via-white to-white/90 rounded-b-2xl flex justify-between gap-2 z-10">
+        <div className="absolute bottom-0 left-0 right-0 p-4 pt-0 bg-gradient-to-t from-ink-900 via-ink-900 to-transparent rounded-b-2xl flex justify-between gap-2 z-10">
           {onEdit && (
             <Button 
               variant="outline" 
               size="sm" 
-              className="flex-1 rounded-lg text-xs py-2 h-9 cursor-pointer"
+              className="flex-1 rounded-xl text-xs py-2 h-9 cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -77,7 +81,7 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
             <Button 
               variant="danger" 
               size="sm" 
-              className="flex-1 rounded-lg text-xs py-2 h-9 cursor-pointer"
+              className="flex-1 rounded-xl text-xs py-2 h-9 cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
