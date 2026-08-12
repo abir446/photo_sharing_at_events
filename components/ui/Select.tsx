@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react";
+import { cn } from "@/lib/utils";
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
@@ -19,17 +20,20 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </label>
         )}
         <div
-          className={`relative flex items-center bg-ink-950/60 border rounded-xl focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all duration-200 ${
+          className={cn(
+            "relative flex items-center bg-ink-950/60 border rounded-xl focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all duration-200",
             error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : "border-white/10"
-          }`}
+          )}
         >
           {icon && <div className="pl-3.5 pr-2.5 text-slate-400 flex items-center">{icon}</div>}
           <select
             ref={ref}
             id={id}
-            className={`w-full bg-transparent py-3 text-slate-200 focus:outline-none text-sm appearance-none cursor-pointer [&>option]:bg-ink-900 [&>option]:text-white ${
-              icon ? "pr-10" : "pl-4 pr-10"
-            } ${className}`}
+            className={cn(
+              "w-full bg-transparent py-3 text-slate-200 focus:outline-none text-sm appearance-none cursor-pointer [&>option]:bg-ink-900 [&>option]:text-white",
+              icon ? "pr-10" : "pl-4 pr-10",
+              className
+            )}
             {...props}
           >
             {children}

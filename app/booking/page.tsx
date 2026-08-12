@@ -66,20 +66,32 @@ export default async function BookingsDashboardPage() {
     .find({ id: { $in: photographerIds } })
     .toArray();
 
-  const photographerMap = new Map<string, any>();
+  interface PhotographerDetails {
+    id: string;
+    initials?: string;
+    accent?: string;
+    location?: string;
+  }
+
+  const photographerMap = new Map<string, PhotographerDetails>();
   photographersDocs.forEach((p) => {
-    photographerMap.set(p.id, p);
+    photographerMap.set(p.id as string, {
+      id: p.id as string,
+      initials: p.initials as string | undefined,
+      accent: p.accent as string | undefined,
+      location: p.location as string | undefined,
+    });
   });
 
   const bookings = bookingsDocs.map((b) => {
-    const pDetails = photographerMap.get(b.photographerId) || {};
+    const pDetails = photographerMap.get(b.photographerId);
     return {
       id: b._id.toString(),
       photographerId: b.photographerId,
       photographerName: b.photographerName,
-      initials: pDetails.initials || b.photographerName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2),
-      accent: pDetails.accent || "#6366f1",
-      location: pDetails.location || b.eventDetails.location,
+      initials: pDetails?.initials || b.photographerName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2),
+      accent: pDetails?.accent || "#6366f1",
+      location: pDetails?.location || b.eventDetails.location,
       packagePrice: b.packagePrice,
       addOns: b.addOns,
       totalAmount: b.totalAmount,

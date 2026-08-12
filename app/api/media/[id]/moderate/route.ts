@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { uploadEvents } from "@/lib/emitter";
 
 export async function PATCH(
   request: NextRequest,
@@ -53,19 +52,7 @@ export async function PATCH(
       { $set: { state } }
     );
 
-    // 5. Emit real-time sse message to let guest upload feeds sync the change
-    uploadEvents.emit("upload", { 
-      eventId: mediaItem.eventId, 
-      mediaItem: { 
-        _id: mediaId,
-        eventId: mediaItem.eventId,
-        url: mediaItem.url,
-        publicId: mediaItem.publicId,
-        resourceType: mediaItem.resourceType,
-        createdAt: mediaItem.createdAt.toISOString ? mediaItem.createdAt.toISOString() : String(mediaItem.createdAt),
-        state 
-      } 
-    });
+
 
     return NextResponse.json({ success: true, state });
   } catch (error: unknown) {

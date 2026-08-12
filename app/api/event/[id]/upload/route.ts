@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { uploadEvents } from "@/lib/emitter";
 import { v2 as cloudinary } from "cloudinary";
 
 // Configure Cloudinary
@@ -58,9 +57,6 @@ export async function POST(
               ...mediaItem,
               _id: insertResult.insertedId.toString(),
             };
-
-            // Emit the event to all active Server-Sent Event (SSE) clients
-            uploadEvents.emit("upload", { eventId, mediaItem: itemWithId });
 
             resolve(itemWithId);
           } catch (dbError: unknown) {

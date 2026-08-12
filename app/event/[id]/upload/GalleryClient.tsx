@@ -21,51 +21,51 @@ export default function GalleryClient({
   const [sseStatus, setSseStatus] = useState<"connecting" | "connected" | "disconnected">("connecting");
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // 1. Establish SSE Connection for real-time updates
+  // Track eventId to detect changes and reset state during render
+  const [prevEventId, setPrevEventId] = useState(eventId);
+  if (eventId !== prevEventId) {
+    setPrevEventId(eventId);
+    setSseStatus("connecting");
+    setMediaList(initialMedia);
+    setIsUploading(false);
+    setUploadStatus("");
+    setErrorMsg("");
+  }
+
+  // 1. Poll for real-time updates
   useEffect(() => {
-    let sse: EventSource;
-    let retryTimeout: NodeJS.Timeout;
+    let timerId: NodeJS.Timeout;
+    let isActive = true;
 
-    function connect() {
-      setSseStatus("connecting");
-      sse = new EventSource(`/api/event/${eventId}/sse`);
+    async function poll() {
+      if (!isActive) return;
 
-      sse.onopen = () => {
-        setSseStatus("connected");
-      };
+      try {
+        const res = await fetch(`/api/event/${eventId}/media`);
+        if (!res.ok) throw new Error("Failed to fetch media");
+        const data = await res.json();
 
-      sse.onmessage = (event) => {
-        if (event.data === ":keep-alive") return;
-        try {
-          const newMedia = JSON.parse(event.data);
-          setMediaList((prev) => {
-            if (newMedia.state === "hidden") {
-              return prev.filter((item) => item._id !== newMedia._id);
-            }
-            // Avoid duplicate items
-            if (prev.some((item) => item._id === newMedia._id)) {
-              return prev;
-            }
-            return [newMedia, ...prev];
-          });
-        } catch (e) {
-          console.error("Error parsing realtime SSE payload:", e);
+        if (isActive) {
+          setMediaList(data);
+          setSseStatus("connected");
         }
-      };
-
-      sse.onerror = (e) => {
-        console.error("SSE connection lost. Reconnecting...", e);
-        setSseStatus("disconnected");
-        sse.close();
-        retryTimeout = setTimeout(connect, 5000);
-      };
+      } catch (err) {
+        console.error("Error polling media:", err);
+        if (isActive) {
+          setSseStatus("disconnected");
+        }
+      } finally {
+        if (isActive) {
+          timerId = setTimeout(poll, 5000);
+        }
+      }
     }
 
-    connect();
+    poll();
 
     return () => {
-      if (sse) sse.close();
-      clearTimeout(retryTimeout);
+      isActive = false;
+      clearTimeout(timerId);
     };
   }, [eventId]);
 

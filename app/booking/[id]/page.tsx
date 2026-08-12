@@ -38,7 +38,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
           <div className="space-y-2">
             <h1 className="text-2xl font-black text-white tracking-tight">Self-Booking Restricted</h1>
             <p className="text-slate-400 text-sm leading-relaxed">
-              You cannot book your own photographer profile. To test the booking experience, please register a different creator business or view another creator's profile in the marketplace.
+              You cannot book your own photographer profile. To test the booking experience, please register a different creator business or view another creator&apos;s profile in the marketplace.
             </p>
           </div>
           <div className="pt-2">

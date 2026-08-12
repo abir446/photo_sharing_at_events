@@ -36,21 +36,24 @@ export function FilterSidebar({
   onToggleStyle,
   budget,
   onBudgetChange,
-  onReset
-}: Props) {
+  onReset,
+  showTitleBar = true
+}: Props & { showTitleBar?: boolean }) {
   return (
-    <aside className="sticky top-24 w-[280px] shrink-0 self-start overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
-      <div className="flex items-center justify-between px-5 py-4">
-        <h2 className="text-sm font-semibold text-white">Filters</h2>
-        <button
-          type="button"
-          onClick={onReset}
-          className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
-        >
-          <RotateCcwIcon className="h-3.5 w-3.5" aria-hidden="true" />
-          Reset
-        </button>
-      </div>
+    <div className="flex flex-col w-full">
+      {showTitleBar && (
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+          <h2 className="text-sm font-semibold text-white">Filters</h2>
+          <button
+            type="button"
+            onClick={onReset}
+            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+          >
+            <RotateCcwIcon className="h-3.5 w-3.5" aria-hidden="true" />
+            Reset
+          </button>
+        </div>
+      )}
 
       <Section title="Location">
         <div className="relative">
@@ -152,6 +155,6 @@ export function FilterSidebar({
           Based on each creator&apos;s starting package price.
         </p>
       </Section>
-    </aside>
+    </div>
   );
 }

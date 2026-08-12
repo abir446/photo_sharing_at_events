@@ -82,7 +82,7 @@ export default function RegisterClient({ defaultName, defaultEmail }: RegisterCl
         name: 'DropCast Pro Creator',
         description: 'Annual Marketplace Listing Fee',
         order_id: orderData.id,
-        handler: async function (response: any) {
+        handler: async function (response: { razorpay_payment_id: string }) {
           try {
             // Payment success callback - submit details to database
             const registerResponse = await fetch('/api/photographer/register', {
@@ -127,11 +127,18 @@ export default function RegisterClient({ defaultName, defaultEmail }: RegisterCl
         }
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      interface RazorpayInstance {
+        open: () => void;
+      }
+      interface RazorpayConstructor {
+        new (options: unknown): RazorpayInstance;
+      }
+
+      const rzp = new (window as unknown as { Razorpay: RazorpayConstructor }).Razorpay(options);
       rzp.open();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Checkout error:', err);
-      setError(err?.message || 'Something went wrong. Please try again.');
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
       setLoading(false);
     }
   };
@@ -167,9 +174,9 @@ export default function RegisterClient({ defaultName, defaultEmail }: RegisterCl
 
       const data = await response.json();
       window.location.href = `/photographer/${data.creatorId}`;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err?.message || 'Failed to simulate profile registration.');
+      setError(err instanceof Error ? err.message : 'Failed to simulate profile registration.');
       setLoading(false);
     }
   };
