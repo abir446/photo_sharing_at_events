@@ -84,14 +84,14 @@ export default async function BookingsDashboardPage() {
   });
 
   const bookings = bookingsDocs.map((b) => {
-    const pDetails = photographerMap.get(b.photographerId) || {};
+    const pDetails = photographerMap.get(b.photographerId);
     return {
       id: b._id.toString(),
       photographerId: b.photographerId,
       photographerName: b.photographerName,
-      initials: pDetails.initials || b.photographerName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2),
-      accent: pDetails.accent || "#6366f1",
-      location: pDetails.location || b.eventDetails.location,
+      initials: pDetails?.initials || b.photographerName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2),
+      accent: pDetails?.accent || "#6366f1",
+      location: pDetails?.location || b.eventDetails.location,
       packagePrice: b.packagePrice,
       addOns: b.addOns,
       totalAmount: b.totalAmount,
