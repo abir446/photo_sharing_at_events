@@ -70,6 +70,13 @@ export async function POST(request: NextRequest) {
       { upsert: true }
     );
 
+    // Note the email in photographer_emails collection
+    await db.collection("photographer_emails").updateOne(
+      { email: user.email },
+      { $set: { email: user.email, userId: user.id, registeredAt: new Date() } },
+      { upsert: true }
+    );
+
     return NextResponse.json({ success: true, creatorId });
   } catch (error: unknown) {
     console.error("Creator registration error:", error);

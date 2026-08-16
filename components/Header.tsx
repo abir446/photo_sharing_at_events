@@ -23,7 +23,23 @@ const Header = () => {
   const { isAuthenticated, isLoading, user } = useKindeBrowserClient();
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isPhotographer, setIsPhotographer] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      fetch("/api/photographer/check")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.isPhotographer) {
+            setIsPhotographer(true);
+          }
+        })
+        .catch((err) => console.error("Error checking photographer status:", err));
+    } else {
+      setIsPhotographer(false);
+    }
+  }, [isAuthenticated, user?.email]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -57,16 +73,22 @@ const Header = () => {
   }, []);
 
   const initials = ((user?.given_name?.[0] || "") + (user?.family_name?.[0] || "")).toUpperCase() || "DC";
-  const fullName = user?.given_name ? `${user.given_name} ${user.family_name || ""}`.trim() : "Event Host";
+  const defaultFullName = isPhotographer ? "Photographer" : "Event Host";
+  const fullName = user?.given_name ? `${user.given_name} ${user.family_name || ""}`.trim() : defaultFullName;
+  const roleName = isPhotographer ? "Photographer" : "Event Host";
 
   // Navigation Links
   const links = [
     { label: 'Marketplace', to: '/marketplace', icon: SparklesIcon },
-    ...(isAuthenticated ? [
-      { label: 'QR Gallery', to: '/qr-gallery', icon: ImageIcon },
-      { label: 'Bookings', to: '/booking', icon: CalendarIcon },
-      { label: 'My Events', to: '/dashboard', icon: CalendarIcon }
-    ] : []),
+    ...(isAuthenticated ? (
+      isPhotographer ? [
+        { label: 'Dashboard', to: '/dashboard', icon: CalendarIcon }
+      ] : [
+        { label: 'QR Gallery', to: '/qr-gallery', icon: ImageIcon },
+        { label: 'Bookings', to: '/booking', icon: CalendarIcon },
+        { label: 'My Events', to: '/dashboard', icon: CalendarIcon }
+      ]
+    ) : []),
     { label: 'About', to: '/about', icon: InfoIcon }
   ];
 
@@ -145,7 +167,7 @@ const Header = () => {
                     {fullName}
                   </span>
                   <span className="block text-[11px] text-slate-400">
-                    Event Host
+                    {roleName}
                   </span>
                 </span>
                 <ChevronDownIcon
@@ -159,22 +181,35 @@ const Header = () => {
                   role="menu"
                   className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-ink-800/95 p-1.5 shadow-2xl backdrop-blur-xl z-50"
                 >
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsUserMenuOpen(false)}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
-                  >
-                    <CalendarIcon className="h-4 w-4 text-slate-400" />
-                    My Events
-                  </Link>
-                  <Link
-                    href="/dashboard/create"
-                    onClick={() => setIsUserMenuOpen(false)}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
-                  >
-                    <PlusIcon className="h-4 w-4 text-slate-400" />
-                    New Event
-                  </Link>
+                  {isPhotographer ? (
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      <CalendarIcon className="h-4 w-4 text-slate-400" />
+                      Dashboard
+                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                      >
+                        <CalendarIcon className="h-4 w-4 text-slate-400" />
+                        My Events
+                      </Link>
+                      <Link
+                        href="/dashboard/create"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                      >
+                        <PlusIcon className="h-4 w-4 text-slate-400" />
+                        New Event
+                      </Link>
+                    </>
+                  )}
                   <div className="my-1.5 h-px bg-white/10" />
                   <LogoutLink
                     className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-400 transition-colors hover:bg-rose-500/10 cursor-pointer"
@@ -248,7 +283,7 @@ const Header = () => {
                     {fullName}
                   </span>
                   <span className="block text-[11px] text-slate-400">
-                    {user?.email || "Event Host"}
+                    {user?.email || roleName}
                   </span>
                 </span>
               </div>

@@ -15,20 +15,106 @@ import {
   ZapIcon
 } from 'lucide-react';
 
+import PhotographerDashboard from "@/components/PhotographerDashboard";
+
 export default async function Page() {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const { getUser, isAuthenticated, getRoles, getPermissions } = getKindeServerSession();
   
   if (!(await isAuthenticated())) {
     redirect('/api/auth/login');
   }
 
   const user = await getUser();
-  if (!user || !user.id) {
+  if (!user || !user.id || !user.email) {
     redirect('/api/auth/login');
   }
 
   const client = await clientPromise;
   const db = client.db("dropcast");
+
+  // 1. Check if user is photographer (noted email, profile in db, or Kinde role/permission)
+  const notedEmail = await db.collection("photographer_emails").findOne({ email: user.email });
+  let isPhotographer = !!notedEmail;
+
+  if (!isPhotographer) {
+    const photographerProfile = await db.collection("photographers").findOne({
+      $or: [{ email: user.email }, { userId: user.id }]
+    });
+    if (photographerProfile) {
+      isPhotographer = true;
+      await db.collection("photographer_emails").updateOne(
+        { email: user.email },
+        { $set: { email: user.email, userId: user.id, registeredAt: new Date() } },
+        { upsert: true }
+      );
+    }
+  }
+
+  if (!isPhotographer) {
+    const roles = await getRoles();
+    const permissionsObj = await getPermissions();
+    const permissions = permissionsObj?.permissions || [];
+
+    const hasRole = roles?.some((role) => role.key === "photographer");
+    const hasPermission = permissions.includes("photographer:all");
+
+    if (hasRole || hasPermission) {
+      isPhotographer = true;
+      await db.collection("photographer_emails").updateOne(
+        { email: user.email },
+        { $set: { email: user.email, userId: user.id, registeredAt: new Date() } },
+        { upsert: true }
+      );
+    }
+  }
+
+  if (isPhotographer) {
+    const profileDoc = await db.collection("photographers").findOne({
+      $or: [{ email: user.email }, { userId: user.id }]
+    });
+
+    let profile = null;
+    let bookings: any[] = [];
+
+    if (profileDoc) {
+      profile = {
+        id: profileDoc.id,
+        name: profileDoc.name,
+        initials: profileDoc.initials,
+        accent: profileDoc.accent,
+        location: profileDoc.location,
+        rating: profileDoc.rating,
+        reviews: profileDoc.reviews,
+        startingPrice: profileDoc.startingPrice,
+        styles: profileDoc.styles,
+        responseTime: profileDoc.responseTime,
+        email: profileDoc.email || user.email,
+      };
+
+      const bookingsDocs = await db.collection("bookings")
+        .find({ photographerId: profileDoc.id })
+        .sort({ createdAt: -1 })
+        .toArray();
+
+      bookings = bookingsDocs.map((b) => ({
+        id: b._id.toString(),
+        userId: b.userId,
+        userEmail: b.userEmail,
+        packagePrice: b.packagePrice,
+        addOns: b.addOns,
+        totalAmount: b.totalAmount,
+        dueToday: b.dueToday,
+        paymentId: b.paymentId || null,
+        eventDetails: b.eventDetails,
+        status: b.status,
+        createdAt: b.createdAt.toLocaleDateString(),
+      }));
+    }
+
+    return (
+      <PhotographerDashboard profile={profile} initialBookings={bookings} />
+    );
+  }
   
   const events = await db
     .collection<MongoEvent>("events")
