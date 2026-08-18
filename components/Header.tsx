@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react'
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { showToast } from "nextjs-toast-notify";
@@ -14,8 +15,7 @@ import {
   InfoIcon,
   MenuIcon,
   XIcon,
-  ImageIcon,
-  CameraIcon
+  ImageIcon
 } from 'lucide-react';
 
 const Header = () => {
@@ -108,9 +108,14 @@ const Header = () => {
       <header className="sticky top-0 z-50 w-full border-b border-[#E5E2C4] bg-[#FAF9F5]/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
           <div className="flex items-center gap-2.5 text-zinc-900 font-bold text-lg">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#CF6DFC]">
-              <CameraIcon className="h-5 w-5 text-white" />
-            </span>
+            <Image
+              src="/logo.svg"
+              alt="DropCast logo"
+              width={36}
+              height={36}
+              className="rounded-xl"
+              priority
+            />
             <span>DropCast</span>
           </div>
           <div className="animate-pulse flex space-x-6">
@@ -130,9 +135,14 @@ const Header = () => {
         {/* Left Logo and Menu */}
         <div className="flex items-center gap-10">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#CF6DFC] group-hover:scale-105 transition-transform duration-300">
-              <CameraIcon className="h-5 w-5 text-white" aria-hidden="true" />
-            </span>
+            <Image
+              src="/logo.svg"
+              alt="DropCast logo"
+              width={36}
+              height={36}
+              className="rounded-xl group-hover:scale-105 transition-transform duration-300"
+              priority
+            />
             <span className="text-lg font-bold tracking-tight text-zinc-900">
               DropCast
             </span>
