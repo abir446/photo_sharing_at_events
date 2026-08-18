@@ -4,35 +4,6 @@ export default function Collage() {
   return (
     <div className="lg:col-span-7 relative flex items-center justify-center w-full min-h-[300px] sm:min-h-[460px] md:min-h-[540px] max-w-2xl lg:ml-auto z-10 select-none mt-8 lg:mt-0">
       
-      {/* Floating Paper Airplane */}
-      <div className="animate-float-fast absolute top-0 left-[18%] text-brand-400/80 pointer-events-none hidden sm:block">
-        <svg className="w-10 h-10 transform rotate-12" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-        </svg>
-      </div>
-
-      {/* Floating Camera Badge */}
-      <div className="absolute top-[38%] left-0 sm:left-2 bg-white/[0.03] rounded-2xl p-2 sm:p-3.5 shadow-2xl border border-white/10 backdrop-blur-xl text-brand-400 animate-float-slow opacity-95 hover:scale-110 hover:border-brand-500/40 hover:rotate-6 transition-all duration-300 z-10 cursor-pointer">
-        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316A2.192 2.192 0 0 0 14.502 4h-5c-.714 0-1.378.366-1.764.996l-.823 1.316Z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-        </svg>
-      </div>
-
-      {/* Floating Image Badge */}
-      <div className="absolute bottom-[8%] left-[30%] sm:left-[36%] bg-white/[0.03] rounded-2xl p-2 sm:p-3.5 shadow-2xl border border-white/10 backdrop-blur-xl text-brand-400 animate-float-delayed opacity-95 hover:scale-110 hover:border-brand-500/40 hover:-rotate-6 transition-all duration-300 z-10 cursor-pointer">
-        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-        </svg>
-      </div>
-
-      {/* Floating Cloud Upload Badge */}
-      <div className="absolute bottom-[35%] right-0 sm:right-4 bg-white/[0.03] rounded-2xl p-2 sm:p-3.5 shadow-2xl border border-white/10 backdrop-blur-xl text-brand-400 animate-float-slow opacity-95 hover:scale-110 hover:border-brand-500/40 hover:rotate-12 transition-all duration-300 z-10 cursor-pointer">
-        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
-        </svg>
-      </div>
-
       {/* Collage Images */}
       <div className="relative w-full h-[260px] sm:h-[350px] md:h-[400px]">
         

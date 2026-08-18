@@ -14,7 +14,8 @@ import {
   InfoIcon,
   MenuIcon,
   XIcon,
-  ImageIcon
+  ImageIcon,
+  CameraIcon
 } from 'lucide-react';
 
 const Header = () => {
@@ -104,18 +105,18 @@ const Header = () => {
 
   if (isLoading) {
     return (
-      <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-ink-900/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 w-full border-b border-[#E5E2C4] bg-[#FAF9F5]/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
-          <div className="flex items-center gap-2.5 text-white font-bold text-lg">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 animate-pulse">
-              <SparklesIcon className="h-5 w-5 text-white" />
+          <div className="flex items-center gap-2.5 text-zinc-900 font-bold text-lg">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#CF6DFC]">
+              <CameraIcon className="h-5 w-5 text-white" />
             </span>
             <span>DropCast</span>
           </div>
           <div className="animate-pulse flex space-x-6">
-            <div className="h-5 w-20 bg-slate-800 rounded"></div>
-            <div className="h-5 w-20 bg-slate-800 rounded"></div>
-            <div className="h-8 w-20 bg-slate-800 rounded-full"></div>
+            <div className="h-5 w-20 bg-zinc-200 rounded"></div>
+            <div className="h-5 w-20 bg-zinc-200 rounded"></div>
+            <div className="h-8 w-20 bg-zinc-200 rounded-full"></div>
           </div>
         </div>
       </header>
@@ -123,16 +124,16 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-ink-900/80 backdrop-blur-xl transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full border-b border-[#E5E2C4] bg-[#FAF9F5]/85 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
         
         {/* Left Logo and Menu */}
         <div className="flex items-center gap-10">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 shadow-glow group-hover:scale-105 transition-transform duration-300">
-              <SparklesIcon className="h-5 w-5 text-white" aria-hidden="true" />
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#CF6DFC] group-hover:scale-105 transition-transform duration-300">
+              <CameraIcon className="h-5 w-5 text-white" aria-hidden="true" />
             </span>
-            <span className="text-lg font-bold tracking-tight text-white">
+            <span className="text-lg font-bold tracking-tight text-zinc-900">
               DropCast
             </span>
           </Link>
@@ -145,10 +146,10 @@ const Header = () => {
                 <Link
                   key={link.to}
                   href={link.to}
-                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
+                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] ${
                     active ?
-                    'bg-white/10 text-white' :
-                    'text-slate-400 hover:bg-white/5 hover:text-white'
+                    'bg-[#C1BFFF]/25 text-[#B250DF]' :
+                    'text-zinc-650 hover:bg-[#C1BFFF]/10 hover:text-zinc-900'
                   }`}
                 >
                   {link.label}
@@ -167,21 +168,21 @@ const Header = () => {
                 onClick={() => setIsUserMenuOpen((v) => !v)}
                 aria-haspopup="menu"
                 aria-expanded={isUserMenuOpen}
-                className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+                className="flex items-center gap-2.5 rounded-xl border border-[#E5E2C4] bg-white py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-[#FAF9F5] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-xs font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#CF6DFC] text-xs font-bold text-white">
                   {initials}
                 </span>
                 <span className="leading-tight">
-                  <span className="block text-sm font-semibold text-white">
+                  <span className="block text-sm font-semibold text-zinc-900">
                     {fullName}
                   </span>
-                  <span className="block text-[11px] text-slate-400">
+                  <span className="block text-[11px] text-zinc-550">
                     {roleName}
                   </span>
                 </span>
                 <ChevronDownIcon
-                  className={`h-4 w-4 text-slate-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`}
+                  className={`h-4 w-4 text-zinc-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`}
                   aria-hidden="true"
                 />
               </button>
@@ -189,15 +190,15 @@ const Header = () => {
               {isUserMenuOpen && (
                 <div
                   role="menu"
-                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-ink-800/95 p-1.5 shadow-2xl backdrop-blur-xl z-50"
+                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-[#E5E2C4] bg-white p-1.5 shadow-lg z-50"
                 >
                   {isPhotographer ? (
                     <Link
                       href="/dashboard"
                       onClick={() => setIsUserMenuOpen(false)}
-                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
                     >
-                      <CalendarIcon className="h-4 w-4 text-slate-400" />
+                      <CalendarIcon className="h-4 w-4 text-zinc-400" />
                       Dashboard
                     </Link>
                   ) : (
@@ -205,27 +206,27 @@ const Header = () => {
                       <Link
                         href="/dashboard"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
                       >
-                        <CalendarIcon className="h-4 w-4 text-slate-400" />
+                        <CalendarIcon className="h-4 w-4 text-zinc-400" />
                         My Events
                       </Link>
                       <Link
                         href="/dashboard/create"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
                       >
-                        <PlusIcon className="h-4 w-4 text-slate-400" />
+                        <PlusIcon className="h-4 w-4 text-zinc-400" />
                         New Event
                       </Link>
                     </>
                   )}
-                  <div className="my-1.5 h-px bg-white/10" />
+                  <div className="my-1.5 h-px bg-[#E5E2C4]" />
                   <a
                     href="/api/auth/signout"
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-400 transition-colors hover:bg-rose-500/10 cursor-pointer"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-650 transition-colors hover:bg-rose-50 cursor-pointer"
                   >
-                    <LogOutIcon className="h-4 w-4" aria-hidden="true" />
+                    <LogOutIcon className="h-4 w-4 text-rose-400" aria-hidden="true" />
                     Sign out
                   </a>
                 </div>
@@ -233,10 +234,10 @@ const Header = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2.5">
-              <Link href="/signin" className="text-slate-300 hover:text-white font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
+              <Link href="/signin" className="text-zinc-650 hover:text-[#B250DF] font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow hover:bg-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer">
+              <Link href="/signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#CF6DFC] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#B250DF] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer">
                 Sign up
               </Link>
             </div>
@@ -311,7 +312,7 @@ const Header = () => {
               <Link href="/signin" className="flex justify-center w-full text-slate-300 hover:text-white font-semibold text-sm py-2.5 text-center transition-colors cursor-pointer">
                 Sign in
               </Link>
-              <Link href="/signup" className="flex justify-center w-full px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-center shadow-glow transition-all duration-200 text-sm cursor-pointer">
+              <Link href="/signup" className="flex justify-center w-full px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-center shadow-md transition-all duration-200 text-sm cursor-pointer">
                 Sign up
               </Link>
             </div>
@@ -324,4 +325,4 @@ const Header = () => {
 
 export default Header
 
-
+

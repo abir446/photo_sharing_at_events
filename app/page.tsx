@@ -40,23 +40,23 @@ function FeatureCard({
   isAuth
 }: FeatureCardProps) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-2xl backdrop-blur-xl transition-colors hover:border-brand-500/40 h-full">
+    <article className="group flex flex-col overflow-hidden rounded-3xl border border-[#E5E2C4] bg-white shadow-sm transition-colors hover:border-[#CF6DFC]/35 h-full">
       <div className="relative h-64 overflow-hidden">
         <img
           src={image}
           alt={imageAlt}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/30 to-transparent" />
-        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-ink-900/70 px-3 py-1.5 text-xs font-semibold text-slate-200 backdrop-blur-md">
-          <EyebrowIcon className="h-3.5 w-3.5 text-brand-400" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent" />
+        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-[#E5E2C4] bg-white px-3 py-1.5 text-xs font-bold text-zinc-700 shadow-sm">
+          <EyebrowIcon className="h-3.5 w-3.5 text-[#CF6DFC]" />
           {eyebrow}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-7">
-        <h2 className="text-2xl font-bold tracking-tight text-white">{title}</h2>
-        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-slate-400">
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">{title}</h2>
+        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-zinc-500">
           {subtitle}
         </p>
 
@@ -64,7 +64,7 @@ function FeatureCard({
           {meta.map((item) => (
             <li
               key={item}
-              className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-slate-300"
+              className="rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1 text-xs font-medium text-slate-300"
             >
               {item}
             </li>
@@ -75,7 +75,7 @@ function FeatureCard({
           {isAuth || href === "/marketplace" ? (
             <Link
               href={href}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
               {cta}
               <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
@@ -83,7 +83,7 @@ function FeatureCard({
           ) : (
             <Link
               href="/signin"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
             >
               {cta}
               <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
@@ -142,26 +142,26 @@ export default async function Home() {
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[calc(100vh-4rem)] flex flex-col justify-between">
       
       {/* Welcome / Intro */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-white/5">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-[#E5E2C4]">
         <div>
           {auth ? (
-            <p className="text-sm font-medium text-brand-400">Welcome back, {user?.given_name || "Host"}</p>
+            <p className="text-sm font-semibold text-[#B250DF]">Welcome back, {user?.given_name || "Host"}</p>
           ) : (
-            <p className="text-sm font-medium text-brand-400">Welcome to DropCast</p>
+            <p className="text-sm font-semibold text-[#B250DF]">Welcome to DropCast</p>
           )}
-          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-zinc-900 leading-tight">
             Plan every moment of your event
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-slate-400 leading-relaxed">
+          <p className="mt-3 max-w-xl text-[15px] text-zinc-550 leading-relaxed">
             Book vetted professional creators and collect every guest photo in one shared, secure gallery automatically.
           </p>
           
           {!auth && (
             <div className="mt-5 flex items-center gap-3">
-              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm transition-colors cursor-pointer">
+              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#CF6DFC] hover:bg-[#B250DF] text-white font-semibold text-sm transition-colors cursor-pointer shadow-sm">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-colors cursor-pointer">
+              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-[#E5E2C4] bg-white hover:bg-zinc-50 text-zinc-900 font-semibold text-sm transition-colors cursor-pointer">
                 Get started
               </Link>
             </div>
@@ -172,13 +172,13 @@ export default async function Home() {
           {stats.map(({ label, value, icon: Icon }) => (
             <div
               key={label}
-              className="min-w-[150px] rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 backdrop-blur-xl"
+              className="min-w-[150px] rounded-2xl border border-[#E5E2C4] bg-white px-5 py-4 shadow-sm"
             >
-              <dt className="flex items-center gap-2 text-xs font-medium text-slate-400">
-                <Icon className="h-3.5 w-3.5 text-brand-400" aria-hidden="true" />
+              <dt className="flex items-center gap-2 text-xs font-semibold text-zinc-550">
+                <Icon className="h-3.5 w-3.5 text-[#CF6DFC]" aria-hidden="true" />
                 {label}
               </dt>
-              <dd className="mt-1.5 text-2xl font-bold text-white">{value}</dd>
+              <dd className="mt-1.5 text-2xl font-bold text-zinc-900">{value}</dd>
             </div>
           ))}
         </dl>
@@ -216,7 +216,7 @@ export default async function Home() {
       {/* Assurance banner */}
       <section
         aria-labelledby="assurance-heading"
-        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-xl md:grid-cols-3"
+        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-[#E5E2C4] bg-white p-7 md:grid-cols-3 shadow-sm"
       >
         <h2 id="assurance-heading" className="sr-only">
           Why hosts choose DropCast
@@ -239,12 +239,12 @@ export default async function Home() {
           }
         ].map(({ icon: Icon, title, copy }) => (
           <div key={title} className="flex gap-4">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-500/30 bg-brand-500/10">
-              <Icon className="h-5 w-5 text-brand-400" aria-hidden="true" />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E5E2C4] bg-[#FAF9F5]">
+              <Icon className="h-5 w-5 text-[#CF6DFC]" aria-hidden="true" />
             </span>
             <div>
-              <h3 className="text-sm font-semibold text-white">{title}</h3>
-              <p className="mt-1 text-xs text-slate-400 leading-relaxed">{copy}</p>
+              <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
+              <p className="mt-1 text-xs text-zinc-550 leading-relaxed">{copy}</p>
             </div>
           </div>
         ))}

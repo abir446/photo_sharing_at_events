@@ -68,7 +68,7 @@ export default function PhotographerDashboard({
   if (!profile) {
     return (
       <main className="mx-auto w-full max-w-2xl px-6 py-16 text-center min-h-[85vh] flex flex-col justify-center items-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-brand-500/10 text-brand-400 border border-brand-500/20 mb-6 animate-pulse">
+        <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-900 text-brand-400 border border-slate-800 mb-6">
           <SparklesIcon className="h-8 w-8" />
         </div>
         <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
@@ -80,13 +80,13 @@ export default function PhotographerDashboard({
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <Link
             href="/photographer/register"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 text-sm transition-all shadow-glow"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 text-sm transition-all shadow-md"
           >
             Create Your Marketplace Profile
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-semibold px-6 py-3 text-sm transition-all"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 font-semibold px-6 py-3 text-sm transition-all"
           >
             Go Back Home
           </Link>
@@ -156,7 +156,7 @@ export default function PhotographerDashboard({
   return (
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[80vh]">
       {/* Header section with stats */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-white/5">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-slate-800">
         <div>
           <div className="flex items-center gap-3">
             <span
@@ -176,14 +176,14 @@ export default function PhotographerDashboard({
           <div className="mt-4 flex flex-wrap gap-2.5">
             <Link
               href={`/photographer/${profile.id}`}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
             >
               <UserIcon className="h-3.5 w-3.5 text-brand-400" />
               View Portfolio Page
             </Link>
             <Link
               href="/photographer/register"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-brand-500/20 bg-brand-500/5 hover:bg-brand-500/10 text-brand-400 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-brand-400 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
             >
               <SparklesIcon className="h-3.5 w-3.5" />
               Edit Profile
@@ -195,7 +195,7 @@ export default function PhotographerDashboard({
           {stats.map(({ label, value, color }) => (
             <div
               key={label}
-              className="min-w-[150px] rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 backdrop-blur-xl"
+              className="min-w-[150px] rounded-2xl border border-slate-800 bg-slate-900 px-5 py-4"
             >
               <dt className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{label}</dt>
               <dd className={`mt-1.5 text-2xl font-extrabold ${color}`}>{value}</dd>
@@ -215,7 +215,7 @@ export default function PhotographerDashboard({
             {pendingRequests.map((booking) => (
               <article
                 key={booking.id}
-                className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl flex flex-col justify-between hover:border-brand-500/20 transition-all"
+                className="rounded-3xl border border-slate-800 bg-slate-900 p-6 flex flex-col justify-between hover:border-slate-700 transition-all"
               >
                 <div>
                   <div className="flex items-start justify-between gap-4">
@@ -259,7 +259,7 @@ export default function PhotographerDashboard({
                         {booking.addOns.map((ao) => (
                           <li
                             key={ao}
-                            className="text-[10px] bg-white/5 border border-white/10 px-2 py-0.5 rounded text-slate-300 font-semibold"
+                            className="text-[10px] bg-slate-950 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-semibold"
                           >
                             {ao === "qr" ? "Live Guest QR upload" : "Secure Cloud Storage"}
                           </li>
@@ -297,8 +297,8 @@ export default function PhotographerDashboard({
             ))}
           </div>
         ) : (
-          <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.01] p-10 text-center max-w-lg mx-auto">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-slate-500 mb-4">
+          <div className="rounded-3xl border border-dashed border-slate-800 bg-slate-950/40 p-10 text-center max-w-lg mx-auto">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-slate-500 mb-4">
               <CalendarDaysIcon className="h-5 w-5" />
             </span>
             <h3 className="text-sm font-bold text-white">No Pending Requests</h3>
@@ -325,7 +325,7 @@ export default function PhotographerDashboard({
               return (
                 <div
                   key={booking.id}
-                  className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 backdrop-blur-xl flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -380,7 +380,7 @@ export default function PhotographerDashboard({
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-all cursor-pointer"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all cursor-pointer"
                         title="Message Host"
                       >
                         <MessageSquareIcon className="h-4 w-4" />
@@ -392,8 +392,8 @@ export default function PhotographerDashboard({
             })}
           </div>
         ) : (
-          <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.01] p-10 text-center max-w-lg mx-auto">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-slate-500 mb-4">
+          <div className="rounded-3xl border border-dashed border-slate-800 bg-slate-950/40 p-10 text-center max-w-lg mx-auto">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-slate-500 mb-4">
               <CalendarDaysIcon className="h-5 w-5" />
             </span>
             <h3 className="text-sm font-bold text-white">No Historical Sessions</h3>

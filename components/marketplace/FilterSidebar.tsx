@@ -20,8 +20,8 @@ type SectionProps = {
 
 function Section({ title, children }: SectionProps) {
   return (
-    <section className="border-t border-white/10 px-5 py-5 first:border-t-0">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+    <section className="border-t border-[#E5E2C4] px-5 py-5 first:border-t-0">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-550">
         {title}
       </h3>
       <div className="mt-3.5">{children}</div>
@@ -42,12 +42,12 @@ export function FilterSidebar({
   return (
     <div className="flex flex-col w-full">
       {showTitleBar && (
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-          <h2 className="text-sm font-semibold text-white">Filters</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E2C4]">
+          <h2 className="text-sm font-semibold text-zinc-900">Filters</h2>
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer"
           >
             <RotateCcwIcon className="h-3.5 w-3.5" aria-hidden="true" />
             Reset
@@ -58,7 +58,7 @@ export function FilterSidebar({
       <Section title="Location">
         <div className="relative">
           <SearchIcon
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400"
             aria-hidden="true"
           />
           <input
@@ -68,7 +68,7 @@ export function FilterSidebar({
             onChange={(e) => onLocationChange(e.target.value)}
             placeholder="City or region"
             aria-label="Search location"
-            className="w-full rounded-xl border border-white/10 bg-ink-950/60 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-xl border border-[#E5E2C4] bg-white py-2.5 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-450 focus:border-[#CF6DFC] focus:outline-none focus:ring-1 focus:ring-[#CF6DFC]"
           />
           <datalist id="evermore-locations">
             {LOCATIONS.map((city) => (
@@ -82,7 +82,7 @@ export function FilterSidebar({
               key={city}
               type="button"
               onClick={() => onLocationChange(city)}
-              className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-medium text-slate-300 transition-colors hover:border-brand-500/40 hover:text-white cursor-pointer"
+              className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-2 py-1 text-[11px] font-semibold text-zinc-700 transition-colors hover:border-[#CF6DFC]/40 hover:text-[#B250DF] cursor-pointer"
             >
               <MapPinIcon className="h-3 w-3" aria-hidden="true" />
               {city}
@@ -97,7 +97,7 @@ export function FilterSidebar({
             const checked = selectedStyles.includes(style);
             return (
               <li key={style}>
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/5">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-zinc-50">
                   <span className="relative flex h-[18px] w-[18px] items-center justify-center">
                     <input
                       type="checkbox"
@@ -107,10 +107,10 @@ export function FilterSidebar({
                     />
                     <span
                       aria-hidden="true"
-                      className={`flex h-[18px] w-[18px] items-center justify-center rounded-md border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 ${
+                      className={`flex h-[18px] w-[18px] items-center justify-center rounded-md border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#CF6DFC] ${
                         checked
-                          ? 'border-brand-500 bg-brand-500'
-                          : 'border-white/20 bg-ink-950/60'
+                          ? 'border-[#CF6DFC] bg-[#CF6DFC]'
+                          : 'border-zinc-300 bg-white'
                       }`}
                     >
                       {checked && (
@@ -120,7 +120,7 @@ export function FilterSidebar({
                   </span>
                   <span
                     className={`text-sm ${
-                      checked ? 'font-medium text-white' : 'text-slate-300'
+                      checked ? 'font-semibold text-zinc-900' : 'text-zinc-650'
                     }`}
                   >
                     {style}
@@ -134,11 +134,11 @@ export function FilterSidebar({
 
       <Section title="Budget">
         <div className="mb-3.5 flex items-center justify-between">
-          <span className="rounded-lg border border-white/10 bg-ink-950/60 px-2.5 py-1 text-xs font-semibold text-white">
+          <span className="rounded-lg border border-[#E5E2C4] bg-[#FAF9F5] px-2.5 py-1 text-xs font-bold text-zinc-800 shadow-sm">
             ₹{budget[0].toLocaleString()}
           </span>
-          <span className="text-xs text-slate-500">to</span>
-          <span className="rounded-lg border border-white/10 bg-ink-950/60 px-2.5 py-1 text-xs font-semibold text-white">
+          <span className="text-xs text-zinc-500 font-medium">to</span>
+          <span className="rounded-lg border border-[#E5E2C4] bg-[#FAF9F5] px-2.5 py-1 text-xs font-bold text-zinc-800 shadow-sm">
             ₹{budget[1].toLocaleString()}
             {budget[1] === 400000 ? '+' : ''}
           </span>

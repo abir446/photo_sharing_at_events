@@ -5,7 +5,7 @@ export function Card({ className = "", children, ...props }: React.HTMLAttribute
   return (
     <div
       className={cn(
-        "bg-white/[0.03] border border-white/10 backdrop-blur-xl shadow-2xl rounded-2xl sm:rounded-3xl transition-all duration-300 hover:border-brand-500/30 text-white",
+        "bg-white border border-[#E5E2C4] shadow-sm rounded-2xl sm:rounded-3xl transition-all duration-300 hover:border-[#BDB96A] text-zinc-900",
         className
       )}
       {...props}
@@ -25,7 +25,7 @@ export function CardHeader({ className = "", children, ...props }: React.HTMLAtt
 
 export function CardTitle({ className = "", children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("font-extrabold text-white tracking-tight text-xl sm:text-2xl leading-none", className)} {...props}>
+    <h3 className={cn("font-extrabold text-zinc-900 tracking-tight text-xl sm:text-2xl leading-none", className)} {...props}>
       {children}
     </h3>
   );

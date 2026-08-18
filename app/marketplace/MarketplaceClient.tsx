@@ -59,27 +59,27 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
   return (
     <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 py-6 sm:py-10">
       {/* Mobile/Tablet responsive header */}
-      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/5">
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-[#E5E2C4]">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 leading-tight">
             Find Your Event Photographer
           </h1>
-          <p className="mt-2.5 sm:mt-3 max-w-xl text-sm sm:text-[15px] text-slate-400 leading-relaxed">
+          <p className="mt-2.5 sm:mt-3 max-w-xl text-sm sm:text-[15px] text-zinc-550 leading-relaxed">
             Compare vetted creators near you, then lock in your date with a
             milestone-based deposit.
           </p>
         </div>
         <div className="w-full lg:w-auto">
           {/* Responsive stats counter table */}
-          <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl w-full">
+          <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E5E2C4] overflow-hidden rounded-2xl border border-[#E5E2C4] bg-white w-full shadow-sm">
             {[
               { label: 'Creators available', value: `${initialPhotographers.length}` },
               { label: 'Avg. rating', value: initialPhotographers.length > 0 ? avgRating : '0.0' },
               { label: 'Median starting price', value: '₹1,22,425' }
             ].map(({ label, value }) => (
               <div key={label} className="px-5 py-3 sm:px-6 sm:py-4 text-center sm:text-left">
-                <dt className="text-[10px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">{label}</dt>
-                <dd className="mt-1 text-lg sm:text-xl font-bold text-white">{value}</dd>
+                <dt className="text-[10px] sm:text-xs font-medium text-zinc-500 uppercase tracking-wider">{label}</dt>
+                <dd className="mt-1 text-lg sm:text-xl font-bold text-zinc-900">{value}</dd>
               </div>
             ))}
           </dl>
@@ -90,7 +90,7 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
       <div className="mt-6 sm:mt-8 flex flex-col lg:flex-row items-start gap-7">
         {/* Desktop filter sidebar container */}
         <aside 
-          className="hidden lg:block sticky top-24 w-[280px] shrink-0 self-start overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl"
+          className="hidden lg:block sticky top-24 w-[280px] shrink-0 self-start overflow-hidden rounded-2xl border border-[#E5E2C4] bg-white shadow-sm"
           aria-label="Desktop filters"
         >
           <FilterSidebar
@@ -107,13 +107,13 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
         {/* Results layout section */}
         <section className="min-w-0 flex-1 w-full" aria-label="Photographer results">
           {/* Responsive search filter toolbar */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:px-5 sm:py-3.5 backdrop-blur-xl">
-            <p className="flex items-center gap-2 text-sm text-slate-300">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-2xl border border-[#E5E2C4] bg-white p-4 sm:px-5 sm:py-3.5 shadow-sm">
+            <p className="flex items-center gap-2 text-sm text-zinc-600">
               <SlidersHorizontalIcon
-                className="h-4 w-4 text-brand-400"
+                className="h-4 w-4 text-[#CF6DFC]"
                 aria-hidden="true"
               />
-              <span className="font-semibold text-white">{results.length}</span>
+              <span className="font-semibold text-zinc-900">{results.length}</span>
               creators match your filters
             </p>
             
@@ -122,19 +122,19 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
               <button
                 type="button"
                 onClick={() => setDrawerOpened(true)}
-                className="lg:hidden inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3.5 py-2 text-sm font-semibold text-white hover:bg-white/10 active:bg-white/15 transition-colors cursor-pointer"
+                className="lg:hidden inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-100 border border-zinc-200 px-3.5 py-2 text-sm font-semibold text-zinc-800 hover:bg-zinc-200 transition-colors cursor-pointer"
               >
-                <SlidersHorizontalIcon className="h-4 w-4 text-brand-400" />
+                <SlidersHorizontalIcon className="h-4 w-4 text-[#CF6DFC]" />
                 Filters
               </button>
               
-              <label className="flex items-center gap-2 text-sm text-slate-400">
+              <label className="flex items-center gap-2 text-sm text-zinc-500">
                 Sort by
                 <span className="relative">
                   <select
                     value={sort}
                     onChange={(e) => setSort(e.target.value)}
-                    className="appearance-none rounded-lg border border-white/10 bg-ink-950/60 py-1.5 pl-3 pr-8 text-sm font-medium text-white focus:border-brand-500 focus:outline-none cursor-pointer"
+                    className="appearance-none rounded-lg border border-[#E5E2C4] bg-white py-1.5 pl-3 pr-8 text-sm font-medium text-zinc-900 focus:border-[#CF6DFC] focus:outline-none cursor-pointer"
                   >
                     {SORTS.map((option) => (
                       <option key={option} value={option}>
@@ -162,22 +162,22 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
               ))}
             </div>
           ) : (
-            <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-8 py-20 text-center">
+            <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#E5E2C4] bg-white px-8 py-20 text-center shadow-sm">
               <CameraOffIcon
-                className="h-8 w-8 text-slate-600"
+                className="h-8 w-8 text-zinc-400"
                 aria-hidden="true"
               />
-              <h2 className="mt-4 text-lg font-semibold text-white">
+              <h2 className="mt-4 text-lg font-semibold text-zinc-900">
                 No creators match these filters
               </h2>
-              <p className="mt-1.5 max-w-sm text-sm text-slate-400">
+              <p className="mt-1.5 max-w-sm text-sm text-zinc-500">
                 Try widening your budget range or clearing a style tag to see more
                 photographers.
               </p>
               <button
                 type="button"
                 onClick={reset}
-                className="mt-5 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+                className="mt-5 rounded-xl bg-[#CF6DFC] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#B250DF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer"
               >
                 Clear all filters
               </button>
@@ -196,14 +196,14 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
         scrollAreaComponent={ScrollArea.Autosize}
         styles={{
           content: {
-            backgroundColor: "#0B1120", // ink-950
-            color: "#ffffff",
-            borderLeft: "1px solid rgba(255, 255, 255, 0.1)",
+            backgroundColor: "#FAF9F5",
+            color: "#18181b",
+            borderLeft: "1px solid #E5E2C4",
           },
           header: {
-            backgroundColor: "#0B1120",
-            color: "#ffffff",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            backgroundColor: "#FAF9F5",
+            color: "#18181b",
+            borderBottom: "1px solid #E5E2C4",
             padding: "16px 20px",
           },
           title: {
@@ -211,10 +211,10 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
             fontWeight: 700,
           },
           close: {
-            color: "#94a3b8",
+            color: "#71717a",
             "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.05)",
-              color: "#ffffff",
+              backgroundColor: "rgba(0, 0, 0, 0.05)",
+              color: "#000000",
             },
           },
           body: {
