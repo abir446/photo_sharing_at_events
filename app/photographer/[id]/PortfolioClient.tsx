@@ -103,7 +103,7 @@ export default function PortfolioClient({ photographer, otherPortfolios }: Portf
               href={`/booking/${photographer.id}`}
               className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
-              Book from ${photographer.startingPrice.toLocaleString()}
+              Book from ₹{photographer.startingPrice.toLocaleString()}
             </Link>
           )}
         </div>

@@ -36,7 +36,7 @@ export function PhotographerCard({ photographer }: Props) {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-900/90 to-transparent" />
 
         <span className="absolute left-3 top-3 rounded-lg border border-white/15 bg-ink-900/75 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">
-          From ${photographer.startingPrice.toLocaleString()}
+          From ₹{photographer.startingPrice.toLocaleString()}
         </span>
 
         <button

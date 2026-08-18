@@ -64,8 +64,8 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
     setError(null);
 
     try {
-      // Convert USD dueToday to INR (e.g. 1 USD = 83 INR)
-      const dueTodayINR = booking.dueToday * 83;
+      // dueToday is already in INR
+      const dueTodayINR = booking.dueToday;
       const orderResponse = await fetch("/api/createOrder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -310,7 +310,7 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                     <div className="rounded-2xl border border-white/5 bg-ink-950/40 p-5 space-y-3.5">
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-400">{booking.packageName}</span>
-                        <span className="font-semibold text-white">${booking.packagePrice.toLocaleString()}</span>
+                        <span className="font-semibold text-white">₹{booking.packagePrice.toLocaleString()}</span>
                       </div>
 
                       {booking.addOns.map((addOnId) => (
@@ -319,19 +319,19 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                             {addOnId === "qr" ? "Guest QR upload service" : "Cloud storage & delivery"}
                           </span>
                           <span className="font-semibold text-white">
-                            +{addOnId === "qr" ? "$120" : "$60"}
+                            +₹{(addOnId === "qr" ? 9960 : 4980).toLocaleString()}
                           </span>
                         </div>
                       ))}
 
                       <div className="flex justify-between border-t border-white/10 pt-3 text-sm">
                         <span className="text-slate-400">Total Price</span>
-                        <span className="font-bold text-white">${booking.totalAmount.toLocaleString()}</span>
+                        <span className="font-bold text-white">₹{booking.totalAmount.toLocaleString()}</span>
                       </div>
 
                       <div className="flex justify-between border-t border-white/10 pt-3 text-sm">
                         <span className="text-brand-400 font-semibold">Deposit Paid Today</span>
-                        <span className="font-extrabold text-white">${booking.dueToday.toLocaleString()}</span>
+                        <span className="font-extrabold text-white">₹{booking.dueToday.toLocaleString()}</span>
                       </div>
 
                       {isConfirmed && booking.paymentId && (
@@ -359,7 +359,7 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                             <p className="text-[11px] text-slate-400 mt-1">Locks date & reserves creator.</p>
                           </div>
                           <div className="mt-auto border-t border-white/5 pt-2 text-right">
-                            <span className="text-base font-extrabold text-white">${Math.round(booking.dueToday).toLocaleString()}</span>
+                            <span className="text-base font-extrabold text-white">₹{Math.round(booking.dueToday).toLocaleString()}</span>
                           </div>
                         </div>
                       ) : isAccepted ? (
@@ -373,7 +373,7 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                             <p className="text-[11px] text-slate-400 mt-1">Pay deposit to secure date.</p>
                           </div>
                           <div className="mt-auto border-t border-white/5 pt-2 flex items-center justify-between">
-                            <span className="text-sm font-bold text-white">${Math.round(booking.dueToday).toLocaleString()}</span>
+                            <span className="text-sm font-bold text-white">₹{Math.round(booking.dueToday).toLocaleString()}</span>
                             <button
                               type="button"
                               disabled={payingId !== null}
@@ -430,7 +430,7 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                           <p className="text-[11px] text-slate-400 mt-1">Auto-charged morning of event.</p>
                         </div>
                         <div className="mt-auto border-t border-white/5 pt-2 text-right">
-                          <span className="text-base font-extrabold text-slate-400">${Math.round(booking.packagePrice * 0.5).toLocaleString()}</span>
+                          <span className="text-base font-extrabold text-slate-400">₹{Math.round(booking.packagePrice * 0.5).toLocaleString()}</span>
                         </div>
                       </div>
 
@@ -445,7 +445,7 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                           <p className="text-[11px] text-slate-400 mt-1">Released upon final approval.</p>
                         </div>
                         <div className="mt-auto border-t border-white/5 pt-2 text-right">
-                          <span className="text-base font-extrabold text-slate-400">${Math.round(booking.packagePrice * 0.3).toLocaleString()}</span>
+                          <span className="text-base font-extrabold text-slate-400">₹{Math.round(booking.packagePrice * 0.3).toLocaleString()}</span>
                         </div>
                       </div>
 

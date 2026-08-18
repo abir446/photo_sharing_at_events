@@ -20,7 +20,7 @@ interface RegisterClientProps {
 export default function RegisterClient({ defaultName, defaultEmail }: RegisterClientProps) {
   const [name, setName] = useState(defaultName);
   const [location, setLocation] = useState('');
-  const [startingPrice, setStartingPrice] = useState('1200');
+  const [startingPrice, setStartingPrice] = useState('99600');
   const [responseTime, setResponseTime] = useState('Usually responds in 1 hour');
   const [accent, setAccent] = useState('#6366f1');
   const [selectedStyles, setSelectedStyles] = useState<StyleTag[]>([]);
@@ -240,7 +240,7 @@ export default function RegisterClient({ defaultName, defaultEmail }: RegisterCl
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="startingPrice" className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Starting Rate ($)
+                Starting Rate (₹)
               </label>
               <input
                 type="number"
@@ -248,7 +248,7 @@ export default function RegisterClient({ defaultName, defaultEmail }: RegisterCl
                 required
                 value={startingPrice}
                 onChange={(e) => setStartingPrice(e.target.value)}
-                placeholder="e.g. 1200"
+                placeholder="e.g. 99600"
                 className="mt-2 w-full rounded-xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>

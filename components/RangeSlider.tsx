@@ -29,7 +29,7 @@ export function RangeSlider({
         value={value}
         onChange={(val) => onChange(val as [number, number])}
         color="brand"
-        label={(val) => `$${val.toLocaleString()}`}
+        label={(val) => `₹${val.toLocaleString()}`}
         classNames={{
           track: "before:bg-transparent",
           thumb: "active:cursor-grabbing active:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",

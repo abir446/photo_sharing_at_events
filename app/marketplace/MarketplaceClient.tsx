@@ -16,7 +16,7 @@ interface MarketplaceClientProps {
 export default function MarketplaceClient({ initialPhotographers }: MarketplaceClientProps) {
   const [location, setLocation] = useState('');
   const [selectedStyles, setSelectedStyles] = useState<StyleTag[]>([]);
-  const [budget, setBudget] = useState<[number, number]>([500, 5000]);
+  const [budget, setBudget] = useState<[number, number]>([40000, 400000]);
   const [sort, setSort] = useState(SORTS[0]);
   const [drawerOpened, setDrawerOpened] = useState(false);
 
@@ -49,7 +49,7 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
   const reset = () => {
     setLocation('');
     setSelectedStyles([]);
-    setBudget([500, 5000]);
+    setBudget([40000, 400000]);
   };
 
   const avgRating = (
@@ -75,7 +75,7 @@ export default function MarketplaceClient({ initialPhotographers }: MarketplaceC
             {[
               { label: 'Creators available', value: `${initialPhotographers.length}` },
               { label: 'Avg. rating', value: initialPhotographers.length > 0 ? avgRating : '0.0' },
-              { label: 'Median starting price', value: '$1,475' }
+              { label: 'Median starting price', value: '₹1,22,425' }
             ].map(({ label, value }) => (
               <div key={label} className="px-5 py-3 sm:px-6 sm:py-4 text-center sm:text-left">
                 <dt className="text-[10px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">{label}</dt>

@@ -135,18 +135,18 @@ export function FilterSidebar({
       <Section title="Budget">
         <div className="mb-3.5 flex items-center justify-between">
           <span className="rounded-lg border border-white/10 bg-ink-950/60 px-2.5 py-1 text-xs font-semibold text-white">
-            ${budget[0].toLocaleString()}
+            ₹{budget[0].toLocaleString()}
           </span>
           <span className="text-xs text-slate-500">to</span>
           <span className="rounded-lg border border-white/10 bg-ink-950/60 px-2.5 py-1 text-xs font-semibold text-white">
-            ${budget[1].toLocaleString()}
-            {budget[1] === 5000 ? '+' : ''}
+            ₹{budget[1].toLocaleString()}
+            {budget[1] === 400000 ? '+' : ''}
           </span>
         </div>
         <RangeSlider
-          min={500}
-          max={5000}
-          step={50}
+          min={40000}
+          max={400000}
+          step={5000}
           value={budget}
           onChange={onBudgetChange}
           label="Budget"

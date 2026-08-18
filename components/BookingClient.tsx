@@ -73,14 +73,14 @@ const ADD_ONS: AddOn[] = [
     id: 'qr',
     title: 'Include Guest QR Code Photo Upload Service',
     description: 'Add live guest media collection with a branded QR stand.',
-    price: 120,
+    price: 9960,
     icon: QrCodeIcon
   },
   {
     id: 'cloud',
     title: 'Enable Secure Cloud Storage & Media Delivery Platform',
     description: 'Encrypted delivery, 12-month archive, and shareable links.',
-    price: 60,
+    price: 4980,
     icon: CloudIcon
   }
 ];
@@ -374,7 +374,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
               <span className="text-sm text-slate-400">
                 Package total{' '}
                 <span className="font-semibold text-white">
-                  ${packagePrice.toLocaleString()}
+                  ₹{packagePrice.toLocaleString()}
                 </span>
               </span>
             </div>
@@ -416,7 +416,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
                       <p className="mt-1 text-xs text-slate-400">{m.detail}</p>
                     </div>
                     <span className="text-base font-bold text-white">
-                      ${amount.toLocaleString()}
+                      ₹{amount.toLocaleString()}
                     </span>
                   </li>
                 );
@@ -474,7 +474,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
                       </span>
                     </span>
                     <span className="text-sm font-bold text-white">
-                      +${addOn.price}
+                      +₹{addOn.price.toLocaleString()}
                     </span>
                   </label>
                 );
@@ -499,22 +499,22 @@ export default function BookingClient({ photographer }: BookingClientProps) {
             <dl className="space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <dt className="text-slate-400">Signature Event Coverage</dt>
-                <dd className="font-medium text-white">
-                  ${packagePrice.toLocaleString()}
-                </dd>
+                  <dd className="font-medium text-white">
+                    ₹{packagePrice.toLocaleString()}
+                  </dd>
               </div>
               {ADD_ONS.filter((a) => selected.includes(a.id)).map((a) => (
                 <div key={a.id} className="flex justify-between">
                   <dt className="text-slate-400">
                     {a.id === 'qr' ? 'Guest QR upload service' : 'Cloud storage & delivery'}
                   </dt>
-                  <dd className="font-medium text-white">+${a.price}</dd>
+                  <dd className="font-medium text-white">+₹{a.price.toLocaleString()}</dd>
                 </div>
               ))}
               <div className="flex justify-between border-t border-white/10 pt-2.5">
                 <dt className="text-slate-400">Booking total</dt>
                 <dd className="font-medium text-white">
-                  ${total.toLocaleString()}
+                    ₹{total.toLocaleString()}
                 </dd>
               </div>
             </dl>
@@ -523,10 +523,10 @@ export default function BookingClient({ photographer }: BookingClientProps) {
               <div>
                 <p className="text-sm text-slate-400">Amount Due Today</p>
                 <p className="mt-1 text-3xl font-extrabold tracking-tight text-white">
-                  ${dueToday.toLocaleString()}
+                  ₹{dueToday.toLocaleString()}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
-                  Deposit amount locks the date. Remaining ${(total - dueToday).toLocaleString()} due later.
+                  Deposit amount locks the date. Remaining ₹{(total - dueToday).toLocaleString()} due later.
                 </p>
               </div>
               <button

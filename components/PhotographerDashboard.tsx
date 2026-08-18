@@ -150,7 +150,7 @@ export default function PhotographerDashboard({
       value: String(bookings.filter((b) => b.status === "confirmed" || b.status === "accepted").length),
       color: "text-brand-400",
     },
-    { label: "Earnings in Escrow", value: `$${totalBookedValue.toLocaleString()}`, color: "text-emerald-400" },
+    { label: "Earnings in Escrow", value: `₹${totalBookedValue.toLocaleString()}`, color: "text-emerald-400" },
   ];
 
   return (
@@ -217,7 +217,7 @@ export default function PhotographerDashboard({
                       </p>
                     </div>
                     <span className="text-xl font-black text-white shrink-0">
-                      ${booking.totalAmount.toLocaleString()}
+                      ₹{booking.totalAmount.toLocaleString()}
                     </span>
                   </div>
 
@@ -348,7 +348,7 @@ export default function PhotographerDashboard({
                     <div className="text-left md:text-right">
                       <span className="block text-xs font-bold text-slate-500 uppercase tracking-wide">Total Value</span>
                       <span className="block text-sm font-extrabold text-white">
-                        ${booking.totalAmount.toLocaleString()}
+                        ₹{booking.totalAmount.toLocaleString()}
                       </span>
                     </div>
 
@@ -357,7 +357,7 @@ export default function PhotographerDashboard({
                         {isConfirmed ? "Deposit Received" : "Deposit Due"}
                       </span>
                       <span className={`block text-sm font-extrabold ${isConfirmed ? "text-emerald-400" : "text-slate-400"}`}>
-                        ${booking.dueToday.toLocaleString()}
+                        ₹{booking.dueToday.toLocaleString()}
                       </span>
                     </div>
 
