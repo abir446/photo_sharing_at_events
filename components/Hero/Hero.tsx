@@ -2,11 +2,19 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs"
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components"
+import { useState, useEffect } from 'react'
 
 export default function Hero() {
-  const { isAuthenticated } = useKindeBrowserClient();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        setIsAuthenticated(data.isAuthenticated);
+      })
+      .catch((err) => console.error("Auth check failed in Hero:", err));
+  }, []);
 
   return (
     <div className="lg:col-span-5 flex flex-col justify-center items-center lg:items-start text-center lg:text-left space-y-6 md:space-y-8 z-10">
@@ -60,17 +68,17 @@ export default function Hero() {
           </>
         ) : (
           <>
-            <LoginLink 
-              postLoginRedirectURL="/dashboard/create"
+            <Link 
+              href="/signin"
               className="inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold shadow-glow focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 transition-colors w-full sm:w-auto cursor-pointer"
             >
               <svg className="w-5 h-5 mr-2 text-indigo-100" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
               New Event
-            </LoginLink>
-            <LoginLink 
-              postLoginRedirectURL="/dashboard"
+            </Link>
+            <Link 
+              href="/signin"
               className="inline-flex items-center justify-center px-7 py-3.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 transition-colors w-full sm:w-auto cursor-pointer"
             >
               <svg className="w-5 h-5 mr-2 text-slate-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -81,7 +89,7 @@ export default function Hero() {
                 <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" strokeLinecap="round" />
               </svg>
               My Events
-            </LoginLink>
+            </Link>
           </>
         )}
       </div>

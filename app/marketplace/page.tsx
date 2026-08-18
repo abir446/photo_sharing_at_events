@@ -1,7 +1,14 @@
 import clientPromise from "@/lib/mongodb";
 import MarketplaceClient from './MarketplaceClient';
+import { getCurrentUser } from "@/lib/auth";
+import { redirect } from 'next/navigation';
 
 export default async function Page() {
+  const userDoc = await getCurrentUser();
+  if (userDoc && userDoc.role === "creator") {
+    redirect('/dashboard');
+  }
+
   const client = await clientPromise;
   const db = client.db("dropcast");
 

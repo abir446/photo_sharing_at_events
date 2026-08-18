@@ -1,23 +1,36 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import { redirect } from 'next/navigation';
 import RegisterClient from './RegisterClient';
+import clientPromise from "@/lib/mongodb";
 
 export default async function Page() {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const userDoc = await getCurrentUser();
   
-  if (!(await isAuthenticated())) {
-    redirect('/api/auth/login?post_login_redirect_url=/photographer/register');
+  if (!userDoc) {
+    redirect('/signin');
   }
 
-  const user = await getUser();
-  if (!user || !user.email) {
-    redirect('/api/auth/login?post_login_redirect_url=/photographer/register');
-  }
+  const client = await clientPromise;
+  const db = client.db("dropcast");
+
+  const existingProfile = await db.collection("photographers").findOne({
+    userId: userDoc.userId
+  });
+
+  const serializedProfile = existingProfile ? {
+    name: existingProfile.name,
+    location: existingProfile.location,
+    startingPrice: existingProfile.startingPrice,
+    styles: existingProfile.styles || [],
+    responseTime: existingProfile.responseTime,
+    accent: existingProfile.accent
+  } : null;
 
   return (
     <RegisterClient 
-      defaultName={user.given_name ? `${user.given_name} ${user.family_name || ''}`.trim() : ""}
-      defaultEmail={user.email} 
+      defaultName={userDoc.name}
+      defaultEmail={userDoc.email} 
+      existingProfile={serializedProfile}
     />
   );
 }

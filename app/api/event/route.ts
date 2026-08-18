@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import QRCode from "qrcode";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -15,12 +15,17 @@ if (process.env.CLOUDINARY_CLOUD_NAME) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const userDoc = await getCurrentUser();
 
-    if (!user || !user.email) {
-      return NextResponse.json({ success: false, error: "User not authenticated" }, { status: 401 });
+    if (!userDoc) {
+      return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
     }
+
+    const user = {
+      id: userDoc.userId as string,
+      email: userDoc.email as string,
+      name: userDoc.name as string
+    };
 
     const formData = await request.formData();
     const eventName = formData.get("eventName") as string;

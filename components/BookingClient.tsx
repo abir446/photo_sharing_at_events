@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+// Local session integration
 import { showToast } from "nextjs-toast-notify";
 import {
   ArrowLeftIcon,
@@ -118,7 +118,17 @@ interface BookingClientProps {
 
 export default function BookingClient({ photographer }: BookingClientProps) {
   const router = useRouter();
-  const { user } = useKindeBrowserClient();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.isAuthenticated) {
+          setUser(data.user);
+        }
+      });
+  }, []);
   const [selected, setSelected] = useState<AddOn['id'][]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

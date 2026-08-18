@@ -1,28 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-
-interface KindeRole {
-  key: string;
-  name: string;
-  id?: string;
-}
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   try {
-    const { getUser, isAuthenticated, getRoles, getPermissions } = getKindeServerSession();
+    const userDoc = await getCurrentUser();
 
-    if (!(await isAuthenticated())) {
+    if (!userDoc) {
       return NextResponse.json({ isPhotographer: false });
     }
 
-    const user = await getUser();
-    if (!user || !user.email) {
-      return NextResponse.json({ isPhotographer: false });
-    }
+    const user = {
+      id: userDoc.userId as string,
+      email: userDoc.email as string,
+      name: userDoc.name as string
+    };
 
     const client = await clientPromise;
     const db = client.db("dropcast");
+
+    // 0. Check user role selection in users collection
+    const userDocDb = await db.collection("users").findOne({ userId: user.id });
+    if (userDocDb) {
+      return NextResponse.json({ isPhotographer: userDocDb.role === "creator" });
+    }
 
     // 1. Check if email is in noted photographer_emails
     const notedEmail = await db
@@ -40,24 +41,6 @@ export async function GET(request: NextRequest) {
 
     if (photographerProfile) {
       // Note the email since profile exists
-      await db.collection("photographer_emails").updateOne(
-        { email: user.email },
-        { $set: { email: user.email, userId: user.id, registeredAt: new Date() } },
-        { upsert: true }
-      );
-      return NextResponse.json({ isPhotographer: true });
-    }
-
-    // 3. Check Kinde roles & permissions
-    const roles: KindeRole[] | null = await getRoles();
-    const permissionsObj = await getPermissions();
-    const permissions = permissionsObj?.permissions || [];
-
-    const hasRole = roles?.some((role) => role.key === "photographer");
-    const hasPermission = permissions.includes("photographer:all");
-
-    if (hasRole || hasPermission) {
-      // Note the email
       await db.collection("photographer_emails").updateOne(
         { email: user.email },
         { $set: { email: user.email, userId: user.id, registeredAt: new Date() } },

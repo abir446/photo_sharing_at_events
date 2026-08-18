@@ -1,5 +1,5 @@
 // app/dashboard/page.tsx
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import EventCard from '@/components/EventCard';
 import { redirect } from 'next/navigation';
 import clientPromise from "@/lib/mongodb";
@@ -17,55 +17,95 @@ import {
 
 import PhotographerDashboard from "@/components/PhotographerDashboard";
 
+
 export default async function Page() {
-  const { getUser, isAuthenticated, getRoles, getPermissions } = getKindeServerSession();
+  const userDoc = await getCurrentUser();
   
-  if (!(await isAuthenticated())) {
-    redirect('/api/auth/login');
+  if (!userDoc) {
+    redirect('/signin');
   }
 
-  const user = await getUser();
-  if (!user || !user.id || !user.email) {
-    redirect('/api/auth/login');
-  }
+  const user = {
+    id: userDoc.userId as string,
+    email: userDoc.email as string,
+    name: userDoc.name as string,
+    given_name: (userDoc.name as string).split(" ")[0]
+  };
 
   const client = await clientPromise;
   const db = client.db("dropcast");
 
-  // 1. Check if user is photographer (noted email, profile in db, or Kinde role/permission)
-  const notedEmail = await db.collection("photographer_emails").findOne({ email: user.email });
-  let isPhotographer = !!notedEmail;
+  // 1. Check user role selection in users collection
+  const userDocDb = await db.collection("users").findOne({ userId: user.id });
+  
+  let isPhotographer = false;
+  let needsOnboarding = false;
 
-  if (!isPhotographer) {
-    const photographerProfile = await db.collection("photographers").findOne({
-      $or: [{ email: user.email }, { userId: user.id }]
-    });
-    if (photographerProfile) {
+  if (userDocDb) {
+    isPhotographer = userDocDb.role === "creator";
+  } else {
+    // Legacy fallback check for existing accounts
+    const notedEmail = await db.collection("photographer_emails").findOne({ email: user.email });
+    let legacyPhotographer = !!notedEmail;
+
+    if (!legacyPhotographer) {
+      const photographerProfile = await db.collection("photographers").findOne({
+        $or: [{ email: user.email }, { userId: user.id }]
+      });
+      if (photographerProfile) {
+        legacyPhotographer = true;
+      }
+    }
+
+    if (legacyPhotographer) {
+      // Auto-onboard legacy photographers
       isPhotographer = true;
+      await db.collection("users").updateOne(
+        { userId: user.id },
+        {
+          $set: {
+            userId: user.id,
+            email: user.email,
+            name: user.name || user.email,
+            role: "creator",
+            createdAt: new Date(),
+          }
+        },
+        { upsert: true }
+      );
+      // Ensure photographer_emails list is noted
       await db.collection("photographer_emails").updateOne(
         { email: user.email },
         { $set: { email: user.email, userId: user.id, registeredAt: new Date() } },
         { upsert: true }
       );
+    } else {
+      // Check if they are a legacy host (have existing event spaces)
+      const existingEvent = await db.collection("events").findOne({ userId: user.id });
+      if (existingEvent) {
+        isPhotographer = false;
+        await db.collection("users").updateOne(
+          { userId: user.id },
+          {
+            $set: {
+              userId: user.id,
+              email: user.email,
+              name: user.name || user.email,
+              role: "user",
+              createdAt: new Date(),
+            }
+          },
+          { upsert: true }
+        );
+      } else {
+        // True new sign-up: needs selection
+        needsOnboarding = true;
+      }
     }
   }
 
-  if (!isPhotographer) {
-    const roles = await getRoles();
-    const permissionsObj = await getPermissions();
-    const permissions = permissionsObj?.permissions || [];
-
-    const hasRole = roles?.some((role) => role.key === "photographer");
-    const hasPermission = permissions.includes("photographer:all");
-
-    if (hasRole || hasPermission) {
-      isPhotographer = true;
-      await db.collection("photographer_emails").updateOne(
-        { email: user.email },
-        { $set: { email: user.email, userId: user.id, registeredAt: new Date() } },
-        { upsert: true }
-      );
-    }
+  if (needsOnboarding) {
+    redirect('/signup');
   }
 
   if (isPhotographer) {

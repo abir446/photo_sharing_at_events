@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import { ObjectId } from "mongodb";
 
 export async function POST(
@@ -9,12 +9,17 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const userDoc = await getCurrentUser();
 
-    if (!user || !user.id || !user.email) {
+    if (!userDoc) {
       return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
     }
+
+    const user = {
+      id: userDoc.userId as string,
+      email: userDoc.email as string,
+      name: userDoc.name as string
+    };
 
     const { action } = await request.json();
     if (action !== "accept" && action !== "reject") {

@@ -1,15 +1,8 @@
-import { withAuth } from "@kinde-oss/kinde-auth-nextjs/middleware";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-
-export default withAuth(
-  async function proxy(req: NextRequest) {
-  },
-  {
-    // Proxy still runs on all routes, but doesn't protect the home route
-    publicPaths: ["/"], // e.g. ["/api/public", "/blog", "/about"]
-  }
-);
+export default async function middleware(req: NextRequest) {
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [

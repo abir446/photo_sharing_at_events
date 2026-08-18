@@ -1,4 +1,4 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import React from "react";
 import Link from "next/link";
@@ -6,24 +6,14 @@ import clientPromise from "@/lib/mongodb";
 import { MongoEvent } from "@/utils/typescript/types";
 import AdminDashboard from "@/components/AdminDashboard";
 
-interface KindeRole {
-  key: string;
-  name: string;
-  id?: string;
-}
-
 export default async function AdminPage() {
-  const { isAuthenticated, getRoles } = getKindeServerSession();
+  const userDoc = await getCurrentUser();
 
-  const authenticated = await isAuthenticated();
-  if (!authenticated) {
-    redirect("/api/auth/login?post_login_redirect_url=/admin");
+  if (!userDoc) {
+    redirect("/signin");
   }
-  const roles: KindeRole[] | null = await getRoles();
 
-  console.log("User Roles in Admin Page:", roles);
-
-  const isAdmin = roles?.some((role) => role.key === "admin");
+  const isAdmin = userDoc.role === "admin";
 
   if (!isAdmin) {
     return (

@@ -173,6 +173,22 @@ export default function PhotographerDashboard({
           <p className="mt-3 max-w-xl text-[15px] text-slate-400 leading-relaxed">
             Manage your schedule, accept incoming leads, and monitor deposit releases for your event sessions.
           </p>
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            <Link
+              href={`/photographer/${profile.id}`}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
+            >
+              <UserIcon className="h-3.5 w-3.5 text-brand-400" />
+              View Portfolio Page
+            </Link>
+            <Link
+              href="/photographer/register"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-brand-500/20 bg-brand-500/5 hover:bg-brand-500/10 text-brand-400 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
+            >
+              <SparklesIcon className="h-3.5 w-3.5" />
+              Edit Profile
+            </Link>
+          </div>
         </div>
 
         <dl className="flex flex-wrap gap-4">

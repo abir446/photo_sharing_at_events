@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react'
-import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { showToast } from "nextjs-toast-notify";
@@ -20,26 +19,40 @@ import {
 
 const Header = () => {
   const pathname = usePathname();
-  const { isAuthenticated, isLoading, user } = useKindeBrowserClient();
+  const [auth, setAuth] = useState<{ isAuthenticated: boolean; user: any; isLoading: boolean }>({
+    isAuthenticated: false,
+    user: null,
+    isLoading: true
+  });
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const user = auth.user;
+  const initials = user?.name
+    ? user.name.split(/\s+/).map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "DC";
+  const fullName = user?.name || (isPhotographer ? "Photographer" : "Event Host");
+  const roleName = isPhotographer ? "Photographer" : "Event Host";
+  const isAuthenticated = auth.isAuthenticated;
+  const isLoading = auth.isLoading;
 
   useEffect(() => {
-    if (isAuthenticated && user?.email) {
-      fetch("/api/photographer/check")
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.isPhotographer) {
-            setIsPhotographer(true);
-          }
-        })
-        .catch((err) => console.error("Error checking photographer status:", err));
-    } else {
-      setIsPhotographer(false);
-    }
-  }, [isAuthenticated, user?.email]);
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        setAuth({
+          isAuthenticated: data.isAuthenticated,
+          user: data.user,
+          isLoading: false
+        });
+        setIsPhotographer(data.isAuthenticated && data.user?.role === "creator");
+      })
+      .catch((err) => {
+        console.error("Auth check failed:", err);
+        setAuth({ isAuthenticated: false, user: null, isLoading: false });
+      });
+  }, [pathname]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -72,17 +85,14 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
-  const initials = ((user?.given_name?.[0] || "") + (user?.family_name?.[0] || "")).toUpperCase() || "DC";
-  const defaultFullName = isPhotographer ? "Photographer" : "Event Host";
-  const fullName = user?.given_name ? `${user.given_name} ${user.family_name || ""}`.trim() : defaultFullName;
-  const roleName = isPhotographer ? "Photographer" : "Event Host";
 
   // Navigation Links
   const links = [
-    { label: 'Marketplace', to: '/marketplace', icon: SparklesIcon },
+    ...(!isPhotographer ? [{ label: 'Marketplace', to: '/marketplace', icon: SparklesIcon }] : []),
     ...(isAuthenticated ? (
       isPhotographer ? [
-        { label: 'Dashboard', to: '/dashboard', icon: CalendarIcon }
+        { label: 'Dashboard', to: '/dashboard', icon: CalendarIcon },
+        { label: 'QR Gallery', to: '/qr-gallery', icon: ImageIcon }
       ] : [
         { label: 'QR Gallery', to: '/qr-gallery', icon: ImageIcon },
         { label: 'Bookings', to: '/booking', icon: CalendarIcon },
@@ -211,24 +221,24 @@ const Header = () => {
                     </>
                   )}
                   <div className="my-1.5 h-px bg-white/10" />
-                  <LogoutLink
+                  <a
+                    href="/api/auth/signout"
                     className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-400 transition-colors hover:bg-rose-500/10 cursor-pointer"
-                    postLogoutRedirectURL="/"
                   >
                     <LogOutIcon className="h-4 w-4" aria-hidden="true" />
                     Sign out
-                  </LogoutLink>
+                  </a>
                 </div>
               )}
             </div>
           ) : (
             <div className="flex items-center gap-2.5">
-              <LoginLink className="text-slate-300 hover:text-white font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
+              <Link href="/signin" className="text-slate-300 hover:text-white font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
                 Sign in
-              </LoginLink>
-              <RegisterLink className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow hover:bg-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer">
+              </Link>
+              <Link href="/signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow hover:bg-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer">
                 Sign up
-              </RegisterLink>
+              </Link>
             </div>
           )}
         </div>
@@ -288,22 +298,22 @@ const Header = () => {
                 </span>
               </div>
               <div className="border-t border-white/5 pt-2">
-                <LogoutLink
+                <a
+                  href="/api/auth/signout"
                   className="flex justify-center w-full px-4 py-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-400 font-semibold hover:bg-rose-500/20 text-center transition-colors text-sm cursor-pointer"
-                  postLogoutRedirectURL="/"
                 >
                   Sign out
-                </LogoutLink>
+                </a>
               </div>
             </div>
           ) : (
             <div className="flex flex-col space-y-2 pt-2 border-t border-white/5">
-              <LoginLink className="flex justify-center w-full text-slate-300 hover:text-white font-semibold text-sm py-2.5 text-center transition-colors cursor-pointer">
+              <Link href="/signin" className="flex justify-center w-full text-slate-300 hover:text-white font-semibold text-sm py-2.5 text-center transition-colors cursor-pointer">
                 Sign in
-              </LoginLink>
-              <RegisterLink className="flex justify-center w-full px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-center shadow-glow transition-all duration-200 text-sm cursor-pointer">
+              </Link>
+              <Link href="/signup" className="flex justify-center w-full px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-center shadow-glow transition-all duration-200 text-sm cursor-pointer">
                 Sign up
-              </RegisterLink>
+              </Link>
             </div>
           )}
         </div>

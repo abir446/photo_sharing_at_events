@@ -1,4 +1,4 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import clientPromise from "@/lib/mongodb";
@@ -39,16 +39,17 @@ interface BookingDoc {
 }
 
 export default async function BookingsDashboardPage() {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const userDoc = await getCurrentUser();
 
-  if (!(await isAuthenticated())) {
-    redirect("/api/auth/login?post_login_redirect_url=/booking");
+  if (!userDoc) {
+    redirect("/signin");
   }
 
-  const user = await getUser();
-  if (!user || !user.id) {
-    redirect("/api/auth/login?post_login_redirect_url=/booking");
-  }
+  const user = {
+    id: userDoc.userId as string,
+    email: userDoc.email as string,
+    name: userDoc.name as string
+  };
 
   const client = await clientPromise;
   const db = client.db("dropcast");
