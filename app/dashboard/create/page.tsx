@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
+
+export const metadata: Metadata = {
+  title: "Create New Event",
+  description: "Set up a new event photo sharing space and generate QR codes for your guests.",
+  robots: { index: false },
+};
 import { redirect } from "next/navigation";
 import CreateEventForm from "@/components/CreateEventForm";
 

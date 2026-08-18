@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import clientPromise from "@/lib/mongodb";
 import MarketplaceClient from './MarketplaceClient';
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from 'next/navigation';
+
+export const metadata: Metadata = {
+  title: "Photographer Marketplace — Browse & Book Creators",
+  description:
+    "Discover and book vetted event photographers filtered by location, budget, and style. Candid, cinematic, editorial, and documentary styles available with escrow-backed payments.",
+  alternates: {
+    canonical: "https://dropcast.app/marketplace",
+  },
+};
 
 export default async function Page() {
   const userDoc = await getCurrentUser();

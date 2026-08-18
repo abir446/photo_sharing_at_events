@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
+
+export const metadata: Metadata = {
+  title: "QR Photo Gallery",
+  description: "View and manage real-time photo galleries from your events with instant QR code sharing.",
+  robots: { index: false },
+};
 import { redirect } from 'next/navigation';
 import clientPromise from "@/lib/mongodb";
 import { MongoEvent, MediaItem } from '@/utils/typescript/types';

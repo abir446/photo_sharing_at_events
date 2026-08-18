@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from 'next/navigation';
 import RegisterClient from './RegisterClient';
 import clientPromise from "@/lib/mongodb";
+
+export const metadata: Metadata = {
+  title: "List Your Photography Business",
+  description:
+    "Join DropCast as a professional photographer. Create your portfolio, set your rates, and get booked for weddings, corporate events, and celebrations.",
+  alternates: {
+    canonical: "https://dropcast.app/photographer/register",
+  },
+};
 
 export default async function Page() {
   const userDoc = await getCurrentUser();

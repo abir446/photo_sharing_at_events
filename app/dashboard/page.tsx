@@ -1,5 +1,12 @@
 // app/dashboard/page.tsx
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Manage your events, QR galleries, and photographer bookings from your DropCast dashboard.",
+  robots: { index: false },
+};
 import EventCard from '@/components/EventCard';
 import { redirect } from 'next/navigation';
 import clientPromise from "@/lib/mongodb";

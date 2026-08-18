@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
+
+export const metadata: Metadata = {
+  title: "My Bookings",
+  description: "View and manage your photographer bookings, payment milestones, and event schedules.",
+  robots: { index: false },
+};
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import clientPromise from "@/lib/mongodb";

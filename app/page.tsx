@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
 import Link from 'next/link';
 import clientPromise from "@/lib/mongodb";
@@ -13,6 +14,16 @@ import {
   StarIcon,
   ZapIcon
 } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: "Book Event Photographers & Create QR Photo Galleries",
+  description:
+    "Browse vetted professional photographers by style, budget, and location. Set up instant QR code galleries for guest photo uploads at your events. Escrow-backed payments.",
+  alternates: {
+    canonical: "https://photo-sharing-at-events-liard.vercel.app",
+  },
+};
+
 
 interface FeatureCardProps {
   image: string;
