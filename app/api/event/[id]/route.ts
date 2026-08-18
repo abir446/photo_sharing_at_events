@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import { ObjectId } from "mongodb";
 
 export async function DELETE(
@@ -9,15 +9,11 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const { isAuthenticated, getRoles } = getKindeServerSession();
-
-    if (!(await isAuthenticated())) {
+    const userDoc = await getCurrentUser();
+    if (!userDoc) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
-
-    const roles = await getRoles();
-    const isAdmin = roles?.some((role: { key: string }) => role.key === "admin");
-    if (!isAdmin) {
+    if (userDoc.role !== "admin") {
       return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }
 
@@ -48,15 +44,11 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const { isAuthenticated, getRoles } = getKindeServerSession();
-
-    if (!(await isAuthenticated())) {
+    const userDoc = await getCurrentUser();
+    if (!userDoc) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
-
-    const roles = await getRoles();
-    const isAdmin = roles?.some((role: { key: string }) => role.key === "admin");
-    if (!isAdmin) {
+    if (userDoc.role !== "admin") {
       return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }
 

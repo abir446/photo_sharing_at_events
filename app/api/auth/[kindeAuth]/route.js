@@ -1,3 +1,9 @@
-import {handleAuth} from "@kinde-oss/kinde-auth-nextjs/server";
+import { NextResponse } from "next/server";
 
-export const GET = handleAuth();
+export async function GET() {
+  return NextResponse.json({ error: "Deprecated Auth Endpoint" }, { status: 404 });
+}
+
+export async function POST() {
+  return NextResponse.json({ error: "Deprecated Auth Endpoint" }, { status: 404 });
+}

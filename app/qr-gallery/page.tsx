@@ -1,20 +1,21 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import { redirect } from 'next/navigation';
 import clientPromise from "@/lib/mongodb";
 import { MongoEvent, MediaItem } from '@/utils/typescript/types';
 import QRGalleryClient from './QRGalleryClient';
 
 export default async function Page() {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const userDoc = await getCurrentUser();
   
-  if (!(await isAuthenticated())) {
-    redirect('/api/auth/login');
+  if (!userDoc) {
+    redirect('/signin');
   }
 
-  const user = await getUser();
-  if (!user || !user.id) {
-    redirect('/api/auth/login');
-  }
+  const user = {
+    id: userDoc.userId as string,
+    email: userDoc.email as string,
+    name: userDoc.name as string
+  };
 
   const client = await clientPromise;
   const db = client.db("dropcast");

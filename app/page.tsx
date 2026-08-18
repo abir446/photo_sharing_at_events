@@ -1,7 +1,7 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 import Link from 'next/link';
-import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import clientPromise from "@/lib/mongodb";
+import { redirect } from 'next/navigation';
 import { MongoEvent } from '@/utils/typescript/types';
 import {
   ArrowRightIcon,
@@ -81,13 +81,13 @@ function FeatureCard({
               <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
             </Link>
           ) : (
-            <LoginLink
-              postLoginRedirectURL={href}
+            <Link
+              href="/signin"
               className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
             >
               {cta}
               <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
-            </LoginLink>
+            </Link>
           )}
         </div>
       </div>
@@ -96,9 +96,14 @@ function FeatureCard({
 }
 
 export default async function Home() {
-  const { getUser, isAuthenticated } = getKindeServerSession();
-  const auth = await isAuthenticated();
-  const user = auth ? await getUser() : null;
+  const userDoc = await getCurrentUser();
+  
+  if (userDoc && userDoc.role === "creator") {
+    redirect('/dashboard');
+  }
+
+  const auth = !!userDoc;
+  const user = userDoc ? { id: userDoc.userId as string, given_name: userDoc.name.split(" ")[0] } : null;
 
   let eventCount = 0;
   let uploadCount = 0;
@@ -153,12 +158,12 @@ export default async function Home() {
           
           {!auth && (
             <div className="mt-5 flex items-center gap-3">
-              <LoginLink className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm transition-colors cursor-pointer">
+              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm transition-colors cursor-pointer">
                 Sign in
-              </LoginLink>
-              <RegisterLink className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-colors cursor-pointer">
+              </Link>
+              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-colors cursor-pointer">
                 Get started
-              </RegisterLink>
+              </Link>
             </div>
           )}
         </div>
@@ -245,28 +250,7 @@ export default async function Home() {
         ))}
       </section>
 
-      {/* Creator Registration Section */}
-      <section className="mt-9 rounded-3xl border border-brand-500/20 bg-brand-500/5 p-8 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-2 text-left">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 px-3 py-1 text-xs font-semibold text-brand-400">
-            <CameraIcon className="h-3.5 w-3.5" />
-            For Professional Creators
-          </span>
-          <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-            Are you an event photographer?
-          </h2>
-          <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
-            List your business on DropCast to reach premium hosts, manage milestones, and secure payments in escrow.
-          </p>
-        </div>
-        <Link
-          href="/photographer/register"
-          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
-        >
-          Join as Creator
-          <ArrowRightIcon className="h-4 w-4" />
-        </Link>
-      </section>
+
     </main>
   );
 }

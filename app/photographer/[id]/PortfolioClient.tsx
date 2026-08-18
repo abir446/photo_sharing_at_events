@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeftIcon,
@@ -12,7 +12,6 @@ import {
   StarIcon,
   XIcon
 } from 'lucide-react';
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import type { Photographer } from '@/data/photographers';
 
 interface PortfolioClientProps {
@@ -22,9 +21,20 @@ interface PortfolioClientProps {
 
 export default function PortfolioClient({ photographer, otherPortfolios }: PortfolioClientProps) {
   const [lightbox, setLightbox] = useState<string | null>(null);
-  const { user } = useKindeBrowserClient();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.isAuthenticated) {
+          setUser(data.user);
+        }
+      });
+  }, []);
 
   const isOwner = photographer.userId && user && photographer.userId === user.id;
+  const isCreator = user && user.role === "creator";
 
   // Blend photographer's own portfolio with sample other shots for high density
   const samples = [
@@ -98,12 +108,16 @@ export default function PortfolioClient({ photographer, otherPortfolios }: Portf
               <CameraIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
               Your Creator Listing
             </span>
+          ) : isCreator ? (
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-slate-400">
+              Creator Account
+            </span>
           ) : (
             <Link
               href={`/booking/${photographer.id}`}
               className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
-              Book from ${photographer.startingPrice.toLocaleString()}
+              Book from ₹{photographer.startingPrice.toLocaleString()}
             </Link>
           )}
         </div>

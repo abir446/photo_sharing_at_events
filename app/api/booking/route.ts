@@ -1,15 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const userDoc = await getCurrentUser();
 
-    if (!user || !user.id || !user.email) {
+    if (!userDoc) {
       return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
     }
+
+    const user = {
+      id: userDoc.userId as string,
+      email: userDoc.email as string,
+      name: userDoc.name as string
+    };
 
     const body = await request.json();
     const {
@@ -23,7 +28,7 @@ export async function POST(request: NextRequest) {
       eventDetails,
     } = body;
 
-    if (!photographerId || !photographerName || !packagePrice || !paymentId) {
+    if (!photographerId || !photographerName || !packagePrice) {
       return NextResponse.json(
         { error: "Missing required parameters for booking" },
         { status: 400 }
@@ -51,14 +56,14 @@ export async function POST(request: NextRequest) {
       addOns: Array.isArray(addOns) ? addOns : [],
       totalAmount: Number(totalAmount),
       dueToday: Number(dueToday),
-      paymentId,
+      paymentId: paymentId || null,
       eventDetails: {
         date: eventDetails?.date || "Sat, Oct 18, 2026",
         location: eventDetails?.location || "Laurel Hall",
         coverage: eventDetails?.coverage || "6 hours · 2pm–8pm",
         packageName: eventDetails?.packageName || "Signature Event Coverage",
       },
-      status: "confirmed",
+      status: "pending",
       createdAt: new Date(),
     };
 

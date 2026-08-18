@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
@@ -15,12 +15,17 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid status state value" }, { status: 400 });
     }
 
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const userDoc = await getCurrentUser();
 
-    if (!user || !user.id) {
+    if (!userDoc) {
       return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
     }
+
+    const user = {
+      id: userDoc.userId as string,
+      email: userDoc.email as string,
+      name: userDoc.name as string
+    };
 
     if (!ObjectId.isValid(mediaId)) {
       return NextResponse.json({ error: "Invalid media ID format" }, { status: 400 });

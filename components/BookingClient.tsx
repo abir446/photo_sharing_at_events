@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+// Local session integration
 import { showToast } from "nextjs-toast-notify";
 import {
   ArrowLeftIcon,
@@ -19,7 +19,8 @@ import {
   PackageIcon,
   QrCodeIcon,
   ShieldCheckIcon,
-  StarIcon
+  StarIcon,
+  SparklesIcon
 } from 'lucide-react';
 
 interface RazorpayResponse {
@@ -72,14 +73,14 @@ const ADD_ONS: AddOn[] = [
     id: 'qr',
     title: 'Include Guest QR Code Photo Upload Service',
     description: 'Add live guest media collection with a branded QR stand.',
-    price: 120,
+    price: 9960,
     icon: QrCodeIcon
   },
   {
     id: 'cloud',
     title: 'Enable Secure Cloud Storage & Media Delivery Platform',
     description: 'Encrypted delivery, 12-month archive, and shareable links.',
-    price: 60,
+    price: 4980,
     icon: CloudIcon
   }
 ];
@@ -117,7 +118,17 @@ interface BookingClientProps {
 
 export default function BookingClient({ photographer }: BookingClientProps) {
   const router = useRouter();
-  const { user } = useKindeBrowserClient();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.isAuthenticated) {
+          setUser(data.user);
+        }
+      });
+  }, []);
   const [selected, setSelected] = useState<AddOn['id'][]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -148,105 +159,8 @@ export default function BookingClient({ photographer }: BookingClientProps) {
         : [...prev, addOnId]
     );
 
-  // Razorpay Checkout Handlers
-  const handlePayAndBook = async () => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    setError(null);
-
-    const defaultName = user?.given_name ? `${user.given_name} ${user.family_name || ""}`.trim() : "Event Host";
-    const defaultEmail = user?.email || "";
-
-    try {
-      // Convert USD dueToday to INR (e.g. 1 USD = 83 INR)
-      const dueTodayINR = dueToday * 83;
-      const orderResponse = await fetch("/api/createOrder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Math.round(dueTodayINR * 100) }),
-      });
-
-      if (!orderResponse.ok) {
-        throw new Error("Failed to establish Razorpay order.");
-      }
-
-      const orderData = await orderResponse.json();
-
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder",
-        amount: orderData.amount,
-        currency: orderData.currency || "INR",
-        name: "DropCast Book Photographer",
-        description: `Deposit for ${photographer.name}`,
-        order_id: orderData.id,
-        handler: async function (response: RazorpayResponse) {
-          try {
-            const bookingResponse = await fetch("/api/booking", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                photographerId: photographer.id,
-                photographerName: photographer.name,
-                packagePrice,
-                addOns: selected,
-                totalAmount: total,
-                dueToday,
-                paymentId: response.razorpay_payment_id,
-                eventDetails: {
-                  date: "Sat, Oct 18, 2026",
-                  location: "Laurel Hall, " + photographer.location,
-                  skew: "6 hours · 2pm–8pm",
-                  packageName: "Signature Event Coverage",
-                },
-              }),
-            });
-
-            const res = await bookingResponse.json();
-            if (res.success) {
-              showToast.success("Photographer booked successfully!", {
-                duration: 4000,
-                position: "top-right",
-                transition: "bounceIn",
-              });
-              router.push("/booking");
-            } else {
-              throw new Error(res.error || "Failed to save booking");
-            }
-          } catch (err) {
-            console.error("Save booking error:", err);
-            const msg = err instanceof Error ? err.message : undefined;
-            setError(msg || "Payment was successful, but establishing booking failed. Please contact support.");
-            setIsSubmitting(false);
-          }
-        },
-        prefill: {
-          name: defaultName,
-          email: defaultEmail,
-        },
-        theme: {
-          color: "#6366f1",
-        },
-        modal: {
-          ondismiss: function () {
-            setIsSubmitting(false);
-          },
-        },
-      };
-
-      if (!window.Razorpay) {
-        throw new Error("Razorpay SDK failed to load. Please try again.");
-      }
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } catch (err) {
-      console.error("Booking payment error:", err);
-      const msg = err instanceof Error ? err.message : undefined;
-      setError(msg || "Something went wrong. Please try again.");
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleSimulateSuccess = async () => {
+  // Booking Request Handler
+  const handleSubmitBookingRequest = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     setError(null);
@@ -262,7 +176,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
           addOns: selected,
           totalAmount: total,
           dueToday,
-          paymentId: "mock_pay_success_" + Math.random().toString(36).substring(2, 9),
+          paymentId: null,
           eventDetails: {
             date: "Sat, Oct 18, 2026",
             location: "Laurel Hall, " + photographer.location,
@@ -274,25 +188,21 @@ export default function BookingClient({ photographer }: BookingClientProps) {
 
       const res = await response.json();
       if (res.success) {
-        showToast.success("Photographer booked successfully (Simulated)!", {
-          duration: 4000,
+        showToast.success("Booking request submitted! Waiting for photographer acceptance.", {
+          duration: 5000,
           position: "top-right",
           transition: "bounceIn",
         });
         router.push("/booking");
       } else {
-        throw new Error(res.error || "Failed to simulate booking creation");
+        throw new Error(res.error || "Failed to submit booking request");
       }
     } catch (err) {
       console.error(err);
       const msg = err instanceof Error ? err.message : undefined;
-      setError(msg || "Failed to simulate booking creation.");
+      setError(msg || "Failed to submit booking request.");
       setIsSubmitting(false);
     }
-  };
-
-  const handleSimulateFailure = () => {
-    setError("Booking payment failed (Simulated). Insufficient funds or checkout cancelled.");
   };
 
   return (
@@ -311,11 +221,11 @@ export default function BookingClient({ photographer }: BookingClientProps) {
             Confirm your booking
           </h1>
           <p className="mt-3 text-[15px] text-slate-400">
-            Review the details, choose your add-ons, and pay only the deposit today.
+            Review the details, choose your add-ons, and submit your request to the photographer.
           </p>
         </div>
         <ol className="flex items-center gap-3 text-xs font-medium">
-          {['Details', 'Payment', 'Confirmation'].map((label, i) => (
+          {['Details', 'Request', 'Confirmation'].map((label, i) => (
             <li key={label} className="flex items-center gap-3">
               <span
                 className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${
@@ -474,7 +384,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
               <span className="text-sm text-slate-400">
                 Package total{' '}
                 <span className="font-semibold text-white">
-                  ${packagePrice.toLocaleString()}
+                  ₹{packagePrice.toLocaleString()}
                 </span>
               </span>
             </div>
@@ -516,7 +426,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
                       <p className="mt-1 text-xs text-slate-400">{m.detail}</p>
                     </div>
                     <span className="text-base font-bold text-white">
-                      ${amount.toLocaleString()}
+                      ₹{amount.toLocaleString()}
                     </span>
                   </li>
                 );
@@ -532,7 +442,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
               Enhance your event
             </h2>
             <p className="mt-1 text-sm text-slate-400">
-              Optional services billed with today&apos;s deposit.
+              Optional services billed with deposit after acceptance.
             </p>
 
             <div className="mt-4 space-y-3">
@@ -574,7 +484,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
                       </span>
                     </span>
                     <span className="text-sm font-bold text-white">
-                      +${addOn.price}
+                      +₹{addOn.price.toLocaleString()}
                     </span>
                   </label>
                 );
@@ -599,22 +509,22 @@ export default function BookingClient({ photographer }: BookingClientProps) {
             <dl className="space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <dt className="text-slate-400">Signature Event Coverage</dt>
-                <dd className="font-medium text-white">
-                  ${packagePrice.toLocaleString()}
-                </dd>
+                  <dd className="font-medium text-white">
+                    ₹{packagePrice.toLocaleString()}
+                  </dd>
               </div>
               {ADD_ONS.filter((a) => selected.includes(a.id)).map((a) => (
                 <div key={a.id} className="flex justify-between">
                   <dt className="text-slate-400">
                     {a.id === 'qr' ? 'Guest QR upload service' : 'Cloud storage & delivery'}
                   </dt>
-                  <dd className="font-medium text-white">+${a.price}</dd>
+                  <dd className="font-medium text-white">+₹{a.price.toLocaleString()}</dd>
                 </div>
               ))}
               <div className="flex justify-between border-t border-white/10 pt-2.5">
                 <dt className="text-slate-400">Booking total</dt>
                 <dd className="font-medium text-white">
-                  ${total.toLocaleString()}
+                    ₹{total.toLocaleString()}
                 </dd>
               </div>
             </dl>
@@ -623,60 +533,32 @@ export default function BookingClient({ photographer }: BookingClientProps) {
               <div>
                 <p className="text-sm text-slate-400">Amount Due Today</p>
                 <p className="mt-1 text-3xl font-extrabold tracking-tight text-white">
-                  ${dueToday.toLocaleString()}
+                  ₹{dueToday.toLocaleString()}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
-                  Remaining ${(total - dueToday).toLocaleString()} split across milestones 2 and 3.
+                  Deposit amount locks the date. Remaining ₹{(total - dueToday).toLocaleString()} due later.
                 </p>
               </div>
               <button
                 type="button"
-                onClick={handlePayAndBook}
+                onClick={handleSubmitBookingRequest}
                 disabled={isSubmitting}
                 className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2Icon className="h-4 w-4 animate-spin" />
-                    Processing...
+                    Submitting...
                   </>
                 ) : (
                   <>
-                    <LockIcon className="h-4 w-4" aria-hidden="true" />
-                    Proceed to Payment
+                    <SparklesIcon className="h-4 w-4" aria-hidden="true" />
+                    Request Booking
                   </>
                 )}
               </button>
             </div>
           </section>
-
-          {/* Developer Test Controls */}
-          <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.01] p-5 text-center backdrop-blur-sm">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
-              🔧 Developer Test Controls
-            </p>
-            <p className="mt-1 text-xs text-slate-400">
-              Bypass the Razorpay checkout overlay to test successful database persistence or failure UI screens.
-            </p>
-            <div className="mt-3.5 grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={handleSimulateSuccess}
-                disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Simulate Success
-              </button>
-              <button
-                type="button"
-                onClick={handleSimulateFailure}
-                disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs font-bold text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Simulate Failure
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </main>
