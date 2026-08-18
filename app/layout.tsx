@@ -14,6 +14,11 @@ export const metadata: Metadata = {
     default: "DropCast — Book Event Photographers & Share Photos",
     template: "%s | DropCast",
   },
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   description:
     "Book vetted event photographers, set up instant QR photo galleries, and collect every guest photo in one place. Escrow-backed payments, real-time uploads, no app required.",
   keywords: [
