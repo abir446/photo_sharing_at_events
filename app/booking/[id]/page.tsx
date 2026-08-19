@@ -6,10 +6,12 @@ import { getCurrentUser } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ date?: string }>;
 }
 
-export default async function BookingDetailPage({ params }: PageProps) {
+export default async function BookingDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const { date } = await searchParams;
   const userDoc = await getCurrentUser();
   const user = userDoc ? {
     id: userDoc.userId as string,
@@ -79,5 +81,21 @@ export default async function BookingDetailPage({ params }: PageProps) {
     responseTime: photographer.responseTime,
   };
 
-  return <BookingClient photographer={serializedPhotographer} />;
+  // Fetch active bookings for this photographer to determine unavailable dates
+  const activeBookings = await db.collection("bookings")
+    .find({
+      photographerId: id,
+      status: { $in: ["accepted", "confirmed"] }
+    })
+    .project({ "eventDetails.date": 1 })
+    .toArray();
+  const bookedDates = activeBookings.map((b) => b.eventDetails?.date).filter(Boolean) as string[];
+
+  return (
+    <BookingClient 
+      photographer={serializedPhotographer} 
+      initialDate={date || ""} 
+      bookedDates={bookedDates} 
+    />
+  );
 }

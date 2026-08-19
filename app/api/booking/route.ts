@@ -47,6 +47,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate event date
+    const bookingDate = eventDetails?.date;
+    if (!bookingDate) {
+      return NextResponse.json(
+        { error: "Booking date is required." },
+        { status: 400 }
+      );
+    }
+
+    // Check if the photographer is already booked on this date (accepted or confirmed)
+    const existingConflict = await db.collection("bookings").findOne({
+      photographerId,
+      "eventDetails.date": bookingDate,
+      status: { $in: ["accepted", "confirmed"] }
+    });
+
+    if (existingConflict) {
+      return NextResponse.json(
+        { error: "This photographer is already booked on the selected date." },
+        { status: 400 }
+      );
+    }
+
     const newBooking = {
       userId: user.id,
       userEmail: user.email,

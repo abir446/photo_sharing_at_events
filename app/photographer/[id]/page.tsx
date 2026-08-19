@@ -5,6 +5,7 @@ import PortfolioClient from "./PortfolioClient";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ date?: string }>;
 }
 
 export async function generateMetadata(
@@ -49,8 +50,9 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const { date } = await searchParams;
 
   const client = await clientPromise;
   const db = client.db("dropcast");
@@ -94,6 +96,7 @@ export default async function Page({ params }: PageProps) {
     <PortfolioClient 
       photographer={serializedPhotographer} 
       otherPortfolios={otherPortfolios} 
+      date={date}
     />
   );
 }

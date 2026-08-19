@@ -51,23 +51,23 @@ function FeatureCard({
   isAuth
 }: FeatureCardProps) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-3xl border border-[#E5E2C4] bg-white shadow-sm transition-colors hover:border-[#CF6DFC]/35 h-full">
+    <article className="group flex flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-md shadow-sm transition-colors hover:border-brand-500/40 h-full">
       <div className="relative h-64 overflow-hidden">
         <img
           src={image}
           alt={imageAlt}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent" />
-        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-[#E5E2C4] bg-white px-3 py-1.5 text-xs font-bold text-zinc-700 shadow-sm">
-          <EyebrowIcon className="h-3.5 w-3.5 text-[#CF6DFC]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/25 to-transparent" />
+        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs font-bold text-zinc-300 shadow-sm">
+          <EyebrowIcon className="h-3.5 w-3.5 text-brand-400" />
           {eyebrow}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-7">
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">{title}</h2>
-        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-zinc-500">
+        <h2 className="text-2xl font-bold tracking-tight text-white">{title}</h2>
+        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-zinc-400">
           {subtitle}
         </p>
 
@@ -75,7 +75,7 @@ function FeatureCard({
           {meta.map((item) => (
             <li
               key={item}
-              className="rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1 text-xs font-medium text-slate-300"
+              className="rounded-lg border border-zinc-800 bg-zinc-950/80 px-2.5 py-1 text-xs font-medium text-zinc-400"
             >
               {item}
             </li>
@@ -153,26 +153,26 @@ export default async function Home() {
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[calc(100vh-4rem)] flex flex-col justify-between">
       
       {/* Welcome / Intro */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-[#E5E2C4]">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-zinc-900">
         <div>
           {auth ? (
-            <p className="text-sm font-semibold text-[#B250DF]">Welcome back, {user?.given_name || "Host"}</p>
+            <p className="text-sm font-semibold text-brand-400">Welcome back, {user?.given_name || "Host"}</p>
           ) : (
-            <p className="text-sm font-semibold text-[#B250DF]">Welcome to DropCast</p>
+            <p className="text-sm font-semibold text-brand-400">Welcome to DropCast</p>
           )}
-          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-zinc-900 leading-tight">
+          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-white leading-tight">
             Plan every moment of your event
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-zinc-550 leading-relaxed">
+          <p className="mt-3 max-w-xl text-[15px] text-zinc-400 leading-relaxed">
             Book vetted professional creators and collect every guest photo in one shared, secure gallery automatically.
           </p>
           
           {!auth && (
             <div className="mt-5 flex items-center gap-3">
-              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#CF6DFC] hover:bg-[#B250DF] text-white font-semibold text-sm transition-colors cursor-pointer shadow-sm">
+              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm transition-colors cursor-pointer shadow-sm">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-[#E5E2C4] bg-white hover:bg-zinc-50 text-zinc-900 font-semibold text-sm transition-colors cursor-pointer">
+              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm transition-colors cursor-pointer">
                 Get started
               </Link>
             </div>
@@ -183,13 +183,13 @@ export default async function Home() {
           {stats.map(({ label, value, icon: Icon }) => (
             <div
               key={label}
-              className="min-w-[150px] rounded-2xl border border-[#E5E2C4] bg-white px-5 py-4 shadow-sm"
+              className="min-w-[150px] rounded-2xl border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm px-5 py-4 shadow-sm"
             >
-              <dt className="flex items-center gap-2 text-xs font-semibold text-zinc-550">
-                <Icon className="h-3.5 w-3.5 text-[#CF6DFC]" aria-hidden="true" />
+              <dt className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
+                <Icon className="h-3.5 w-3.5 text-brand-400" aria-hidden="true" />
                 {label}
               </dt>
-              <dd className="mt-1.5 text-2xl font-bold text-zinc-900">{value}</dd>
+              <dd className="mt-1.5 text-2xl font-bold text-white">{value}</dd>
             </div>
           ))}
         </dl>
@@ -227,7 +227,7 @@ export default async function Home() {
       {/* Assurance banner */}
       <section
         aria-labelledby="assurance-heading"
-        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-[#E5E2C4] bg-white p-7 md:grid-cols-3 shadow-sm"
+        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-zinc-900 bg-zinc-950/40 p-7 md:grid-cols-3 shadow-sm"
       >
         <h2 id="assurance-heading" className="sr-only">
           Why hosts choose DropCast
@@ -250,12 +250,12 @@ export default async function Home() {
           }
         ].map(({ icon: Icon, title, copy }) => (
           <div key={title} className="flex gap-4">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E5E2C4] bg-[#FAF9F5]">
-              <Icon className="h-5 w-5 text-[#CF6DFC]" aria-hidden="true" />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900">
+              <Icon className="h-5 w-5 text-brand-400" aria-hidden="true" />
             </span>
             <div>
-              <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
-              <p className="mt-1 text-xs text-zinc-550 leading-relaxed">{copy}</p>
+              <h3 className="text-sm font-semibold text-white">{title}</h3>
+              <p className="mt-1 text-xs text-zinc-400 leading-relaxed">{copy}</p>
             </div>
           </div>
         ))}

@@ -10,7 +10,6 @@ import {
   MapPinIcon,
   MessageSquareIcon,
   SparklesIcon,
-  StarIcon,
   ArrowRightIcon,
   ShieldCheckIcon,
   HelpCircleIcon,
@@ -18,6 +17,43 @@ import {
   Loader2Icon,
   XCircleIcon
 } from "lucide-react";
+import { formatReadableDate } from "@/utils/date";
+
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void | Promise<void>;
+  prefill: {
+    name: string;
+    email: string;
+  };
+  theme: {
+    color: string;
+  };
+  modal: {
+    ondismiss: () => void;
+  };
+}
+
+interface RazorpayInstance {
+  open: () => void;
+}
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
 
 interface Booking {
   id: string;
@@ -85,7 +121,7 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
         name: "DropCast Book Photographer",
         description: `Deposit for ${booking.photographerName}`,
         order_id: orderData.id,
-        handler: async function (response: any) {
+        handler: async function (response: RazorpayResponse) {
           try {
             const payResponse = await fetch(`/api/booking/${booking.id}/pay`, {
               method: "POST",
@@ -136,10 +172,10 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
         },
       };
 
-      if (!(window as any).Razorpay) {
+      if (!window.Razorpay) {
         throw new Error("Razorpay SDK failed to load. Please try again.");
       }
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err) {
       console.error("Payment error:", err);
@@ -270,7 +306,7 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                       <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-400">
                         <span className="flex items-center gap-1.5">
                           <CalendarDaysIcon className="h-4 w-4 text-brand-400" />
-                          {booking.date}
+                          {formatReadableDate(booking.date)}
                         </span>
                         <span className="flex items-center gap-1.5">
                           <ClockIcon className="h-4 w-4 text-brand-400" />

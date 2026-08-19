@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { showToast } from "nextjs-toast-notify";
+import { User } from "@/utils/typescript/types";
 import {
   SparklesIcon,
   ChevronDownIcon,
   LogOutIcon,
-  UserIcon,
   PlusIcon,
   CalendarIcon,
   InfoIcon,
@@ -20,7 +20,7 @@ import {
 
 const Header = () => {
   const pathname = usePathname();
-  const [auth, setAuth] = useState<{ isAuthenticated: boolean; user: any; isLoading: boolean }>({
+  const [auth, setAuth] = useState<{ isAuthenticated: boolean; user: User | null; isLoading: boolean }>({
     isAuthenticated: false,
     user: null,
     isLoading: true
@@ -37,6 +37,13 @@ const Header = () => {
   const roleName = isPhotographer ? "Photographer" : "Event Host";
   const isAuthenticated = auth.isAuthenticated;
   const isLoading = auth.isLoading;
+
+  const handleSignOut = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsUserMenuOpen(false);
+    setIsOpen(false);
+    window.location.href = "/api/auth/signout";
+  };
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -129,7 +136,7 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#E5E2C4] bg-[#FAF9F5]/85 backdrop-blur-md transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
         
         {/* Left Logo and Menu */}
@@ -143,7 +150,7 @@ const Header = () => {
               className="rounded-xl group-hover:scale-105 transition-transform duration-300"
               priority
             />
-            <span className="text-lg font-bold tracking-tight text-zinc-900">
+            <span className="text-lg font-bold tracking-tight text-white">
               DropCast
             </span>
           </Link>
@@ -156,10 +163,10 @@ const Header = () => {
                 <Link
                   key={link.to}
                   href={link.to}
-                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] ${
+                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                     active ?
-                    'bg-[#C1BFFF]/25 text-[#B250DF]' :
-                    'text-zinc-650 hover:bg-[#C1BFFF]/10 hover:text-zinc-900'
+                    'bg-brand-500/10 text-brand-400' :
+                    'text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-100'
                   }`}
                 >
                   {link.label}
@@ -178,16 +185,16 @@ const Header = () => {
                 onClick={() => setIsUserMenuOpen((v) => !v)}
                 aria-haspopup="menu"
                 aria-expanded={isUserMenuOpen}
-                className="flex items-center gap-2.5 rounded-xl border border-[#E5E2C4] bg-white py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-[#FAF9F5] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer"
+                className="flex items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-zinc-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#CF6DFC] text-xs font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-xs font-bold text-white">
                   {initials}
                 </span>
                 <span className="leading-tight">
-                  <span className="block text-sm font-semibold text-zinc-900">
+                  <span className="block text-sm font-semibold text-zinc-100">
                     {fullName}
                   </span>
-                  <span className="block text-[11px] text-zinc-550">
+                  <span className="block text-[11px] text-zinc-400">
                     {roleName}
                   </span>
                 </span>
@@ -200,15 +207,15 @@ const Header = () => {
               {isUserMenuOpen && (
                 <div
                   role="menu"
-                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-[#E5E2C4] bg-white p-1.5 shadow-lg z-50"
+                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 p-1.5 shadow-lg z-50"
                 >
                   {isPhotographer ? (
                     <Link
                       href="/dashboard"
                       onClick={() => setIsUserMenuOpen(false)}
-                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100"
                     >
-                      <CalendarIcon className="h-4 w-4 text-zinc-400" />
+                      <CalendarIcon className="h-4 w-4 text-zinc-500" />
                       Dashboard
                     </Link>
                   ) : (
@@ -216,38 +223,38 @@ const Header = () => {
                       <Link
                         href="/dashboard"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100"
                       >
-                        <CalendarIcon className="h-4 w-4 text-zinc-400" />
+                        <CalendarIcon className="h-4 w-4 text-zinc-500" />
                         My Events
                       </Link>
                       <Link
                         href="/dashboard/create"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100"
                       >
-                        <PlusIcon className="h-4 w-4 text-zinc-400" />
+                        <PlusIcon className="h-4 w-4 text-zinc-500" />
                         New Event
                       </Link>
                     </>
                   )}
-                  <div className="my-1.5 h-px bg-[#E5E2C4]" />
-                  <a
-                    href="/api/auth/signout"
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-650 transition-colors hover:bg-rose-50 cursor-pointer"
+                  <div className="my-1.5 h-px bg-zinc-900" />
+                  <button
+                    onClick={handleSignOut}
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-400 transition-colors hover:bg-rose-950/25 cursor-pointer text-left"
                   >
                     <LogOutIcon className="h-4 w-4 text-rose-400" aria-hidden="true" />
                     Sign out
-                  </a>
+                  </button>
                 </div>
               )}
             </div>
           ) : (
             <div className="flex items-center gap-2.5">
-              <Link href="/signin" className="text-zinc-650 hover:text-[#B250DF] font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
+              <Link href="/signin" className="text-zinc-400 hover:text-white font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#CF6DFC] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#B250DF] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer">
+              <Link href="/signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer">
                 Sign up
               </Link>
             </div>
@@ -309,12 +316,12 @@ const Header = () => {
                 </span>
               </div>
               <div className="border-t border-white/5 pt-2">
-                <a
-                  href="/api/auth/signout"
+                <button
+                  onClick={handleSignOut}
                   className="flex justify-center w-full px-4 py-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-400 font-semibold hover:bg-rose-500/20 text-center transition-colors text-sm cursor-pointer"
                 >
                   Sign out
-                </a>
+                </button>
               </div>
             </div>
           ) : (

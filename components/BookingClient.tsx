@@ -22,6 +22,8 @@ import {
   StarIcon,
   SparklesIcon
 } from 'lucide-react';
+import { formatReadableDate, getTodayDateString } from '@/utils/date';
+import { User } from '@/utils/typescript/types';
 
 interface RazorpayResponse {
   razorpay_payment_id: string;
@@ -85,40 +87,18 @@ const ADD_ONS: AddOn[] = [
   }
 ];
 
-const MILESTONES = [
-  {
-    step: 1,
-    percent: 20,
-    title: 'Booking Deposit',
-    due: 'Due now',
-    detail: 'Locks your date and reserves the creator.',
-    state: 'due' as const
-  },
-  {
-    step: 2,
-    percent: 50,
-    title: 'Event Day Payment',
-    due: 'Due on event date',
-    detail: 'Auto-charged the morning of Oct 18, 2026.',
-    state: 'upcoming' as const
-  },
-  {
-    step: 3,
-    percent: 30,
-    title: 'Media Delivery Payment',
-    due: 'Due upon final delivery release',
-    detail: 'Released only after you approve the gallery.',
-    state: 'upcoming' as const
-  }
-];
+// Milestones defined dynamically inside component
 
 interface BookingClientProps {
   photographer: Photographer;
+  initialDate?: string;
+  bookedDates?: string[];
 }
 
-export default function BookingClient({ photographer }: BookingClientProps) {
+export default function BookingClient({ photographer, initialDate = "", bookedDates = [] }: BookingClientProps) {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [eventDate, setEventDate] = useState(initialDate);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -132,6 +112,35 @@ export default function BookingClient({ photographer }: BookingClientProps) {
   const [selected, setSelected] = useState<AddOn['id'][]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isBooked = !!eventDate && bookedDates.includes(eventDate);
+
+  const milestones = [
+    {
+      step: 1,
+      percent: 20,
+      title: 'Booking Deposit',
+      due: 'Due now',
+      detail: 'Locks your date and reserves the creator.',
+      state: 'due' as const
+    },
+    {
+      step: 2,
+      percent: 50,
+      title: 'Event Day Payment',
+      due: 'Due on event date',
+      detail: `Auto-charged the morning of ${formatReadableDate(eventDate) || 'event date'}.`,
+      state: 'upcoming' as const
+    },
+    {
+      step: 3,
+      percent: 30,
+      title: 'Media Delivery Payment',
+      due: 'Due upon final delivery release',
+      detail: 'Released only after you approve the gallery.',
+      state: 'upcoming' as const
+    }
+  ];
 
   // Dynamically load Razorpay checkout script on client mount
   useEffect(() => {
@@ -178,7 +187,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
           dueToday,
           paymentId: null,
           eventDetails: {
-            date: "Sat, Oct 18, 2026",
+            date: eventDate,
             location: "Laurel Hall, " + photographer.location,
             coverage: "6 hours · 2pm–8pm",
             packageName: "Signature Event Coverage",
@@ -304,12 +313,39 @@ export default function BookingClient({ photographer }: BookingClientProps) {
             </div>
 
             <dl className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Event date - Interactive Picker */}
+              <div className="rounded-xl border border-white/10 bg-ink-950/40 p-3.5">
+                <label htmlFor="booking-date" className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-slate-500 cursor-pointer">
+                  <CalendarDaysIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                  Event date
+                </label>
+                <input
+                  id="booking-date"
+                  type="date"
+                  value={eventDate}
+                  min={getTodayDateString()}
+                  onChange={(e) => setEventDate(e.target.value)}
+                  className="mt-1.5 w-full rounded-lg border border-white/10 bg-zinc-950/50 py-1.5 px-2.5 text-sm text-white focus:border-brand-500 focus:outline-none [color-scheme:dark]"
+                />
+                {isBooked && (
+                  <p className="mt-1.5 text-[10px] font-semibold text-rose-400">
+                    Already booked on this date
+                  </p>
+                )}
+                {!eventDate && (
+                  <p className="mt-1.5 text-[10px] font-semibold text-amber-400 animate-pulse">
+                    Please select a date
+                  </p>
+                )}
+                {eventDate && !isBooked && (
+                  <p className="mt-1.5 text-[10px] font-semibold text-emerald-400">
+                    Available
+                  </p>
+                )}
+              </div>
+
+              {/* Other Static Details */}
               {[
-                {
-                  icon: CalendarDaysIcon,
-                  label: 'Event date',
-                  value: 'Sat, Oct 18, 2026'
-                },
                 { icon: ClockIcon, label: 'Coverage', value: '6 hours · 2pm–8pm' },
                 {
                   icon: MapPinIcon,
@@ -390,7 +426,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
             </div>
 
             <ol className="mt-5 space-y-3">
-              {MILESTONES.map((m) => {
+              {milestones.map((m) => {
                 const amount = Math.round((packagePrice * m.percent) / 100);
                 const isDue = m.state === 'due';
                 return (
@@ -542,7 +578,7 @@ export default function BookingClient({ photographer }: BookingClientProps) {
               <button
                 type="button"
                 onClick={handleSubmitBookingRequest}
-                disabled={isSubmitting}
+                disabled={isSubmitting || isBooked || !eventDate}
                 className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (

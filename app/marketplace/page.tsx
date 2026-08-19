@@ -56,5 +56,17 @@ export default async function Page() {
     subscribed: p.subscribed || false,
   }));
 
-  return <MarketplaceClient initialPhotographers={photographers} />;
+  // 4. Query active bookings to determine availability
+  const bookingsDocs = await db
+    .collection("bookings")
+    .find({ status: { $in: ["accepted", "confirmed"] } })
+    .project({ photographerId: 1, "eventDetails.date": 1 })
+    .toArray();
+
+  const bookedDates = bookingsDocs.map((b) => ({
+    photographerId: b.photographerId as string,
+    date: (b.eventDetails?.date || "") as string,
+  }));
+
+  return <MarketplaceClient initialPhotographers={photographers} bookedDates={bookedDates} />;
 }

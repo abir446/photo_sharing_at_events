@@ -13,15 +13,17 @@ import {
   XIcon
 } from 'lucide-react';
 import type { Photographer } from '@/data/photographers';
+import { User } from '@/utils/typescript/types';
 
 interface PortfolioClientProps {
   photographer: Photographer;
   otherPortfolios: string[];
+  date?: string;
 }
 
-export default function PortfolioClient({ photographer, otherPortfolios }: PortfolioClientProps) {
+export default function PortfolioClient({ photographer, otherPortfolios, date }: PortfolioClientProps) {
   const [lightbox, setLightbox] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -114,7 +116,7 @@ export default function PortfolioClient({ photographer, otherPortfolios }: Portf
             </span>
           ) : (
             <Link
-              href={`/booking/${photographer.id}`}
+              href={`/booking/${photographer.id}${date ? `?date=${date}` : ''}`}
               className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
               Book from ₹{photographer.startingPrice.toLocaleString()}
