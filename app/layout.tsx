@@ -72,9 +72,27 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="dark h-full antialiased font-sans"
+      className="h-full antialiased font-sans"
     >
-      <body className="min-h-full flex flex-col bg-ink-900 text-slate-200">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme') || 'dark';
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-ink-900 text-zinc-900 transition-colors duration-300">
         <Providers>
           <JsonLd />
           <Header />

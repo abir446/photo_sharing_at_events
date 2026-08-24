@@ -15,7 +15,9 @@ import {
   InfoIcon,
   MenuIcon,
   XIcon,
-  ImageIcon
+  ImageIcon,
+  SunIcon,
+  MoonIcon
 } from 'lucide-react';
 
 const Header = () => {
@@ -28,6 +30,24 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+  useEffect(() => {
+    const isLight = !document.documentElement.classList.contains('dark');
+    setTheme(isLight ? 'light' : 'dark');
+  }, []);
+
+  const toggleTheme = () => {
+    if (theme === 'dark') {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setTheme('light');
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setTheme('dark');
+    }
+  };
   const menuRef = useRef<HTMLDivElement>(null);
   const user = auth.user;
   const initials = user?.name
@@ -105,7 +125,7 @@ const Header = () => {
 
   if (isLoading) {
     return (
-      <header className="sticky top-0 z-50 w-full border-b border-[#E5E2C4] bg-[#FAF9F5]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full border-b border-ink-700 bg-ink-900/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
           <div className="flex items-center gap-2.5 text-zinc-900 font-bold text-lg">
             <Image
@@ -129,7 +149,7 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#E5E2C4] bg-[#FAF9F5]/85 backdrop-blur-md transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full border-b border-ink-700 bg-ink-900/80 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
         
         {/* Left Logo and Menu */}
@@ -156,10 +176,10 @@ const Header = () => {
                 <Link
                   key={link.to}
                   href={link.to}
-                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] ${
+                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                     active ?
-                    'bg-[#C1BFFF]/25 text-[#B250DF]' :
-                    'text-zinc-650 hover:bg-[#C1BFFF]/10 hover:text-zinc-900'
+                    'bg-brand-400/15 text-brand-400' :
+                    'text-zinc-600 hover:bg-brand-400/5 hover:text-zinc-900'
                   }`}
                 >
                   {link.label}
@@ -171,6 +191,20 @@ const Header = () => {
 
         {/* Right Section Profile / Login */}
         <div className="hidden md:flex items-center gap-3">
+          {/* Day/Night Theme Toggle */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="p-2.5 rounded-xl border border-ink-700 bg-ink-800 text-zinc-900 hover:bg-ink-700/50 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <SunIcon className="h-4.5 w-4.5 text-amber-400" />
+            ) : (
+              <MoonIcon className="h-4.5 w-4.5 text-brand-600" />
+            )}
+          </button>
+
           {isAuthenticated ? (
             <div className="relative" ref={menuRef}>
               <button
@@ -178,9 +212,9 @@ const Header = () => {
                 onClick={() => setIsUserMenuOpen((v) => !v)}
                 aria-haspopup="menu"
                 aria-expanded={isUserMenuOpen}
-                className="flex items-center gap-2.5 rounded-xl border border-[#E5E2C4] bg-white py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-[#FAF9F5] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer"
+                className="flex items-center gap-2.5 rounded-xl border border-ink-700 bg-ink-800 py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-ink-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#CF6DFC] text-xs font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-xs font-bold text-white">
                   {initials}
                 </span>
                 <span className="leading-tight">
@@ -200,13 +234,13 @@ const Header = () => {
               {isUserMenuOpen && (
                 <div
                   role="menu"
-                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-[#E5E2C4] bg-white p-1.5 shadow-lg z-50"
+                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-ink-700 bg-ink-800 p-1.5 shadow-lg z-50"
                 >
                   {isPhotographer ? (
                     <Link
                       href="/dashboard"
                       onClick={() => setIsUserMenuOpen(false)}
-                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-750 transition-colors hover:bg-brand-400/10 hover:text-zinc-900"
                     >
                       <CalendarIcon className="h-4 w-4 text-zinc-400" />
                       Dashboard
@@ -216,7 +250,7 @@ const Header = () => {
                       <Link
                         href="/dashboard"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-brand-400/10 hover:text-zinc-900"
                       >
                         <CalendarIcon className="h-4 w-4 text-zinc-400" />
                         My Events
@@ -224,14 +258,14 @@ const Header = () => {
                       <Link
                         href="/dashboard/create"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-[#C1BFFF]/15 hover:text-zinc-900"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-brand-400/10 hover:text-zinc-900"
                       >
                         <PlusIcon className="h-4 w-4 text-zinc-400" />
                         New Event
                       </Link>
                     </>
                   )}
-                  <div className="my-1.5 h-px bg-[#E5E2C4]" />
+                  <div className="my-1.5 h-px bg-ink-700" />
                   <a
                     href="/api/auth/signout"
                     className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-650 transition-colors hover:bg-rose-50 cursor-pointer"
@@ -244,28 +278,43 @@ const Header = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2.5">
-              <Link href="/signin" className="text-zinc-650 hover:text-[#B250DF] font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
+              <Link href="/signin" className="text-zinc-600 hover:text-brand-500 font-medium text-sm transition-colors py-2 px-3 focus:outline-none cursor-pointer">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#CF6DFC] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#B250DF] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CF6DFC] cursor-pointer">
+              <Link href="/signup" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer">
                 Sign up
               </Link>
             </div>
           )}
         </div>
 
-        {/* Mobile toggle button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:text-white focus:outline-none cursor-pointer"
-          aria-label="Toggle menu"
-        >
-          {isOpen ? (
-            <XIcon className="w-5 h-5" />
-          ) : (
-            <MenuIcon className="w-5 h-5" />
-          )}
-        </button>
+        {/* Mobile toggle button & Theme Toggle */}
+        <div className="flex md:hidden items-center gap-2.5">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="p-2 rounded-xl border border-ink-700 bg-ink-800 text-zinc-900 hover:bg-ink-700/50 transition-colors cursor-pointer focus:outline-none"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <SunIcon className="h-4.5 w-4.5 text-amber-400" />
+            ) : (
+              <MoonIcon className="h-4.5 w-4.5 text-brand-600" />
+            )}
+          </button>
+
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 rounded-lg border border-ink-700 bg-ink-800 text-zinc-900 hover:text-brand-500 focus:outline-none cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? (
+              <XIcon className="w-5 h-5" />
+            ) : (
+              <MenuIcon className="w-5 h-5" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Drawer */}

@@ -51,23 +51,23 @@ function FeatureCard({
   isAuth
 }: FeatureCardProps) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-3xl border border-[#E5E2C4] bg-white shadow-sm transition-colors hover:border-[#CF6DFC]/35 h-full">
+    <article className="group flex flex-col overflow-hidden rounded-3xl border border-ink-700 bg-ink-800/40 backdrop-blur-md shadow-sm transition-all duration-500 hover:border-brand-500/50 hover:shadow-[0_0_30px_rgba(217,70,239,0.12)] h-full">
       <div className="relative h-64 overflow-hidden">
         <img
           src={image}
           alt={imageAlt}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent" />
-        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-[#E5E2C4] bg-white px-3 py-1.5 text-xs font-bold text-zinc-700 shadow-sm">
-          <EyebrowIcon className="h-3.5 w-3.5 text-[#CF6DFC]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-ink-950/10 to-transparent" />
+        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-ink-700 bg-ink-900/90 px-3 py-1.5 text-xs font-bold text-zinc-700 shadow-sm">
+          <EyebrowIcon className="h-3.5 w-3.5 text-brand-400" />
           {eyebrow}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-7">
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">{title}</h2>
-        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-zinc-500">
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 group-hover:text-brand-400 transition-colors">{title}</h2>
+        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-zinc-550">
           {subtitle}
         </p>
 
@@ -75,7 +75,7 @@ function FeatureCard({
           {meta.map((item) => (
             <li
               key={item}
-              className="rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1 text-xs font-medium text-slate-300"
+              className="rounded-lg border border-zinc-200/10 bg-zinc-100/40 px-2.5 py-1 text-xs font-medium text-zinc-700"
             >
               {item}
             </li>
@@ -150,29 +150,39 @@ export default async function Home() {
   ];
 
   return (
-    <main className="mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[calc(100vh-4rem)] flex flex-col justify-between">
+    <main className="relative overflow-hidden mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[calc(100vh-4rem)] flex flex-col justify-between">
       
+      {/* Decorative ambient background glows */}
+      <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-500/5 blur-[120px] pointer-events-none -z-10 animate-pulse-slow" />
+      <div className="absolute bottom-[20%] right-[-10%] w-[450px] h-[450px] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none -z-10 animate-float-slow" />
+
       {/* Welcome / Intro */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-[#E5E2C4]">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-ink-700 z-10">
         <div>
           {auth ? (
-            <p className="text-sm font-semibold text-[#B250DF]">Welcome back, {user?.given_name || "Host"}</p>
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 px-3.5 py-1.5 text-xs font-bold text-brand-600 dark:text-brand-400 shadow-glow">
+              Welcome back, {user?.given_name || "Host"}
+            </p>
           ) : (
-            <p className="text-sm font-semibold text-[#B250DF]">Welcome to DropCast</p>
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 px-3.5 py-1.5 text-xs font-bold text-brand-600 dark:text-brand-400 shadow-glow">
+              Welcome to DropCast
+            </p>
           )}
-          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-zinc-900 leading-tight">
-            Plan every moment of your event
+          <h1 className="mt-4 text-4xl sm:text-5xl font-black tracking-tight leading-tight">
+            <span className="bg-gradient-to-r from-brand-400 via-brand-500 to-indigo-400 bg-clip-text text-transparent">
+              Plan every moment of your event
+            </span>
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-zinc-550 leading-relaxed">
+          <p className="mt-3.5 max-w-xl text-[15px] text-zinc-550 leading-relaxed">
             Book vetted professional creators and collect every guest photo in one shared, secure gallery automatically.
           </p>
           
           {!auth && (
-            <div className="mt-5 flex items-center gap-3">
-              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#CF6DFC] hover:bg-[#B250DF] text-white font-semibold text-sm transition-colors cursor-pointer shadow-sm">
+            <div className="mt-6 flex items-center gap-3">
+              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm transition-colors cursor-pointer shadow-sm">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-[#E5E2C4] bg-white hover:bg-zinc-50 text-zinc-900 font-semibold text-sm transition-colors cursor-pointer">
+              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-ink-700 bg-ink-800 hover:bg-ink-700/50 text-zinc-900 font-semibold text-sm transition-colors cursor-pointer">
                 Get started
               </Link>
             </div>
@@ -183,10 +193,10 @@ export default async function Home() {
           {stats.map(({ label, value, icon: Icon }) => (
             <div
               key={label}
-              className="min-w-[150px] rounded-2xl border border-[#E5E2C4] bg-white px-5 py-4 shadow-sm"
+              className="min-w-[160px] rounded-2xl border border-ink-700 bg-ink-800/40 backdrop-blur-md px-5 py-4 shadow-sm hover:border-brand-500/30 transition-all duration-300 hover:shadow-glow"
             >
               <dt className="flex items-center gap-2 text-xs font-semibold text-zinc-550">
-                <Icon className="h-3.5 w-3.5 text-[#CF6DFC]" aria-hidden="true" />
+                <Icon className="h-3.5 w-3.5 text-brand-400" aria-hidden="true" />
                 {label}
               </dt>
               <dd className="mt-1.5 text-2xl font-bold text-zinc-900">{value}</dd>
@@ -196,7 +206,7 @@ export default async function Home() {
       </div>
 
       {/* Hero cards */}
-      <div className="mt-9 grid grid-cols-1 gap-7 lg:grid-cols-2">
+      <div className="mt-9 grid grid-cols-1 gap-7 lg:grid-cols-2 z-10">
         <FeatureCard
           image="/33c39f57-d46e-4f25-addf-129ca2506ae8.jpg"
           imageAlt="Professional photographer capturing an evening reception"
@@ -227,7 +237,7 @@ export default async function Home() {
       {/* Assurance banner */}
       <section
         aria-labelledby="assurance-heading"
-        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-[#E5E2C4] bg-white p-7 md:grid-cols-3 shadow-sm"
+        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-ink-700 bg-ink-800/30 backdrop-blur-md p-7 md:grid-cols-3 shadow-sm z-10 hover:border-brand-500/20 transition-all duration-300"
       >
         <h2 id="assurance-heading" className="sr-only">
           Why hosts choose DropCast
@@ -250,8 +260,8 @@ export default async function Home() {
           }
         ].map(({ icon: Icon, title, copy }) => (
           <div key={title} className="flex gap-4">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E5E2C4] bg-[#FAF9F5]">
-              <Icon className="h-5 w-5 text-[#CF6DFC]" aria-hidden="true" />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-ink-700 bg-ink-900/80">
+              <Icon className="h-5 w-5 text-brand-400" aria-hidden="true" />
             </span>
             <div>
               <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
