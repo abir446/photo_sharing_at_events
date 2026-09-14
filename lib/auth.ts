@@ -12,6 +12,16 @@ interface SessionDoc {
   expiresAt: Date;
 }
 
+export function isAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  const adminEmailsEnv = process.env.ADMIN_EMAILS || "";
+  const adminList = adminEmailsEnv
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  return adminList.includes(email.trim().toLowerCase());
+}
+
 export async function getCurrentUser() {
   try {
     const cookieStore = await cookies();
@@ -31,6 +41,17 @@ export async function getCurrentUser() {
 
     // Find user
     const user = await db.collection("users").findOne({ userId: session.userId });
+    if (!user) return null;
+
+    // Auto-promote if user's email is in ADMIN_EMAILS list
+    if (isAdminEmail(user.email) && user.role !== "admin") {
+      await db.collection("users").updateOne(
+        { userId: user.userId },
+        { $set: { role: "admin" } }
+      );
+      user.role = "admin";
+    }
+
     return user;
   } catch (error) {
     console.error("Error getting current user:", error);

@@ -15,7 +15,8 @@ import {
   InfoIcon,
   MenuIcon,
   XIcon,
-  ImageIcon
+  ImageIcon,
+  ShieldCheckIcon
 } from 'lucide-react';
 
 const Header = () => {
@@ -28,13 +29,14 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const user = auth.user;
   const initials = user?.name
     ? user.name.split(/\s+/).map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
     : "DC";
-  const fullName = user?.name || (isPhotographer ? "Photographer" : "Event Host");
-  const roleName = isPhotographer ? "Photographer" : "Event Host";
+  const roleName = isAdmin ? "Administrator" : isPhotographer ? "Photographer" : "Event Host";
+  const fullName = user?.name || roleName;
   const isAuthenticated = auth.isAuthenticated;
   const isLoading = auth.isLoading;
 
@@ -55,6 +57,7 @@ const Header = () => {
           isLoading: false
         });
         setIsPhotographer(data.isAuthenticated && data.user?.role === "creator");
+        setIsAdmin(data.isAuthenticated && data.user?.role === "admin");
       })
       .catch((err) => {
         console.error("Auth check failed:", err);
@@ -96,9 +99,14 @@ const Header = () => {
 
   // Navigation Links
   const links = [
-    ...(!isPhotographer ? [{ label: 'Marketplace', to: '/marketplace', icon: SparklesIcon }] : []),
+    ...(isAdmin ? [{ label: 'Admin Portal', to: '/admin', icon: ShieldCheckIcon }] : []),
+    ...(!isPhotographer && !isAdmin ? [{ label: 'Marketplace', to: '/marketplace', icon: SparklesIcon }] : []),
     ...(isAuthenticated ? (
-      isPhotographer ? [
+      isAdmin ? [
+        { label: 'QR Gallery', to: '/qr-gallery', icon: ImageIcon },
+        { label: 'Marketplace', to: '/marketplace', icon: SparklesIcon },
+        { label: 'My Events', to: '/dashboard', icon: CalendarIcon }
+      ] : isPhotographer ? [
         { label: 'Dashboard', to: '/dashboard', icon: CalendarIcon },
         { label: 'QR Gallery', to: '/qr-gallery', icon: ImageIcon }
       ] : [
@@ -209,6 +217,16 @@ const Header = () => {
                   role="menu"
                   className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 p-1.5 shadow-lg z-50"
                 >
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-brand-400 bg-brand-500/10 transition-colors hover:bg-brand-500/20 font-semibold mb-1"
+                    >
+                      <ShieldCheckIcon className="h-4 w-4 text-brand-400" />
+                      Admin Portal
+                    </Link>
+                  )}
                   {isPhotographer ? (
                     <Link
                       href="/dashboard"

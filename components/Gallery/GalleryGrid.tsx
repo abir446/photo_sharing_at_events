@@ -4,30 +4,48 @@ import MediaCard from "./MediaCard";
 
 export interface GalleryGridProps {
   mediaList: MediaItem[];
+  showModeration?: boolean;
+  onApprove?: (id: string) => void;
+  onDecline?: (id: string) => void;
+  emptyTitle?: string;
+  emptySubtitle?: string;
+  title?: string;
+  hideHeader?: boolean;
 }
 
-export default function GalleryGrid({ mediaList }: GalleryGridProps) {
+export default function GalleryGrid({
+  mediaList,
+  showModeration = false,
+  onApprove,
+  onDecline,
+  emptyTitle = "No media shared yet",
+  emptySubtitle = "Scan the QR code, select a photo or video, and share your perspective of the event!",
+  title = "📸 Live Media Stream",
+  hideHeader = false,
+}: GalleryGridProps) {
   return (
     <div className="space-y-6">
       {/* Live Gallery Title */}
-      <div className="pt-4 flex items-center justify-between border-t border-slate-800/80">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          📸 Live Media Stream
-          <span className="inline-flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+      {!hideHeader && (
+        <div className="pt-4 flex items-center justify-between border-t border-slate-800/80">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            {title}
+            <span className="inline-flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+          </h2>
+          <span className="text-xs text-slate-400">
+            {mediaList.length} shared moment{mediaList.length !== 1 ? "s" : ""}
           </span>
-        </h2>
-        <span className="text-xs text-slate-400">
-          {mediaList.length} shared moment{mediaList.length !== 1 ? "s" : ""}
-        </span>
-      </div>
+        </div>
+      )}
 
       {/* Photo/Video Gallery Grid */}
       {mediaList.length === 0 ? (
-        <div className="bg-slate-900/20 border border-slate-800/60 rounded-3xl py-20 text-center space-y-4">
-          <div className="w-16 h-16 bg-slate-800/40 rounded-full flex items-center justify-center mx-auto text-slate-500">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <div className="bg-slate-900/20 border border-slate-800/60 rounded-3xl py-16 text-center space-y-4">
+          <div className="w-14 h-14 bg-slate-800/40 rounded-full flex items-center justify-center mx-auto text-slate-500">
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -37,16 +55,22 @@ export default function GalleryGrid({ mediaList }: GalleryGridProps) {
             </svg>
           </div>
           <div className="space-y-1">
-            <p className="text-slate-300 font-semibold text-base">No media shared yet</p>
+            <p className="text-slate-300 font-semibold text-sm">{emptyTitle}</p>
             <p className="text-slate-500 text-xs max-w-xs mx-auto">
-              Scan the QR code, select a photo or video, and share your perspective of the event!
+              {emptySubtitle}
             </p>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {mediaList.map((item) => (
-            <MediaCard key={item._id} item={item} />
+            <MediaCard
+              key={item._id}
+              item={item}
+              showModeration={showModeration}
+              onApprove={onApprove}
+              onDecline={onDecline}
+            />
           ))}
         </div>
       )}

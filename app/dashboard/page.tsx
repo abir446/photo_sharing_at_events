@@ -22,7 +22,7 @@ import {
   ZapIcon
 } from 'lucide-react';
 
-import PhotographerDashboard from "@/components/PhotographerDashboard";
+import PhotographerDashboard, { Booking } from "@/components/PhotographerDashboard";
 
 
 export default async function Page() {
@@ -121,7 +121,7 @@ export default async function Page() {
     });
 
     let profile = null;
-    let bookings: any[] = [];
+    let bookings: Booking[] = [];
 
     if (profileDoc) {
       profile = {

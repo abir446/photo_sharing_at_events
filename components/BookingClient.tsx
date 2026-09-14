@@ -93,9 +93,15 @@ interface BookingClientProps {
   photographer: Photographer;
   initialDate?: string;
   bookedDates?: string[];
+  isAdmin?: boolean;
 }
 
-export default function BookingClient({ photographer, initialDate = "", bookedDates = [] }: BookingClientProps) {
+export default function BookingClient({
+  photographer,
+  initialDate = "",
+  bookedDates = [],
+  isAdmin = false,
+}: BookingClientProps) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [eventDate, setEventDate] = useState(initialDate);
@@ -184,8 +190,9 @@ export default function BookingClient({ photographer, initialDate = "", bookedDa
           packagePrice,
           addOns: selected,
           totalAmount: total,
-          dueToday,
-          paymentId: null,
+          dueToday: isAdmin ? 0 : dueToday,
+          paymentId: isAdmin ? "admin_test_booking_free" : null,
+          isAdminTest: isAdmin,
           eventDetails: {
             date: eventDate,
             location: "Laurel Hall, " + photographer.location,
@@ -542,6 +549,18 @@ export default function BookingClient({ photographer, initialDate = "", bookedDa
               </div>
             )}
 
+            {isAdmin && (
+              <div className="mb-4 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-2.5 text-left">
+                <ShieldCheckIcon className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-amber-300 font-bold text-xs">Admin Test Mode Active</p>
+                  <p className="text-amber-200/80 text-[11px] mt-0.5 leading-snug">
+                    You are testing creator booking in Admin mode. Deposits and charges are waived (₹0).
+                  </p>
+                </div>
+              </div>
+            )}
+
             <dl className="space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <dt className="text-slate-400">Signature Event Coverage</dt>
@@ -568,11 +587,23 @@ export default function BookingClient({ photographer, initialDate = "", bookedDa
             <div className="mt-5 flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-white/10 pt-5">
               <div>
                 <p className="text-sm text-slate-400">Amount Due Today</p>
-                <p className="mt-1 text-3xl font-extrabold tracking-tight text-white">
-                  ₹{dueToday.toLocaleString()}
-                </p>
+                {isAdmin ? (
+                  <div className="mt-1 flex items-baseline gap-2">
+                    <p className="text-3xl font-extrabold tracking-tight text-emerald-400">
+                      ₹0
+                    </p>
+                    <span className="text-xs text-slate-500 line-through">₹{dueToday.toLocaleString()}</span>
+                    <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">Waived for Admin</span>
+                  </div>
+                ) : (
+                  <p className="mt-1 text-3xl font-extrabold tracking-tight text-white">
+                    ₹{dueToday.toLocaleString()}
+                  </p>
+                )}
                 <p className="mt-1 text-xs text-slate-500">
-                  Deposit amount locks the date. Remaining ₹{(total - dueToday).toLocaleString()} due later.
+                  {isAdmin
+                    ? "Admin testing: No actual payment will be charged."
+                    : `Deposit amount locks the date. Remaining ₹${(total - dueToday).toLocaleString()} due later.`}
                 </p>
               </div>
               <button
@@ -589,7 +620,7 @@ export default function BookingClient({ photographer, initialDate = "", bookedDa
                 ) : (
                   <>
                     <SparklesIcon className="h-4 w-4" aria-hidden="true" />
-                    Request Booking
+                    {isAdmin ? "Request Booking (Free for Admin)" : "Request Booking"}
                   </>
                 )}
               </button>

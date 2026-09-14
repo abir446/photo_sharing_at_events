@@ -34,6 +34,7 @@ interface MediaItem {
   url: string;
   resourceType: string;
   createdAt: string;
+  state?: "approved" | "pending" | "hidden" | "flagged";
 }
 
 interface QRGalleryClientProps {
@@ -48,14 +49,23 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
   const [copied, setCopied] = useState(false);
   const [hiddenPhotoIds, setHiddenPhotoIds] = useState<Set<string>>(new Set());
   const [flaggedPhotoIds, setFlaggedPhotoIds] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState<"approved" | "pending">("approved");
 
   const currentEvent = useMemo(() => {
     return events.find((e) => e.id === selectedEventId);
   }, [events, selectedEventId]);
 
-  const currentMedia = useMemo(() => {
-    return (mediaMap[selectedEventId] || []).filter((item) => !hiddenPhotoIds.has(item._id));
+  const approvedMedia = useMemo(() => {
+    return (mediaMap[selectedEventId] || [])
+      .filter((item) => !hiddenPhotoIds.has(item._id) && (item.state === "approved" || !item.state));
   }, [mediaMap, selectedEventId, hiddenPhotoIds]);
+
+  const pendingMedia = useMemo(() => {
+    return (mediaMap[selectedEventId] || [])
+      .filter((item) => !hiddenPhotoIds.has(item._id) && item.state === "pending");
+  }, [mediaMap, selectedEventId, hiddenPhotoIds]);
+
+  const displayedMedia = activeTab === "pending" ? pendingMedia : approvedMedia;
 
   // Poll for real-time live uploads of selected event
   useEffect(() => {
@@ -100,6 +110,56 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
     navigator.clipboard.writeText(currentEvent.uploadUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
+  };
+
+  const handleApprove = async (photoId: string) => {
+    // Optimistic update
+    setMediaMap((prev) => ({
+      ...prev,
+      [selectedEventId]: (prev[selectedEventId] || []).map((item) =>
+        item._id === photoId ? { ...item, state: "approved" } : item
+      )
+    }));
+
+    try {
+      const response = await fetch(`/api/media/${photoId}/moderate`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: "approved" }),
+      });
+      if (!response.ok) {
+        console.error("Failed to approve photo:", await response.text());
+      }
+    } catch (err) {
+      console.error("Error approving photo:", err);
+    }
+  };
+
+  const handleApproveAll = async () => {
+    const pendingIds = pendingMedia.map((p) => p._id);
+    if (pendingIds.length === 0) return;
+
+    // Optimistic update
+    setMediaMap((prev) => ({
+      ...prev,
+      [selectedEventId]: (prev[selectedEventId] || []).map((item) =>
+        pendingIds.includes(item._id) ? { ...item, state: "approved" } : item
+      )
+    }));
+
+    try {
+      await Promise.all(
+        pendingIds.map((id) =>
+          fetch(`/api/media/${id}/moderate`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ state: "approved" }),
+          })
+        )
+      );
+    } catch (err) {
+      console.error("Error approving all photos:", err);
+    }
   };
 
   const handleHide = async (photoId: string) => {
@@ -206,8 +266,17 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
               </span>
-              {currentMedia.length} Photos Uploaded
+              {approvedMedia.length} Live to Guests
             </span>
+            {pendingMedia.length > 0 && (
+              <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1.5 text-sm font-semibold text-amber-300">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
+                </span>
+                {pendingMedia.length} Pending Approval
+              </span>
+            )}
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200">
               <UsersIcon className="h-4 w-4 text-brand-400" aria-hidden="true" />
               Connected Live
@@ -235,14 +304,71 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
 
       <div className="mt-7 flex flex-col lg:flex-row items-start gap-7">
         <section aria-label="Live guest photo feed" className="min-w-0 flex-1 w-full">
-          <div className="mb-4 flex items-center gap-2 text-sm text-slate-400">
-            <ImageIcon className="h-4 w-4 text-brand-400" aria-hidden="true" />
-            Live feed — newest uploads appear first. Hover a photo to moderate.
+          {/* Moderation Section Switcher Tabs */}
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveTab("approved")}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === "approved"
+                    ? "bg-brand-500 text-white shadow-glow"
+                    : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                All Approved
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  activeTab === "approved" ? "bg-white/20 text-white" : "bg-white/10 text-slate-300"
+                }`}>
+                  {approvedMedia.length}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("pending")}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === "pending"
+                    ? "bg-amber-500 text-ink-950 font-extrabold shadow-glow"
+                    : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                Yet to be Approved
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                  activeTab === "pending"
+                    ? "bg-ink-950/30 text-ink-950"
+                    : pendingMedia.length > 0
+                    ? "bg-amber-500 text-ink-950 font-bold"
+                    : "bg-white/10 text-slate-300"
+                }`}>
+                  {pendingMedia.length}
+                </span>
+              </button>
+            </div>
+
+            {activeTab === "pending" && pendingMedia.length > 0 && (
+              <button
+                type="button"
+                onClick={handleApproveAll}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-colors cursor-pointer"
+              >
+                <CheckCircleIcon className="w-4 h-4" />
+                Approve All ({pendingMedia.length})
+              </button>
+            )}
           </div>
 
-          {currentMedia.length > 0 ? (
+          <div className="mb-4 flex items-center gap-2 text-sm text-slate-400">
+            <ImageIcon className="h-4 w-4 text-brand-400" aria-hidden="true" />
+            {activeTab === "pending"
+              ? "Pending review queue — approve photos to make them visible to all guests in real-time."
+              : "Live feed — photos currently visible to all guests. Hover a photo to moderate."}
+          </div>
+
+          {displayedMedia.length > 0 ? (
             <div className="columns-1 md:columns-2 xl:columns-3 gap-5 [column-fill:_balance]">
-              {currentMedia.map((photo) => {
+              {displayedMedia.map((photo) => {
+                const isPending = photo.state === "pending";
                 const isFlagged = flaggedPhotoIds.has(photo._id);
                 return (
                   <figure
@@ -255,9 +381,17 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
                       className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] max-h-[400px]"
                     />
 
-                    {isFlagged && (
+                    {isPending ? (
+                      <span className="absolute left-3 top-3 rounded-md px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                        Pending Approval
+                      </span>
+                    ) : isFlagged ? (
                       <span className="absolute left-3 top-3 rounded-md px-2 py-0.5 text-[11px] font-semibold backdrop-blur-md bg-rose-500/20 text-rose-300 border border-rose-500/30">
                         Flagged
+                      </span>
+                    ) : (
+                      <span className="absolute left-3 top-3 rounded-md px-2 py-0.5 text-[11px] font-semibold backdrop-blur-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Live
                       </span>
                     )}
 
@@ -277,22 +411,45 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
                       </div>
 
                       <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto">
-                        <button
-                          type="button"
-                          onClick={() => handleHide(photo._id)}
-                          className="inline-flex items-center justify-center gap-1 rounded-lg border border-white/20 bg-white/10 px-2 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-white/20 cursor-pointer"
-                        >
-                          <EyeOffIcon className="h-3.5 w-3.5" aria-hidden="true" />
-                          Hide
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleFlag(photo._id)}
-                          className="inline-flex items-center justify-center gap-1 rounded-lg border border-rose-400/40 bg-rose-500/20 px-2 py-1.5 text-[11px] font-semibold text-rose-200 transition-colors hover:bg-rose-500/30 cursor-pointer"
-                        >
-                          <FlagIcon className="h-3.5 w-3.5" aria-hidden="true" />
-                          Flag
-                        </button>
+                        {isPending ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleApprove(photo._id)}
+                              className="inline-flex items-center justify-center gap-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 px-2 py-1.5 text-[11px] font-bold text-white transition-colors cursor-pointer shadow-sm"
+                            >
+                              <CheckCircleIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                              Approve
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleHide(photo._id)}
+                              className="inline-flex items-center justify-center gap-1 rounded-lg border border-rose-500/30 bg-rose-500/20 hover:bg-rose-500/30 px-2 py-1.5 text-[11px] font-semibold text-rose-200 transition-colors cursor-pointer"
+                            >
+                              <EyeOffIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                              Decline
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleHide(photo._id)}
+                              className="inline-flex items-center justify-center gap-1 rounded-lg border border-white/20 bg-white/10 px-2 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-white/20 cursor-pointer"
+                            >
+                              <EyeOffIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                              Hide
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleFlag(photo._id)}
+                              className="inline-flex items-center justify-center gap-1 rounded-lg border border-rose-400/40 bg-rose-500/20 px-2 py-1.5 text-[11px] font-semibold text-rose-200 transition-colors hover:bg-rose-500/30 cursor-pointer"
+                            >
+                              <FlagIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                              Flag
+                            </button>
+                          </>
+                        )}
                       </div>
                     </figcaption>
                   </figure>
@@ -302,8 +459,14 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
           ) : (
             <div className="flex flex-col items-center justify-center border border-dashed border-white/15 rounded-2xl p-16 bg-white/[0.01]">
               <ImageIcon className="h-8 w-8 text-slate-600" />
-              <h3 className="mt-4 text-base font-semibold text-white">No photos in feed</h3>
-              <p className="mt-1 text-xs text-slate-400">Photos uploaded by guests will instantly show up here.</p>
+              <h3 className="mt-4 text-base font-semibold text-white">
+                {activeTab === "pending" ? "No photos waiting for approval" : "No approved photos yet"}
+              </h3>
+              <p className="mt-1 text-xs text-slate-400">
+                {activeTab === "pending"
+                  ? "When guests upload memories, they will appear here for review before going live to all guests."
+                  : "Approved photos will instantly show up here and be visible to your guests."}
+              </p>
             </div>
           )}
         </section>

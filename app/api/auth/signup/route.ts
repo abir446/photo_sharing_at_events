@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { hashPassword, createSession } from "@/lib/auth";
+import { hashPassword, createSession, isAdminEmail } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password, role } = await req.json();
+    const { name, email, password, role, adminSecretKey } = await req.json();
 
-    if (!name?.trim() || !email?.trim() || !password?.trim() || !role) {
+    if (!name?.trim() || !email?.trim() || !password?.trim()) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    if (role !== "creator" && role !== "user") {
+    let finalRole = role;
+
+    // Check if user is configured as an admin via email or secret key
+    const envAdminSecret = process.env.ADMIN_SECRET_KEY || "dropcast_admin_secret_2026";
+    if ((adminSecretKey && adminSecretKey === envAdminSecret) || isAdminEmail(email)) {
+      finalRole = "admin";
+    }
+
+    if (!finalRole || (finalRole !== "creator" && finalRole !== "user" && finalRole !== "admin")) {
       return NextResponse.json({ error: "Invalid role selected" }, { status: 400 });
     }
 
@@ -31,14 +39,14 @@ export async function POST(req: NextRequest) {
       email: email.toLowerCase().trim(),
       name: name.trim(),
       password: hashedPassword,
-      role,
+      role: finalRole,
       createdAt: new Date(),
     };
 
     await db.collection("users").insertOne(newUser);
 
     // If role is creator, sync with photographer_emails
-    if (role === "creator") {
+    if (finalRole === "creator") {
       await db.collection("photographer_emails").updateOne(
         { email: newUser.email },
         { $set: { email: newUser.email, userId, registeredAt: new Date() } },
@@ -50,8 +58,9 @@ export async function POST(req: NextRequest) {
     await createSession(userId);
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Signup API error:", error);
-    return NextResponse.json({ error: error.message || "An unexpected error occurred" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "An unexpected error occurred";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

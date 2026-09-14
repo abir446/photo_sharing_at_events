@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { hashPassword, createSession } from "@/lib/auth";
+import { hashPassword, createSession, isAdminEmail } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,12 +23,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
+    // Auto-promote if email is in ADMIN_EMAILS
+    if (isAdminEmail(user.email) && user.role !== "admin") {
+      await db.collection("users").updateOne(
+        { userId: user.userId },
+        { $set: { role: "admin" } }
+      );
+    }
+
     // Set cookie session
     await createSession(user.userId);
 
-    return NextResponse.json({ success: true });
-  } catch (error: any) {
+    return NextResponse.json({ success: true, role: isAdminEmail(user.email) ? "admin" : user.role });
+  } catch (error: unknown) {
     console.error("Signin API error:", error);
-    return NextResponse.json({ error: error.message || "An unexpected error occurred" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

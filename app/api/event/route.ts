@@ -36,7 +36,10 @@ export async function POST(request: NextRequest) {
     const planStorage = formData.get("planStorage") as string;
     const planPrice = formData.get("planPrice") as string;
 
-    if (!eventName || !eventDate || !paymentId || !planId) {
+    const isAdmin = userDoc.role === "admin";
+    const effectivePaymentId = paymentId || (isAdmin ? "admin_test_free" : "");
+
+    if (!eventName || !eventDate || !effectivePaymentId || !planId) {
       return NextResponse.json(
         { success: false, error: "Event details, selected plan, and payment confirmation are required" },
         { status: 400 }
@@ -53,7 +56,8 @@ export async function POST(request: NextRequest) {
       date: new Date(eventDate),
       createdAt: new Date(),
       createdBy: user.email,
-      paymentId,
+      paymentId: effectivePaymentId,
+      isAdminTest: isAdmin,
       plan: {
         id: planId,
         name: planName,

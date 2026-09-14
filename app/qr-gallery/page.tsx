@@ -27,9 +27,10 @@ export default async function Page() {
   const client = await clientPromise;
   const db = client.db("dropcast");
   
+  const isAdmin = userDoc.role === "admin";
   const events = await db
     .collection<MongoEvent>("events")
-    .find({ userId: user.id })
+    .find(isAdmin ? {} : { userId: user.id })
     .sort({ _id: -1 })
     .toArray();
 
@@ -49,6 +50,7 @@ export default async function Page() {
       publicId: doc.publicId,
       resourceType: (doc.resourceType || "image") as "image" | "video",
       createdAt: doc.createdAt.toISOString(),
+      state: doc.state || "approved",
     }));
   }
 

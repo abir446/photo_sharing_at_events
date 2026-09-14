@@ -7,6 +7,7 @@ export interface MediaItem {
   publicId: string;
   resourceType: "image" | "video";
   createdAt: string;
+  state?: "approved" | "pending" | "hidden" | "flagged";
 }
 
 export interface User {
@@ -21,6 +22,8 @@ export interface GalleryClientProps {
   eventName: string;
   eventDate: string;
   initialMedia: MediaItem[];
+  isHost?: boolean;
+  isAdmin?: boolean;
 }
 
 export interface MongoEvent {

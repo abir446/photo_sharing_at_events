@@ -23,21 +23,17 @@ interface MarketplaceClientProps {
 
 export default function MarketplaceClient({ initialPhotographers, bookedDates = [] }: MarketplaceClientProps) {
   const [location, setLocation] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      return searchParams.get('date') || '';
+    }
+    return '';
+  });
   const [selectedStyles, setSelectedStyles] = useState<StyleTag[]>([]);
   const [budget, setBudget] = useState<[number, number]>([40000, 400000]);
   const [sort, setSort] = useState(SORTS[0]);
   const [drawerOpened, setDrawerOpened] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const searchParams = new URLSearchParams(window.location.search);
-      const dateParam = searchParams.get('date');
-      if (dateParam) {
-        setSelectedDate(dateParam);
-      }
-    }
-  }, []);
 
   const results = useMemo(() => {
     const filtered = initialPhotographers.filter((p) => {

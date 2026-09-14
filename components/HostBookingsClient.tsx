@@ -76,9 +76,13 @@ interface Booking {
 
 interface HostBookingsClientProps {
   initialBookings: Booking[];
+  isAdmin?: boolean;
 }
 
-export default function HostBookingsClient({ initialBookings }: HostBookingsClientProps) {
+export default function HostBookingsClient({
+  initialBookings,
+  isAdmin = false,
+}: HostBookingsClientProps) {
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
   const [payingId, setPayingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -98,6 +102,45 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
     if (payingId) return;
     setPayingId(booking.id);
     setError(null);
+
+    // If user is Admin, bypass Razorpay and confirm deposit directly for free
+    if (isAdmin) {
+      try {
+        const payResponse = await fetch(`/api/booking/${booking.id}/pay`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            paymentId: "admin_test_deposit_free",
+          }),
+        });
+
+        const res = await payResponse.json();
+        if (res.success) {
+          showToast.success("Deposit confirmed (Admin Free Test)!", {
+            duration: 4000,
+            position: "top-right",
+            transition: "bounceIn",
+          });
+
+          // Update state locally
+          setBookings((prev) =>
+            prev.map((b) =>
+              b.id === booking.id
+                ? { ...b, status: "confirmed", paymentId: "admin_test_deposit_free" }
+                : b
+            )
+          );
+        } else {
+          throw new Error(res.error || "Failed to confirm deposit");
+        }
+      } catch (err) {
+        console.error("Admin deposit error:", err);
+        setError(err instanceof Error ? err.message : "Failed to confirm deposit.");
+      } finally {
+        setPayingId(null);
+      }
+      return;
+    }
 
     try {
       // dueToday is already in INR
@@ -250,6 +293,18 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
       {error && (
         <div role="alert" className="mt-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm font-semibold text-rose-300">
           {error}
+        </div>
+      )}
+
+      {isAdmin && (
+        <div className="mt-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3 text-left">
+          <ShieldCheckIcon className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-amber-300 font-semibold text-sm">Admin Testing Mode Active</h4>
+            <p className="text-amber-200/80 text-xs mt-0.5">
+              As an Administrator, booking deposit payments are completely waived (₹0). You can confirm any accepted bookings without opening payment gateways.
+            </p>
+          </div>
         </div>
       )}
 
@@ -409,7 +464,11 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                             <p className="text-[11px] text-slate-400 mt-1">Pay deposit to secure date.</p>
                           </div>
                           <div className="mt-auto border-t border-white/5 pt-2 flex items-center justify-between">
-                            <span className="text-sm font-bold text-white">₹{Math.round(booking.dueToday).toLocaleString()}</span>
+                            {isAdmin ? (
+                              <span className="text-sm font-bold text-emerald-400">₹0 (Free Admin)</span>
+                            ) : (
+                              <span className="text-sm font-bold text-white">₹{Math.round(booking.dueToday).toLocaleString()}</span>
+                            )}
                             <button
                               type="button"
                               disabled={payingId !== null}
@@ -419,9 +478,9 @@ export default function HostBookingsClient({ initialBookings }: HostBookingsClie
                               {payingId === booking.id ? (
                                 <Loader2Icon className="h-3 w-3 animate-spin" />
                               ) : (
-                                <LockIcon className="h-3 w-3" />
+                                <ShieldCheckIcon className="h-3 w-3" />
                               )}
-                              Pay Now
+                              {isAdmin ? "Confirm Free (Admin)" : "Pay Now"}
                             </button>
                           </div>
                         </div>

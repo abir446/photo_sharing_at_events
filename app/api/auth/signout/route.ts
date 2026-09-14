@@ -5,7 +5,7 @@ export async function POST() {
   try {
     await destroySession();
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Signout error:", error);
     return NextResponse.json({ error: "Failed to sign out" }, { status: 500 });
   }

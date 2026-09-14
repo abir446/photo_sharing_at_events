@@ -50,9 +50,9 @@ export default function SigninClient() {
       } else {
         throw new Error(data.error || "Invalid email or password.");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err.message || "Failed to sign in. Please verify your credentials.");
+      setError(err instanceof Error ? err.message : "Failed to sign in. Please verify your credentials.");
       setIsSubmitting(false);
     }
   };

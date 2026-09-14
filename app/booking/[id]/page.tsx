@@ -96,6 +96,7 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
       photographer={serializedPhotographer} 
       initialDate={date || ""} 
       bookedDates={bookedDates} 
+      isAdmin={user?.role === "admin"}
     />
   );
 }

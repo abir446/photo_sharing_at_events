@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+import { getCurrentUser } from "@/lib/auth";
+import { ObjectId } from "mongodb";
 
 export async function GET(
   request: NextRequest,
@@ -15,10 +17,36 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db("dropcast");
 
-    // Fetch approved/flagged/non-hidden media for this event
+    const userDoc = await getCurrentUser();
+    let isAuthorizedHostOrAdmin = false;
+
+    if (userDoc) {
+      if (userDoc.role === "admin") {
+        isAuthorizedHostOrAdmin = true;
+      } else if (ObjectId.isValid(eventId)) {
+        const event = await db.collection("events").findOne({ _id: new ObjectId(eventId) });
+        if (event && event.userId === userDoc.userId) {
+          isAuthorizedHostOrAdmin = true;
+        }
+      }
+    }
+
+    // Filter based on authorization:
+    // Host / Admin sees all active media (including pending & approved)
+    // Guests only see approved media (and legacy items without state)
+    const filter = isAuthorizedHostOrAdmin
+      ? { eventId, state: { $ne: "hidden" } }
+      : { 
+          eventId, 
+          $or: [
+            { state: "approved" },
+            { state: { $exists: false } }
+          ] 
+        };
+
     const mediaDocs = await db
       .collection("media")
-      .find({ eventId, state: { $ne: "hidden" } })
+      .find(filter)
       .sort({ createdAt: -1 })
       .toArray();
 

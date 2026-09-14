@@ -11,7 +11,7 @@ export async function PATCH(
     const { id: mediaId } = await params;
     const { state } = await request.json();
 
-    if (!["approved", "hidden", "flagged"].includes(state)) {
+    if (!["approved", "pending", "hidden", "flagged"].includes(state)) {
       return NextResponse.json({ error: "Invalid status state value" }, { status: 400 });
     }
 
@@ -46,18 +46,28 @@ export async function PATCH(
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }
 
-    // 3. Securely verify that the user is the creator of the event
-    if (event.userId !== user.id) {
-      return NextResponse.json({ error: "Unauthorized access: You are not the host of this event" }, { status: 403 });
+    // 3. Securely verify that the user is the creator of the event OR an admin
+    const isAdmin = userDoc.role === "admin";
+    const isHost = event.userId === user.id;
+
+    if (!isAdmin && !isHost) {
+      return NextResponse.json(
+        { error: "Unauthorized access: You are not authorized to moderate media for this event" },
+        { status: 403 }
+      );
     }
 
     // 4. Update the photo state in the database
     await db.collection("media").updateOne(
       { _id: new ObjectId(mediaId) },
-      { $set: { state } }
+      { 
+        $set: { 
+          state, 
+          moderatedAt: new Date(), 
+          moderatedBy: user.email || user.id 
+        } 
+      }
     );
-
-
 
     return NextResponse.json({ success: true, state });
   } catch (error: unknown) {

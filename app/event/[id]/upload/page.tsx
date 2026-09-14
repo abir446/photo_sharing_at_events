@@ -1,8 +1,8 @@
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { notFound } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth";
 import GalleryClient from "./GalleryClient";
-// import GalleryClient from "./GalleryClient";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -10,6 +10,7 @@ interface PageProps {
 
 interface MongoEvent {
   _id: ObjectId;
+  userId?: string;
   name: string;
   date: Date;
 }
@@ -21,7 +22,7 @@ interface MongoMedia {
   publicId: string;
   resourceType: "image" | "video";
   createdAt: Date;
-  state?: string;
+  state?: "approved" | "pending" | "hidden" | "flagged";
 }
 
 export default async function GuestUploadPage({ params }: PageProps) {
@@ -43,10 +44,23 @@ export default async function GuestUploadPage({ params }: PageProps) {
     notFound();
   }
 
-  // Fetch existing media for this event that are approved (or not hidden/flagged)
+  // Check if current viewer is the event host or platform admin
+  const userDoc = await getCurrentUser();
+  const isAdmin = userDoc?.role === "admin";
+  const isHost = Boolean(userDoc && event.userId && userDoc.userId === event.userId);
+
+  // Filter media: Hosts/Admins see all non-hidden media (approved & pending).
+  // Guests strictly only receive approved media.
+  const filter = (isHost || isAdmin)
+    ? { eventId: id, state: { $ne: "hidden" } }
+    : {
+        eventId: id,
+        $or: [{ state: "approved" }, { state: { $exists: false } }],
+      };
+
   const mediaDocs = await db
     .collection<MongoMedia>("media")
-    .find({ eventId: id, state: { $ne: "hidden" } })
+    .find(filter)
     .sort({ createdAt: -1 })
     .toArray();
 
@@ -76,6 +90,8 @@ export default async function GuestUploadPage({ params }: PageProps) {
       eventName={event.name}
       eventDate={formattedDate}
       initialMedia={initialMedia}
+      isHost={isHost}
+      isAdmin={isAdmin}
     />
   );
 }

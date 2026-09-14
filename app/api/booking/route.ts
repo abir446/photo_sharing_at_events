@@ -38,9 +38,11 @@ export async function POST(request: NextRequest) {
     const client = await clientPromise;
     const db = client.db("dropcast");
 
-    // Validate that the host is not booking themselves
+    const isAdmin = userDoc.role === "admin";
+
+    // Validate that the host is not booking themselves (waived for admin testing)
     const photographer = await db.collection("photographers").findOne({ id: photographerId });
-    if (photographer && photographer.userId === user.id) {
+    if (!isAdmin && photographer && photographer.userId === user.id) {
       return NextResponse.json(
         { error: "Self-booking restriction: You cannot book your own photographer profile." },
         { status: 400 }
@@ -77,9 +79,10 @@ export async function POST(request: NextRequest) {
       photographerName,
       packagePrice: Number(packagePrice),
       addOns: Array.isArray(addOns) ? addOns : [],
-      totalAmount: Number(totalAmount),
-      dueToday: Number(dueToday),
-      paymentId: paymentId || null,
+      totalAmount: isAdmin ? 0 : Number(totalAmount),
+      dueToday: isAdmin ? 0 : Number(dueToday),
+      paymentId: paymentId || (isAdmin ? "admin_test_booking_free" : null),
+      isAdminTest: isAdmin,
       eventDetails: {
         date: eventDetails?.date || "Sat, Oct 18, 2026",
         location: eventDetails?.location || "Laurel Hall",

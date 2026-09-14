@@ -21,6 +21,8 @@ export default function SignupClient() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"creator" | "user" | null>(null);
+  const [adminSecretKey, setAdminSecretKey] = useState("");
+  const [showAdminField, setShowAdminField] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +35,7 @@ export default function SignupClient() {
       return;
     }
 
-    if (!role) {
+    if (!role && !adminSecretKey.trim()) {
       setError("Please choose whether you want to sign up as a Creator or Event Host.");
       return;
     }
@@ -45,7 +47,13 @@ export default function SignupClient() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          role: role || "user",
+          adminSecretKey: adminSecretKey.trim() || undefined
+        }),
       });
 
       const data = await res.json();
@@ -55,14 +63,18 @@ export default function SignupClient() {
           position: "top-right",
           transition: "bounceIn",
         });
-        router.push("/dashboard");
+        if (adminSecretKey.trim()) {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
         router.refresh();
       } else {
         throw new Error(data.error || "Signup failed.");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err.message || "Failed to sign up. Please check your credentials.");
+      setError(err instanceof Error ? err.message : "Failed to sign up. Please check your credentials.");
       setIsSubmitting(false);
     }
   };
@@ -170,6 +182,32 @@ export default function SignupClient() {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => setShowAdminField(!showAdminField)}
+              className="text-[11px] text-slate-400 hover:text-slate-300 font-medium transition-colors cursor-pointer"
+            >
+              {showAdminField ? "- Hide operator passkey" : "+ Have an admin passkey?"}
+            </button>
+
+            {showAdminField && (
+              <div className="mt-2 animate-in fade-in duration-200">
+                <Input
+                  label="Admin Secret Passkey"
+                  id="adminSecretKey"
+                  type="password"
+                  placeholder="Enter operator key"
+                  value={adminSecretKey}
+                  onChange={(e) => setAdminSecretKey(e.target.value)}
+                />
+                <p className="text-[10px] text-slate-500 mt-1">
+                  Grants platform administrator credentials if verified.
+                </p>
+              </div>
+            )}
           </div>
 
           <Button

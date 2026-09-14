@@ -116,5 +116,5 @@ export default async function BookingsDashboardPage() {
     };
   });
 
-  return <HostBookingsClient initialBookings={bookings} />;
+  return <HostBookingsClient initialBookings={bookings} isAdmin={userDoc.role === "admin"} />;
 }

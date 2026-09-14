@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { showToast } from "nextjs-toast-notify";
+import { ShieldCheckIcon } from "lucide-react";
 
 import Button from "./ui/Button";
 import Input from "./ui/Input";
@@ -92,11 +93,13 @@ const plans: StoragePlan[] = [
 interface CreateEventFormProps {
   defaultName?: string;
   defaultEmail?: string;
+  isAdmin?: boolean;
 }
 
 export default function CreateEventForm({
   defaultName = "",
   defaultEmail = "",
+  isAdmin = false,
 }: CreateEventFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -134,6 +137,34 @@ export default function CreateEventForm({
     }
 
     try {
+      // If user is Admin, completely bypass Razorpay order & modal
+      if (isAdmin) {
+        formData.append("paymentId", "admin_test_free");
+        formData.append("planId", selectedPlan.id);
+        formData.append("planName", selectedPlan.name);
+        formData.append("planStorage", selectedPlan.storage);
+        formData.append("planPrice", "0");
+        formData.append("isAdminTest", "true");
+
+        const eventResponse = await fetch("/api/event", {
+          method: "POST",
+          body: formData,
+        });
+
+        const res = await eventResponse.json();
+        if (res.success) {
+          showToast.success("Event created & QR generated (Admin Free Test)!", {
+            duration: 4000,
+            position: "top-right",
+            transition: "bounceIn",
+          });
+          router.push("/dashboard");
+        } else {
+          throw new Error(res.error || "Failed to create event");
+        }
+        return;
+      }
+
       // 1. Create order on the server-side (chosen plan price in paise)
       const orderResponse = await fetch("/api/createOrder", {
         method: "POST",
@@ -295,6 +326,18 @@ export default function CreateEventForm({
                 </div>
               )}
 
+              {isAdmin && (
+                <div className="mt-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3 text-left">
+                  <ShieldCheckIcon className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-amber-300 font-semibold text-sm">Admin Testing Mode Active</h4>
+                    <p className="text-amber-200/80 text-xs mt-0.5">
+                      As an Administrator, event creation and storage plans are completely free (₹0). Razorpay payment checkout is automatically bypassed.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               <form id="create-event-form" onSubmit={handleSubmit} className="space-y-5 mt-2">
                 
                 {/* Event Name Field */}
@@ -386,7 +429,14 @@ export default function CreateEventForm({
                               <p className="text-[11px] text-slate-400 mt-0.5">{plan.tagline}</p>
                             </div>
                             <div className="text-right">
-                              <span className="text-sm font-extrabold text-white">₹{plan.price}</span>
+                              {isAdmin ? (
+                                <div>
+                                  <span className="text-sm font-extrabold text-emerald-400">₹0</span>
+                                  <span className="ml-1 text-[10px] text-slate-500 line-through">₹{plan.price}</span>
+                                </div>
+                              ) : (
+                                <span className="text-sm font-extrabold text-white">₹{plan.price}</span>
+                              )}
                               <p className="text-[9px] text-slate-500">{plan.storage} / {plan.photos}</p>
                             </div>
                           </div>
@@ -405,7 +455,7 @@ export default function CreateEventForm({
                   isLoading={isSubmitting}
                   className="w-full mt-2"
                 >
-                  Pay ₹{selectedPlan.price} &amp; Create Event
+                  {isAdmin ? "Create Event Space (Free for Admin)" : `Pay ₹${selectedPlan.price} & Create Event`}
                 </Button>
 
               </form>

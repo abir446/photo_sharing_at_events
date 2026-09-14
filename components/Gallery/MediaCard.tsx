@@ -4,9 +4,19 @@ import { MediaItem } from "@/utils/typescript/types";
 
 export interface MediaCardProps {
   item: MediaItem;
+  showModeration?: boolean;
+  onApprove?: (id: string) => void;
+  onDecline?: (id: string) => void;
 }
 
-export default function MediaCard({ item }: MediaCardProps) {
+export default function MediaCard({
+  item,
+  showModeration = false,
+  onApprove,
+  onDecline,
+}: MediaCardProps) {
+  const isPending = item.state === "pending";
+
   return (
     <div className="group relative bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden hover:border-slate-700/80 transition-all duration-300 shadow-md flex flex-col justify-between">
       {/* Media Container */}
@@ -39,32 +49,88 @@ export default function MediaCard({ item }: MediaCardProps) {
             />
           </div>
         )}
+
+        {/* Status Pill for Host View */}
+        {showModeration && (
+          <span
+            className={`absolute top-3 left-3 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border ${
+              isPending
+                ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+            }`}
+          >
+            {isPending ? "Pending Review" : "Approved"}
+          </span>
+        )}
       </div>
 
       {/* Footer Info of Media Card */}
-      <div className="p-3 border-t border-slate-800 bg-slate-900/40 backdrop-blur-md flex items-center justify-between text-[11px] text-slate-400">
-        <span>
-          Uploaded{" "}
-          {new Date(item.createdAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </span>
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noreferrer"
-          className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-0.5"
-        >
-          View HD
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-            />
-          </svg>
-        </a>
+      <div className="p-3 border-t border-slate-800 bg-slate-900/40 backdrop-blur-md flex flex-col gap-2">
+        <div className="flex items-center justify-between text-[11px] text-slate-400">
+          <span>
+            Uploaded{" "}
+            {new Date(item.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+          <a
+            href={item.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-0.5"
+          >
+            View HD
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+              />
+            </svg>
+          </a>
+        </div>
+
+        {/* Host Moderation Controls */}
+        {showModeration && (
+          <div className="pt-2 border-t border-slate-800/80 flex items-center gap-2">
+            {isPending ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => onApprove?.(item._id)}
+                  className="flex-1 inline-flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDecline?.(item._id)}
+                  className="inline-flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                  Decline
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onDecline?.(item._id)}
+                className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-slate-800/80 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-500/30 text-xs font-medium transition-colors cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                </svg>
+                Hide from Guests
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

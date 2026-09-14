@@ -23,6 +23,7 @@ export default async function CreateEventPage() {
     <CreateEventForm 
       defaultName={defaultName}
       defaultEmail={user.email} 
+      isAdmin={userDoc.role === "admin"}
     />
   );
 }

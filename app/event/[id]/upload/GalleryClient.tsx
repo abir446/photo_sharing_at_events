@@ -13,6 +13,8 @@ export default function GalleryClient({
   eventName,
   eventDate,
   initialMedia,
+  isHost = false,
+  isAdmin = false,
 }: GalleryClientProps) {
   const [mediaList, setMediaList] = useState<MediaItem[]>(initialMedia);
   const [isUploading, setIsUploading] = useState(false);
@@ -20,6 +22,12 @@ export default function GalleryClient({
   const [errorMsg, setErrorMsg] = useState("");
   const [sseStatus, setSseStatus] = useState<"connecting" | "connected" | "disconnected">("connecting");
   const [isDragOver, setIsDragOver] = useState(false);
+
+  const isModerator = isHost || isAdmin;
+  const approvedMedia = mediaList.filter((m) => m.state === "approved" || !m.state);
+  const pendingMedia = mediaList.filter((m) => m.state === "pending");
+
+  const [activeTab, setActiveTab] = useState<"pending" | "approved">("approved");
 
   // Track eventId to detect changes and reset state during render
   const [prevEventId, setPrevEventId] = useState(eventId);
@@ -69,6 +77,77 @@ export default function GalleryClient({
     };
   }, [eventId]);
 
+  // Moderation handlers for hosts/admins
+  const handleApprove = async (photoId: string) => {
+    // Optimistic update
+    setMediaList((prev) =>
+      prev.map((item) =>
+        item._id === photoId ? { ...item, state: "approved" } : item
+      )
+    );
+
+    try {
+      const res = await fetch(`/api/media/${photoId}/moderate`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: "approved" }),
+      });
+      if (!res.ok) {
+        console.error("Failed to approve photo");
+      }
+    } catch (err) {
+      console.error("Error approving photo:", err);
+    }
+  };
+
+  const handleDecline = async (photoId: string) => {
+    // Optimistic update
+    setMediaList((prev) =>
+      prev.map((item) =>
+        item._id === photoId ? { ...item, state: "hidden" } : item
+      )
+    );
+
+    try {
+      const res = await fetch(`/api/media/${photoId}/moderate`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: "hidden" }),
+      });
+      if (!res.ok) {
+        console.error("Failed to hide photo");
+      }
+    } catch (err) {
+      console.error("Error hiding photo:", err);
+    }
+  };
+
+  const handleApproveAll = async () => {
+    const pendingIds = pendingMedia.map((m) => m._id);
+    if (pendingIds.length === 0) return;
+
+    // Optimistic update
+    setMediaList((prev) =>
+      prev.map((item) =>
+        pendingIds.includes(item._id) ? { ...item, state: "approved" } : item
+      )
+    );
+
+    try {
+      await Promise.all(
+        pendingIds.map((id) =>
+          fetch(`/api/media/${id}/moderate`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ state: "approved" }),
+          })
+        )
+      );
+    } catch (err) {
+      console.error("Error approving all photos:", err);
+    }
+  };
+
   // 2. File Upload Handler
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -103,8 +182,15 @@ export default function GalleryClient({
         return res.json();
       });
 
-      await Promise.all(uploadPromises);
-      setUploadStatus(`Successfully uploaded ${fileList.length} file${fileList.length > 1 ? "s" : ""}!`);
+      const results = await Promise.all(uploadPromises);
+      // Immediately add uploaded items to local state
+      setMediaList((prev) => [...results, ...prev]);
+
+      const successNotice = isModerator
+        ? `Successfully uploaded ${fileList.length} file${fileList.length > 1 ? "s" : ""} (sent to moderation queue)!`
+        : `Successfully uploaded ${fileList.length} file${fileList.length > 1 ? "s" : ""}! They will be visible once approved by the host.`;
+
+      setUploadStatus(successNotice);
     } catch (err: unknown) {
       console.error("Upload error:", err);
       const errorMessage =
@@ -112,7 +198,7 @@ export default function GalleryClient({
       setErrorMsg(errorMessage);
     } finally {
       setIsUploading(false);
-      setTimeout(() => setUploadStatus(""), 3000);
+      setTimeout(() => setUploadStatus(""), 4000);
     }
   };
 
@@ -156,10 +242,18 @@ export default function GalleryClient({
           </svg>
           {eventDate}
         </p>
+
+        {/* Host/Admin Badge */}
+        {isModerator && (
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-ink-950/40 border border-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            {isAdmin ? "Admin Moderation Active" : "Event Host Console Active"}
+          </div>
+        )}
       </header>
 
       {/* Main Container */}
-      <div className="max-w-md mx-auto w-full px-4 space-y-6 flex-grow z-10 -mt-6">
+      <div className="max-w-2xl mx-auto w-full px-4 space-y-6 flex-grow z-10 -mt-6">
         
         {/* Heart Greetings Card */}
         <section className="rounded-2xl border border-white/10 bg-ink-800/90 p-5 text-center backdrop-blur-xl shadow-2xl">
@@ -196,10 +290,101 @@ export default function GalleryClient({
           errorMsg={errorMsg}
         />
 
-        {/* Gallery grid subcomponent */}
-        <div className="pt-4">
-          <GalleryGrid mediaList={mediaList} />
-        </div>
+        {/* Gallery Section */}
+        {isModerator ? (
+          /* Host / Admin View with Dual Sections */
+          <div className="pt-4 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("approved")}
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === "approved"
+                      ? "bg-brand-500 text-white shadow-glow"
+                      : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  All Approved
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                      activeTab === "approved" ? "bg-white/20 text-white" : "bg-white/10 text-slate-300"
+                    }`}
+                  >
+                    {approvedMedia.length}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("pending")}
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === "pending"
+                      ? "bg-amber-500 text-ink-950 font-extrabold shadow-glow"
+                      : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  Yet to be Approved
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                      activeTab === "pending"
+                        ? "bg-ink-950/30 text-ink-950"
+                        : pendingMedia.length > 0
+                        ? "bg-amber-500 text-ink-950 font-bold"
+                        : "bg-white/10 text-slate-300"
+                    }`}
+                  >
+                    {pendingMedia.length}
+                  </span>
+                </button>
+              </div>
+
+              {activeTab === "pending" && pendingMedia.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleApproveAll}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                  Approve All ({pendingMedia.length})
+                </button>
+              )}
+            </div>
+
+            {activeTab === "pending" ? (
+              <GalleryGrid
+                mediaList={pendingMedia}
+                showModeration={true}
+                onApprove={handleApprove}
+                onDecline={handleDecline}
+                hideHeader={true}
+                emptyTitle="No photos waiting for approval"
+                emptySubtitle="When guests upload memories, they will appear here for review before going live to all guests."
+              />
+            ) : (
+              <GalleryGrid
+                mediaList={approvedMedia}
+                showModeration={true}
+                onDecline={handleDecline}
+                hideHeader={true}
+                emptyTitle="No approved photos yet"
+                emptySubtitle="Photos approved by you will appear here and become visible to all event guests."
+              />
+            )}
+          </div>
+        ) : (
+          /* Guest View: ONLY the approved section, with no mention of 'approved' or moderation tabs */
+          <div className="pt-4">
+            <GalleryGrid
+              mediaList={approvedMedia}
+              title="📸 Live Media Stream"
+              emptyTitle="No photos shared yet"
+              emptySubtitle="Scan the QR code, upload a photo or video, and be the first to share a moment!"
+            />
+          </div>
+        )}
       </div>
 
       {/* Footer Branding */}

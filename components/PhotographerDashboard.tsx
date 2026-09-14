@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { formatReadableDate } from "@/utils/date";
 
-interface Booking {
+export interface Booking {
   id: string;
   userId: string;
   userEmail: string;

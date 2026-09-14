@@ -45,6 +45,8 @@ export async function POST(
       return NextResponse.json({ error: `Cannot pay for booking in '${booking.status}' status. It must be 'accepted'.` }, { status: 400 });
     }
 
+    const isAdmin = userDoc.role === "admin";
+
     // 4. Update status and payment ID
     await db.collection("bookings").updateOne(
       { _id: new ObjectId(id) },
@@ -52,7 +54,8 @@ export async function POST(
         $set: {
           status: "confirmed",
           paymentId,
-          paidAt: new Date()
+          paidAt: new Date(),
+          ...(isAdmin ? { isAdminTest: true } : {}),
         }
       }
     );

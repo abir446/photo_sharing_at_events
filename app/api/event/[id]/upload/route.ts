@@ -49,7 +49,7 @@ export async function POST(
               publicId: result.public_id,
               resourceType: result.resource_type as "image" | "video",
               createdAt: new Date(),
-              state: "approved",
+              state: "pending",
             };
 
             const insertResult = await db.collection("media").insertOne(mediaItem);
