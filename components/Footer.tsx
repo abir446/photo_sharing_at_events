@@ -249,7 +249,7 @@ export default function Footer() {
           
           {/* Copyright */}
           <div className="text-center md:text-left text-slate-500">
-            <span>© 2025 </span>
+            <span>© {new Date().getFullYear()} </span>
             <span className="font-bold text-brand-400">DropCast</span>
             <span>. All rights reserved.</span>
           </div>

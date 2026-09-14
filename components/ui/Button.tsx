@@ -10,20 +10,20 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-[#CF6DFC] hover:bg-[#B250DF] active:bg-[#9732C5] text-white disabled:bg-zinc-100 disabled:text-zinc-400 shadow-sm",
+          "bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white shadow-glow disabled:bg-white/10 disabled:text-slate-500",
         secondary:
-          "bg-[#C1BFFF]/20 hover:bg-[#C1BFFF]/35 active:bg-[#C1BFFF]/50 text-[#B250DF] disabled:bg-zinc-50",
+          "bg-white/5 hover:bg-white/10 active:bg-white/15 text-white border border-white/10 disabled:bg-white/5 disabled:text-slate-500",
         outline:
-          "border border-[#C1BFFF] bg-white hover:bg-[#C1BFFF]/10 active:bg-[#C1BFFF]/20 text-[#B250DF]",
+          "border border-white/15 bg-white/[0.02] hover:bg-white/10 active:bg-white/15 text-slate-200 hover:text-white disabled:bg-transparent disabled:text-slate-600",
         ghost:
-          "bg-transparent hover:bg-[#C1BFFF]/10 active:bg-[#C1BFFF]/20 text-zinc-600 hover:text-zinc-900",
+          "bg-transparent hover:bg-white/10 active:bg-white/15 text-slate-400 hover:text-white disabled:bg-transparent disabled:text-slate-600",
         danger:
-          "bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-600 border border-rose-200",
+          "bg-rose-500/10 hover:bg-rose-500/20 active:bg-rose-500/30 text-rose-300 border border-rose-500/30 disabled:bg-rose-500/5 disabled:text-rose-500/40",
         light:
-          "bg-zinc-100 hover:bg-zinc-200 active:bg-zinc-300 text-zinc-900",
+          "bg-white text-ink-950 hover:bg-slate-100 active:bg-slate-200 font-semibold disabled:bg-slate-300",
         // Fallback standard shadcn variants
         default:
-          "bg-[#CF6DFC] hover:bg-[#B250DF] text-white shadow-sm",
+          "bg-brand-500 hover:bg-brand-600 text-white shadow-glow disabled:bg-white/10",
       },
       size: {
         sm: "px-3 py-1.5 text-xs gap-1.5 h-8",

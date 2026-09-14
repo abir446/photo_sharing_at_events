@@ -1,5 +1,5 @@
 import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { ObjectId, Filter } from "mongodb";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import GalleryClient from "./GalleryClient";
@@ -51,11 +51,11 @@ export default async function GuestUploadPage({ params }: PageProps) {
 
   // Filter media: Hosts/Admins see all non-hidden media (approved & pending).
   // Guests strictly only receive approved media.
-  const filter = (isHost || isAdmin)
-    ? { eventId: id, state: { $ne: "hidden" } }
+  const filter: Filter<MongoMedia> = (isHost || isAdmin)
+    ? { eventId: id, state: { $ne: "hidden" as const } }
     : {
         eventId: id,
-        $or: [{ state: "approved" }, { state: { $exists: false } }],
+        $or: [{ state: "approved" as const }, { state: { $exists: false } }],
       };
 
   const mediaDocs = await db

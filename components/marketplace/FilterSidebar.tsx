@@ -154,7 +154,7 @@ export function FilterSidebar({
           <span className="rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs font-bold text-zinc-200 shadow-sm">
             ₹{budget[0].toLocaleString()}
           </span>
-          <span className="text-xs text-zinc-550 font-medium">to</span>
+          <span className="text-xs text-slate-400 font-medium">to</span>
           <span className="rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs font-bold text-zinc-200 shadow-sm">
             ₹{budget[1].toLocaleString()}
             {budget[1] === 400000 ? '+' : ''}

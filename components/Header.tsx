@@ -120,9 +120,9 @@ const Header = () => {
 
   if (isLoading) {
     return (
-      <header className="sticky top-0 z-50 w-full border-b border-[#E5E2C4] bg-[#FAF9F5]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
-          <div className="flex items-center gap-2.5 text-zinc-900 font-bold text-lg">
+          <div className="flex items-center gap-2.5 text-white font-bold text-lg">
             <Image
               src="/logo.svg"
               alt="DropCast logo"
@@ -133,10 +133,10 @@ const Header = () => {
             />
             <span>DropCast</span>
           </div>
-          <div className="animate-pulse flex space-x-6">
-            <div className="h-5 w-20 bg-zinc-200 rounded"></div>
-            <div className="h-5 w-20 bg-zinc-200 rounded"></div>
-            <div className="h-8 w-20 bg-zinc-200 rounded-full"></div>
+          <div className="animate-pulse flex space-x-6 items-center">
+            <div className="h-4 w-20 bg-white/10 rounded-md"></div>
+            <div className="h-4 w-20 bg-white/10 rounded-md"></div>
+            <div className="h-8 w-24 bg-white/10 rounded-full"></div>
           </div>
         </div>
       </header>
