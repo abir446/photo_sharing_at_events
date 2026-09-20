@@ -3,6 +3,8 @@
 import React from "react";
 import { MantineProvider, createTheme } from "@mantine/core";
 
+import { ThemeProvider } from "@/components/ThemeProvider";
+
 // Theme configured to match the application's aesthetic
 const theme = createTheme({
   primaryColor: "brand",
@@ -39,8 +41,10 @@ const theme = createTheme({
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <MantineProvider theme={theme} defaultColorScheme="dark" forceColorScheme="dark">
-      {children}
-    </MantineProvider>
+    <ThemeProvider>
+      <MantineProvider theme={theme} defaultColorScheme="dark">
+        {children}
+      </MantineProvider>
+    </ThemeProvider>
   );
 }

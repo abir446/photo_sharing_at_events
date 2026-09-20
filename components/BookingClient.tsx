@@ -246,24 +246,24 @@ export default function BookingClient({
               <span
                 className={`flex items-center gap-2 rounded-full border px-3 py-1.5 ${
                   i === 1
-                    ? 'border-brand-500/50 bg-brand-500/15 text-white'
-                    : 'border-white/10 bg-white/5 text-slate-400'
+                    ? 'border-brand-500 bg-indigo-50/90 text-indigo-950 font-bold dark:text-white'
+                    : 'border-indigo-150/80 bg-white text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-400'
                 }`}
               >
                 <span
                   className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
                     i === 0
-                      ? 'bg-emerald-500 text-ink-900'
+                      ? 'bg-emerald-500 text-white'
                       : i === 1
                       ? 'bg-brand-500 text-white'
-                      : 'bg-white/10 text-slate-400'
+                      : 'bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-slate-400'
                   }`}
                 >
                   {i === 0 ? <CheckIcon className="h-3 w-3" strokeWidth={3} /> : i + 1}
                 </span>
                 {label}
               </span>
-              {i < 2 && <span className="h-px w-4 bg-white/10" />}
+              {i < 2 && <span className="h-px w-4 bg-indigo-200 dark:bg-white/10" />}
             </li>
           ))}
         </ol>
@@ -273,7 +273,7 @@ export default function BookingClient({
         {/* Left column */}
         <section
           aria-label="Photographer and event details"
-          className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl"
+          className="overflow-hidden rounded-2xl border border-indigo-150/80 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.03] backdrop-blur-xl"
         >
           <img
             src={photographer.portfolio[0]}
@@ -284,7 +284,7 @@ export default function BookingClient({
           <div className="p-6">
             <div className="flex items-start gap-3.5">
               <span
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white shadow-md"
                 style={{ backgroundColor: photographer.accent }}
                 aria-hidden="true"
               >
@@ -292,17 +292,17 @@ export default function BookingClient({
               </span>
               <div className="flex-1">
                 <div className="flex items-center gap-1.5">
-                  <h2 className="text-lg font-bold text-white">
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                     {photographer.name}
                   </h2>
                   {photographer.verified && (
                     <BadgeCheckIcon
-                      className="h-4 w-4 text-brand-400"
+                      className="h-4 w-4 text-brand-500 dark:text-brand-400"
                       aria-label="Verified creator"
                     />
                   )}
                 </div>
-                <p className="mt-0.5 flex items-center gap-2 text-sm text-slate-400">
+                <p className="mt-0.5 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                   <StarIcon
                     className="h-4 w-4 fill-amber-400 text-amber-400"
                     aria-hidden="true"
@@ -312,7 +312,7 @@ export default function BookingClient({
               </div>
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-200 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-white hover:bg-indigo-50 text-slate-800 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-200 px-3 py-2 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer shadow-xs dark:shadow-none"
               >
                 <MessageSquareIcon className="h-3.5 w-3.5" aria-hidden="true" />
                 Message
@@ -321,9 +321,9 @@ export default function BookingClient({
 
             <dl className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Event date - Interactive Picker */}
-              <div className="rounded-xl border border-white/10 bg-ink-950/40 p-3.5">
-                <label htmlFor="booking-date" className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-slate-500 cursor-pointer">
-                  <CalendarDaysIcon className="h-3.5 w-3.5" aria-hidden="true" />
+              <div className="rounded-xl border border-indigo-150/80 bg-indigo-50/40 dark:border-white/10 dark:bg-ink-950/40 p-3.5">
+                <label htmlFor="booking-date" className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-slate-600 dark:text-slate-500 cursor-pointer">
+                  <CalendarDaysIcon className="h-3.5 w-3.5 text-brand-500" aria-hidden="true" />
                   Event date
                 </label>
                 <input
@@ -332,20 +332,20 @@ export default function BookingClient({
                   value={eventDate}
                   min={getTodayDateString()}
                   onChange={(e) => setEventDate(e.target.value)}
-                  className="mt-1.5 w-full rounded-lg border border-white/10 bg-zinc-950/50 py-1.5 px-2.5 text-sm text-white focus:border-brand-500 focus:outline-none [color-scheme:dark]"
+                  className="mt-1.5 w-full rounded-lg border border-indigo-200 bg-white py-1.5 px-2.5 text-sm text-slate-900 focus:border-brand-500 focus:outline-none [color-scheme:light] dark:border-white/10 dark:bg-zinc-950/50 dark:text-white dark:[color-scheme:dark]"
                 />
                 {isBooked && (
-                  <p className="mt-1.5 text-[10px] font-semibold text-rose-400">
+                  <p className="mt-1.5 text-[10px] font-semibold text-rose-500 dark:text-rose-400">
                     Already booked on this date
                   </p>
                 )}
                 {!eventDate && (
-                  <p className="mt-1.5 text-[10px] font-semibold text-amber-400 animate-pulse">
+                  <p className="mt-1.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400 animate-pulse">
                     Please select a date
                   </p>
                 )}
                 {eventDate && !isBooked && (
-                  <p className="mt-1.5 text-[10px] font-semibold text-emerald-400">
+                  <p className="mt-1.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
                     Available
                   </p>
                 )}
@@ -367,13 +367,13 @@ export default function BookingClient({
               ].map(({ icon: Icon, label, value }) => (
                 <div
                   key={label}
-                  className="rounded-xl border border-white/10 bg-ink-950/40 p-3.5"
+                  className="rounded-xl border border-indigo-150/80 bg-indigo-50/40 dark:border-white/10 dark:bg-ink-950/40 p-3.5"
                 >
-                  <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                  <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-slate-600 dark:text-slate-500">
+                    <Icon className="h-3.5 w-3.5 text-brand-500" aria-hidden="true" />
                     {label}
                   </dt>
-                  <dd className="mt-1.5 text-sm font-semibold text-white">
+                  <dd className="mt-1.5 text-sm font-semibold text-slate-900 dark:text-white">
                     {value}
                   </dd>
                 </div>
@@ -418,15 +418,15 @@ export default function BookingClient({
         <div className="space-y-6">
           <section
             aria-labelledby="milestones-heading"
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl"
+            className="rounded-2xl border border-indigo-150/80 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.03] p-6 backdrop-blur-xl"
           >
             <div className="flex items-baseline justify-between">
-              <h2 id="milestones-heading" className="text-lg font-bold text-white">
+              <h2 id="milestones-heading" className="text-lg font-bold text-slate-900 dark:text-white">
                 Payment schedule
               </h2>
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-slate-600 dark:text-slate-400">
                 Package total{' '}
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-slate-900 dark:text-white">
                   ₹{packagePrice.toLocaleString()}
                 </span>
               </span>
@@ -442,12 +442,12 @@ export default function BookingClient({
                     className={`flex items-start gap-4 rounded-xl border p-4 ${
                       isDue
                         ? 'border-brand-500/50 bg-brand-500/10'
-                        : 'border-white/10 bg-ink-950/40'
+                        : 'border-indigo-150/80 bg-indigo-50/40 dark:border-white/10 dark:bg-ink-950/40'
                     }`}
                   >
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${
-                        isDue ? 'bg-brand-500 text-white' : 'bg-white/10 text-slate-400'
+                        isDue ? 'bg-brand-500 text-white' : 'bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-slate-400'
                       }`}
                       aria-hidden="true"
                     >
@@ -455,20 +455,20 @@ export default function BookingClient({
                     </span>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-semibold text-white">
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                           {m.percent}% {m.title}
                         </h3>
                         <span
                           className={`rounded-md px-2 py-0.5 text-[11px] font-semibold ${
-                            isDue ? 'bg-brand-500 text-white' : 'bg-white/10 text-slate-400'
+                            isDue ? 'bg-brand-500 text-white' : 'bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-slate-400'
                           }`}
                         >
                           {m.due}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs text-slate-400">{m.detail}</p>
+                      <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{m.detail}</p>
                     </div>
-                    <span className="text-base font-bold text-white">
+                    <span className="text-base font-bold text-slate-900 dark:text-white">
                       ₹{amount.toLocaleString()}
                     </span>
                   </li>
@@ -479,12 +479,12 @@ export default function BookingClient({
 
           <section
             aria-labelledby="addons-heading"
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl"
+            className="rounded-2xl border border-indigo-150/80 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.03] p-6 backdrop-blur-xl"
           >
-            <h2 id="addons-heading" className="text-lg font-bold text-white">
+            <h2 id="addons-heading" className="text-lg font-bold text-slate-900 dark:text-white">
               Enhance your event
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Optional services billed with deposit after acceptance.
             </p>
 
@@ -498,7 +498,7 @@ export default function BookingClient({
                     className={`flex cursor-pointer items-start gap-3.5 rounded-xl border p-4 transition-colors ${
                       checked
                         ? 'border-brand-500/60 bg-brand-500/10'
-                        : 'border-white/10 bg-ink-950/40 hover:border-white/20'
+                        : 'border-indigo-150/80 bg-indigo-50/40 hover:border-brand-300 dark:border-white/10 dark:bg-ink-950/40 dark:hover:border-white/20'
                     }`}
                   >
                     <input
@@ -510,7 +510,7 @@ export default function BookingClient({
                     <span
                       aria-hidden="true"
                       className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 ${
-                        checked ? 'border-brand-500 bg-brand-500' : 'border-white/25 bg-transparent'
+                        checked ? 'border-brand-500 bg-brand-500' : 'border-slate-300 bg-white dark:border-white/25 dark:bg-transparent'
                       }`}
                     >
                       {checked && (
@@ -518,15 +518,15 @@ export default function BookingClient({
                       )}
                     </span>
                     <span className="flex-1">
-                      <span className="flex items-center gap-2 text-sm font-semibold text-white">
-                        <Icon className="h-4 w-4 text-brand-400" aria-hidden="true" />
+                      <span className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
+                        <Icon className="h-4 w-4 text-brand-500 dark:text-brand-400" aria-hidden="true" />
                         {addOn.title}
                       </span>
-                      <span className="mt-1 block text-xs text-slate-400">
+                      <span className="mt-1 block text-xs text-slate-600 dark:text-slate-400">
                         {addOn.description}
                       </span>
                     </span>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">
                       +₹{addOn.price.toLocaleString()}
                     </span>
                   </label>
@@ -537,24 +537,24 @@ export default function BookingClient({
 
           <section
             aria-labelledby="summary-heading"
-            className="rounded-2xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-xl"
+            className="rounded-2xl border border-indigo-150/80 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.05] p-6 backdrop-blur-xl"
           >
             <h2 id="summary-heading" className="sr-only">
               Order summary
             </h2>
 
             {error && (
-              <div role="alert" className="mb-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-semibold text-rose-300 text-left">
+              <div role="alert" className="mb-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-semibold text-rose-600 dark:text-rose-300 text-left">
                 {error}
               </div>
             )}
 
             {isAdmin && (
               <div className="mb-4 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-2.5 text-left">
-                <ShieldCheckIcon className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <ShieldCheckIcon className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-amber-300 font-bold text-xs">Admin Test Mode Active</p>
-                  <p className="text-amber-200/80 text-[11px] mt-0.5 leading-snug">
+                  <p className="text-amber-700 dark:text-amber-300 font-bold text-xs">Admin Test Mode Active</p>
+                  <p className="text-amber-800/80 dark:text-amber-200/80 text-[11px] mt-0.5 leading-snug">
                     You are testing creator booking in Admin mode. Deposits and charges are waived (₹0).
                   </p>
                 </div>
@@ -563,40 +563,40 @@ export default function BookingClient({
 
             <dl className="space-y-2.5 text-sm">
               <div className="flex justify-between">
-                <dt className="text-slate-400">Signature Event Coverage</dt>
-                  <dd className="font-medium text-white">
+                <dt className="text-slate-600 dark:text-slate-400">Signature Event Coverage</dt>
+                  <dd className="font-medium text-slate-900 dark:text-white">
                     ₹{packagePrice.toLocaleString()}
                   </dd>
               </div>
               {ADD_ONS.filter((a) => selected.includes(a.id)).map((a) => (
                 <div key={a.id} className="flex justify-between">
-                  <dt className="text-slate-400">
+                  <dt className="text-slate-600 dark:text-slate-400">
                     {a.id === 'qr' ? 'Guest QR upload service' : 'Cloud storage & delivery'}
                   </dt>
-                  <dd className="font-medium text-white">+₹{a.price.toLocaleString()}</dd>
+                  <dd className="font-medium text-slate-900 dark:text-white">+₹{a.price.toLocaleString()}</dd>
                 </div>
               ))}
-              <div className="flex justify-between border-t border-white/10 pt-2.5">
-                <dt className="text-slate-400">Booking total</dt>
-                <dd className="font-medium text-white">
+              <div className="flex justify-between border-t border-indigo-100 dark:border-white/10 pt-2.5">
+                <dt className="text-slate-600 dark:text-slate-400">Booking total</dt>
+                <dd className="font-medium text-slate-900 dark:text-white">
                     ₹{total.toLocaleString()}
                 </dd>
               </div>
             </dl>
 
-            <div className="mt-5 flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-white/10 pt-5">
+            <div className="mt-5 flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-t border-indigo-100 dark:border-white/10 pt-5">
               <div>
-                <p className="text-sm text-slate-400">Amount Due Today</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Amount Due Today</p>
                 {isAdmin ? (
                   <div className="mt-1 flex items-baseline gap-2">
-                    <p className="text-3xl font-extrabold tracking-tight text-emerald-400">
+                    <p className="text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">
                       ₹0
                     </p>
                     <span className="text-xs text-slate-500 line-through">₹{dueToday.toLocaleString()}</span>
-                    <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">Waived for Admin</span>
+                    <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">Waived for Admin</span>
                   </div>
                 ) : (
-                  <p className="mt-1 text-3xl font-extrabold tracking-tight text-white">
+                  <p className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                     ₹{dueToday.toLocaleString()}
                   </p>
                 )}

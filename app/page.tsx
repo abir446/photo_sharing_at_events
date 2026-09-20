@@ -51,23 +51,23 @@ function FeatureCard({
   isAuth
 }: FeatureCardProps) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-md shadow-sm transition-colors hover:border-brand-500/40 h-full">
+    <article className="group flex flex-col overflow-hidden rounded-3xl border border-indigo-150/80 bg-white shadow-xs hover:border-brand-500/50 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/60 backdrop-blur-md transition-all h-full">
       <div className="relative h-64 overflow-hidden">
         <img
           src={image}
           alt={imageAlt}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/25 to-transparent" />
-        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs font-bold text-zinc-300 shadow-sm">
-          <EyebrowIcon className="h-3.5 w-3.5 text-brand-400" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent dark:from-zinc-950 dark:via-zinc-950/25" />
+        <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full border border-white/40 bg-white/95 backdrop-blur-md px-3 py-1.5 text-xs font-bold text-slate-900 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+          <EyebrowIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
           {eyebrow}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-7">
-        <h2 className="text-2xl font-bold tracking-tight text-white">{title}</h2>
-        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-zinc-400">
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{title}</h2>
+        <p className="mt-2.5 max-w-md text-[15px] leading-relaxed text-slate-600 dark:text-zinc-400">
           {subtitle}
         </p>
 
@@ -75,7 +75,7 @@ function FeatureCard({
           {meta.map((item) => (
             <li
               key={item}
-              className="rounded-lg border border-zinc-800 bg-zinc-950/80 px-2.5 py-1 text-xs font-medium text-zinc-400"
+              className="rounded-lg border border-indigo-150/80 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-800 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-zinc-400"
             >
               {item}
             </li>
@@ -86,18 +86,18 @@ function FeatureCard({
           {isAuth || href === "/marketplace" ? (
             <Link
               href={href}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-5 py-3 text-sm font-bold !text-white text-white shadow-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
             >
-              {cta}
-              <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
+              <span className="!text-white text-white font-bold" style={{ color: '#ffffff' }}>{cta}</span>
+              <ArrowRightIcon className="h-4 w-4 !text-white text-white" style={{ color: '#ffffff', stroke: '#ffffff' }} aria-hidden="true" />
             </Link>
           ) : (
             <Link
               href="/signin"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-5 py-3 text-sm font-bold !text-white text-white shadow-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
             >
-              {cta}
-              <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
+              <span className="!text-white text-white font-bold" style={{ color: '#ffffff' }}>{cta}</span>
+              <ArrowRightIcon className="h-4 w-4 !text-white text-white" style={{ color: '#ffffff', stroke: '#ffffff' }} aria-hidden="true" />
             </Link>
           )}
         </div>
@@ -153,26 +153,26 @@ export default async function Home() {
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[calc(100vh-4rem)] flex flex-col justify-between">
       
       {/* Welcome / Intro */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-zinc-900">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-6 border-b border-indigo-150/70 dark:border-zinc-900">
         <div>
           {auth ? (
-            <p className="text-sm font-semibold text-brand-400">Welcome back, {user?.given_name || "Host"}</p>
+            <p className="text-sm font-bold text-indigo-950 dark:text-brand-400">Welcome back, {user?.given_name || "Host"}</p>
           ) : (
-            <p className="text-sm font-semibold text-brand-400">Welcome to DropCast</p>
+            <p className="text-sm font-bold text-indigo-950 dark:text-brand-400">Welcome to DropCast</p>
           )}
-          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             Plan every moment of your event
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-zinc-400 leading-relaxed">
+          <p className="mt-3 max-w-xl text-[15px] text-slate-600 dark:text-zinc-400 leading-relaxed">
             Book vetted professional creators and collect every guest photo in one shared, secure gallery automatically.
           </p>
           
           {!auth && (
             <div className="mt-5 flex items-center gap-3">
-              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm transition-colors cursor-pointer shadow-sm">
+              <Link href="/signin" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 !text-white text-white font-bold text-sm transition-colors cursor-pointer shadow-sm">
                 Sign in
               </Link>
-              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-sm transition-colors cursor-pointer">
+              <Link href="/signup" className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-indigo-200 bg-white text-slate-900 hover:bg-slate-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800 font-bold text-sm transition-colors cursor-pointer shadow-xs dark:shadow-none">
                 Get started
               </Link>
             </div>
@@ -183,13 +183,13 @@ export default async function Home() {
           {stats.map(({ label, value, icon: Icon }) => (
             <div
               key={label}
-              className="min-w-[150px] rounded-2xl border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm px-5 py-4 shadow-sm"
+              className="min-w-[150px] rounded-2xl border border-indigo-150/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-sm px-5 py-4 dark:shadow-sm"
             >
-              <dt className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
-                <Icon className="h-3.5 w-3.5 text-brand-400" aria-hidden="true" />
+              <dt className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                <Icon className="h-3.5 w-3.5 text-indigo-700 dark:text-brand-400" aria-hidden="true" />
                 {label}
               </dt>
-              <dd className="mt-1.5 text-2xl font-bold text-white">{value}</dd>
+              <dd className="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{value}</dd>
             </div>
           ))}
         </dl>
@@ -227,7 +227,7 @@ export default async function Home() {
       {/* Assurance banner */}
       <section
         aria-labelledby="assurance-heading"
-        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-zinc-900 bg-zinc-950/40 p-7 md:grid-cols-3 shadow-sm"
+        className="mt-9 grid grid-cols-1 gap-6 rounded-3xl border border-indigo-150/80 bg-white p-7 md:grid-cols-3 shadow-xs dark:border-zinc-900 dark:bg-zinc-950/40 dark:shadow-sm"
       >
         <h2 id="assurance-heading" className="sr-only">
           Why hosts choose DropCast
@@ -250,12 +250,12 @@ export default async function Home() {
           }
         ].map(({ icon: Icon, title, copy }) => (
           <div key={title} className="flex gap-4">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900">
-              <Icon className="h-5 w-5 text-brand-400" aria-hidden="true" />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-brand-400">
+              <Icon className="h-5 w-5" aria-hidden="true" />
             </span>
             <div>
-              <h3 className="text-sm font-semibold text-white">{title}</h3>
-              <p className="mt-1 text-xs text-zinc-400 leading-relaxed">{copy}</p>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{title}</h3>
+              <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">{copy}</p>
             </div>
           </div>
         ))}

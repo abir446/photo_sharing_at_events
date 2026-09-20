@@ -20,25 +20,25 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
       <div className="relative group h-full">
         {/* We wrap only the card navigation in a Link */}
         <Link href={`/event/${eId}`} className="block h-full">
-          <Card className="hover:shadow-glow hover:border-brand-500/40 transition-all duration-300 cursor-pointer flex flex-col items-center overflow-hidden bg-white/[0.03] border border-white/10 text-white h-full">
+          <Card className="hover:shadow-glow hover:border-brand-500/40 transition-all duration-300 cursor-pointer flex flex-col items-center overflow-hidden bg-white border border-indigo-150/80 text-slate-900 dark:bg-white/[0.03] dark:border-white/10 dark:text-white h-full shadow-xs dark:shadow-none">
             <CardHeader className="w-full text-left p-6 pb-3">
               <div className="flex items-start justify-between gap-2">
-                <CardTitle className="text-xl font-bold text-white leading-tight group-hover:text-brand-400 transition-colors">
+                <CardTitle className="text-xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors">
                   {name}
                 </CardTitle>
                 {planName && (
-                  <span className="shrink-0 inline-flex items-center rounded-full bg-brand-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-brand-400 border border-brand-500/20">
+                  <span className="shrink-0 inline-flex items-center rounded-full bg-indigo-50 dark:bg-brand-500/10 px-2.5 py-0.5 text-[10px] font-bold text-indigo-950 dark:text-brand-400 border border-indigo-200 dark:border-brand-500/20">
                     {planName}
                   </span>
                 )}
               </div>
-              <CardDescription className="text-sm text-slate-400 mt-1">{date}</CardDescription>
-              <span className="text-xs text-brand-400/70 font-mono mt-1.5 block">ID: {eId}</span>
+              <CardDescription className="text-sm text-slate-600 dark:text-slate-400 mt-1">{date}</CardDescription>
+              <span className="text-xs text-slate-700 dark:text-brand-400/70 font-mono font-semibold mt-1.5 block">ID: {eId}</span>
             </CardHeader>
             
             <CardContent className="p-6 pt-0 w-full flex justify-center flex-grow pb-20">
               {qrCodeUrl ? (
-                <div className="bg-white p-3.5 rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-102 mt-2">
+                <div className="bg-white p-3.5 rounded-2xl shadow-xl transition-transform duration-500 group-hover:scale-102 mt-2 border border-slate-100 dark:border-transparent">
                   <Image 
                     src={qrCodeUrl} 
                     alt={`QR Code for ${name}`} 
@@ -48,7 +48,7 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
                   />
                 </div>
               ) : (
-                <div className="w-[160px] h-[160px] bg-white/5 border border-dashed border-white/10 flex items-center justify-center text-xs text-slate-500 mt-2 rounded-2xl">
+                <div className="w-[160px] h-[160px] bg-indigo-50/50 dark:bg-white/5 border border-dashed border-indigo-200 dark:border-white/10 flex items-center justify-center text-xs text-slate-500 mt-2 rounded-2xl">
                   No QR Code
                 </div>
               )}
@@ -57,7 +57,7 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
         </Link>
         
         {/* Separate Action Buttons container positioned at the bottom of the card, outside the Link element to ensure valid HTML */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 pt-0 bg-gradient-to-t from-ink-900 via-ink-900 to-transparent rounded-b-2xl flex justify-between gap-2 z-10">
+        <div className="absolute bottom-0 left-0 right-0 p-4 pt-0 bg-gradient-to-t from-white via-white/95 to-transparent dark:from-ink-900 dark:via-ink-900 rounded-b-2xl flex justify-between gap-2 z-10">
           {onEdit && (
             <Button 
               variant="outline" 
@@ -103,25 +103,25 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
 
   return (
     <Link href={`/event/${eId}`} className="block group">
-      <Card className="hover:shadow-glow hover:border-brand-500/40 transition-all duration-300 cursor-pointer flex flex-col items-center overflow-hidden bg-white/[0.03] border border-white/10 text-white h-full">
+      <Card className="hover:shadow-glow hover:border-brand-500/40 transition-all duration-300 cursor-pointer flex flex-col items-center overflow-hidden bg-white border border-indigo-150/80 text-slate-900 dark:bg-white/[0.03] dark:border-white/10 dark:text-white h-full shadow-xs dark:shadow-none">
         <CardHeader className="w-full text-left p-6 pb-3">
           <div className="flex items-start justify-between gap-2">
-            <CardTitle className="text-xl font-bold text-white leading-tight group-hover:text-brand-400 transition-colors">
+            <CardTitle className="text-xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors">
               {name}
             </CardTitle>
             {planName && (
-              <span className="shrink-0 inline-flex items-center rounded-full bg-brand-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-brand-400 border border-brand-500/20">
+              <span className="shrink-0 inline-flex items-center rounded-full bg-indigo-50 dark:bg-brand-500/10 px-2.5 py-0.5 text-[10px] font-bold text-indigo-950 dark:text-brand-400 border border-indigo-200 dark:border-brand-500/20">
                 {planName}
               </span>
             )}
           </div>
-          <CardDescription className="text-sm text-slate-400 mt-1">{date}</CardDescription>
+          <CardDescription className="text-sm text-slate-600 dark:text-slate-400 mt-1">{date}</CardDescription>
         </CardHeader>
         
         <CardContent className="p-6 pt-0 w-full flex justify-center mt-auto">
           {/* Render the QR code using the prop string */}
           {qrCodeUrl ? (
-            <div className="bg-white p-3.5 rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-102">
+            <div className="bg-white p-3.5 rounded-2xl shadow-xl transition-transform duration-500 group-hover:scale-102 border border-slate-100 dark:border-transparent">
               <Image 
                 src={qrCodeUrl} 
                 alt={`QR Code for ${name}`} 
@@ -131,7 +131,7 @@ export default function EventCard({ name, date, eId, qrCodeUrl, planName, onDele
               />
             </div>
           ) : (
-            <div className="w-[180px] h-[180px] bg-white/5 border border-dashed border-white/10 flex items-center justify-center text-xs text-slate-500 mt-2 rounded-2xl">
+            <div className="w-[180px] h-[180px] bg-indigo-50/50 dark:bg-white/5 border border-dashed border-indigo-200 dark:border-white/10 flex items-center justify-center text-xs text-slate-500 mt-2 rounded-2xl">
               No QR Code
             </div>
           )}

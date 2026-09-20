@@ -4,15 +4,15 @@ export default function EventIllustration() {
   return (
     <div className="lg:col-span-3 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
       <div className="space-y-2">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-none">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
           Create Moments.
         </h1>
-        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600 font-extrabold text-4xl md:text-5xl tracking-tight leading-none pb-1">
+        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-brand-600 dark:from-brand-400 dark:to-brand-600 font-extrabold text-4xl md:text-5xl tracking-tight leading-none pb-1">
           Share Happiness.
         </span>
       </div>
 
-      <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-xs">
+      <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed max-w-xs">
         Create your event in just a few steps and invite your guests to share and relive memories together.
       </p>
 
