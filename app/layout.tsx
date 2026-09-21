@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@mantine/core/styles.css";
-import "./globals.css"; // theme updated
+import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Providers } from "./providers";
@@ -73,32 +73,8 @@ export default function RootLayout({
     <html
       lang="en"
       className="dark h-full antialiased font-sans"
-      suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var saved = localStorage.getItem('dropcast_theme');
-                  var isDark = saved ? saved === 'dark' : true;
-                  if (isDark) {
-                    document.documentElement.classList.add('dark');
-                    document.documentElement.classList.remove('light');
-                    document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                    document.documentElement.classList.add('light');
-                    document.documentElement.setAttribute('data-mantine-color-scheme', 'light');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
-      <body className="min-h-full flex flex-col bg-ink-900 text-slate-800 dark:text-slate-200 transition-colors duration-250">
+      <body className="min-h-full flex flex-col bg-ink-900 text-slate-200">
         <Providers>
           <JsonLd />
           <Header />

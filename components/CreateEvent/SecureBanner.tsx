@@ -2,8 +2,8 @@ import React from "react";
 
 export default function SecureBanner() {
   return (
-    <div className="flex gap-3 bg-brand-500/10 border border-brand-500/20 rounded-2xl p-4 text-slate-700 dark:text-slate-200 mt-1">
-      <div className="flex-shrink-0 w-8 h-8 bg-brand-500/20 rounded-xl flex items-center justify-center text-brand-600 dark:text-brand-400">
+    <div className="flex gap-3 bg-brand-500/10 border border-brand-500/20 rounded-2xl p-4 text-slate-200 mt-1">
+      <div className="flex-shrink-0 w-8 h-8 bg-brand-500/20 rounded-xl flex items-center justify-center text-brand-400">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
@@ -13,8 +13,8 @@ export default function SecureBanner() {
         </svg>
       </div>
       <div className="flex flex-col">
-        <span className="font-semibold text-xs md:text-sm text-slate-900 dark:text-white">Private & Secure</span>
-        <p className="text-[11px] md:text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+        <span className="font-semibold text-xs md:text-sm text-white">Private & Secure</span>
+        <p className="text-[11px] md:text-xs text-slate-400 leading-relaxed">
           Only people with your event link or QR code can upload and view photos.
         </p>
       </div>

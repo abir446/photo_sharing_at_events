@@ -395,7 +395,7 @@ export default function CreateEventForm({
 
                 {/* Storage Plan Selection */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="block text-sm font-semibold text-slate-300">
                     Select Storage Plan
                   </label>
                   <div className="grid grid-cols-1 gap-2.5">
@@ -405,10 +405,10 @@ export default function CreateEventForm({
                         <div
                           key={plan.id}
                           onClick={() => setSelectedPlan(plan)}
-                          className={`relative rounded-xl border p-3.5 cursor-pointer flex flex-col justify-between transition-all duration-300 ${
+                          className={`relative rounded-xl border p-3.5 cursor-pointer flex flex-col justify-between transition-all duration-300 bg-white/[0.02] ${
                             isSelected
-                              ? "border-brand-500 bg-brand-500/10 shadow-glow"
-                              : "border-indigo-150/80 bg-white hover:border-brand-300 dark:border-white/10 dark:bg-white/[0.02] dark:hover:border-white/20 dark:hover:bg-white/[0.04]"
+                              ? "border-brand-500 bg-brand-500/5 shadow-glow"
+                              : "border-white/10 hover:border-white/20 hover:bg-white/[0.04]"
                           }`}
                         >
                           {plan.recommended && (
@@ -418,24 +418,24 @@ export default function CreateEventForm({
                           )}
                           <div className="flex justify-between items-start">
                             <div>
-                              <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                              <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
                                 {plan.name}
                                 {isSelected && (
-                                  <svg className="w-4 h-4 text-brand-500 dark:text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                  <svg className="w-4 h-4 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                   </svg>
                                 )}
                               </h4>
-                              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">{plan.tagline}</p>
+                              <p className="text-[11px] text-slate-400 mt-0.5">{plan.tagline}</p>
                             </div>
                             <div className="text-right">
                               {isAdmin ? (
                                 <div>
-                                  <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">₹0</span>
+                                  <span className="text-sm font-extrabold text-emerald-400">₹0</span>
                                   <span className="ml-1 text-[10px] text-slate-500 line-through">₹{plan.price}</span>
                                 </div>
                               ) : (
-                                <span className="text-sm font-extrabold text-slate-900 dark:text-white">₹{plan.price}</span>
+                                <span className="text-sm font-extrabold text-white">₹{plan.price}</span>
                               )}
                               <p className="text-[9px] text-slate-500">{plan.storage} / {plan.photos}</p>
                             </div>
@@ -461,11 +461,11 @@ export default function CreateEventForm({
               </form>
 
               {/* Developer Test Controls */}
-              <div className="mt-6 rounded-2xl border border-dashed border-indigo-200 bg-white/60 dark:border-white/15 dark:bg-white/[0.01] p-4 text-center backdrop-blur-sm">
+              <div className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/[0.01] p-4 text-center backdrop-blur-sm">
                 <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">
                   🔧 Developer Test Controls
                 </p>
-                <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-400">
+                <p className="mt-1 text-[11px] text-slate-400">
                   Bypass the Razorpay checkout overlay to test successful database persistence or failure UI screens.
                 </p>
                 <div className="mt-3.5 grid grid-cols-2 gap-2.5">
@@ -473,7 +473,7 @@ export default function CreateEventForm({
                     type="button"
                     onClick={handleSimulateSuccess}
                     disabled={isSubmitting}
-                    className="inline-flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Simulate Success
                   </button>
@@ -481,7 +481,7 @@ export default function CreateEventForm({
                     type="button"
                     onClick={handleSimulateFailure}
                     disabled={isSubmitting}
-                    className="inline-flex items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/30 px-3 py-2 text-xs font-bold text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Simulate Failure
                   </button>

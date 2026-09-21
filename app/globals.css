@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --animate-float-slow: none;
@@ -13,15 +13,15 @@
   /* Evermore Custom Theme Variables */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink-950: var(--ink-950);
-  --color-ink-900: var(--ink-900);
-  --color-ink-800: var(--ink-800);
-  --color-ink-700: var(--ink-700);
-  --color-ink-600: var(--ink-600);
+  --color-ink-950: #09090b;
+  --color-ink-900: #0c0c0e;
+  --color-ink-800: #18181b;
+  --color-ink-700: #27272a;
+  --color-ink-600: #52525b;
 
-  --color-brand-400: var(--brand-400, #818cf8);
-  --color-brand-500: var(--brand-500, #4338ca);
-  --color-brand-600: var(--brand-600, #3730a3);
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
 
   --shadow-glow: 0 4px 14px -2px rgba(99, 102, 241, 0.15);
 }
@@ -38,11 +38,9 @@ body {
 }
 
 body {
-  background-color: var(--theme-bg, #09090b);
-  color: var(--theme-text-primary, #f8fafc);
+  background-color: #09090b;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 ::-webkit-scrollbar {
@@ -50,10 +48,10 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--theme-bg, #09090b);
+  background: #09090b;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--theme-border, #27272a);
+  background: #27272a;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -134,29 +132,7 @@ input[type='range'].evermore-range::-moz-range-thumb {
 }
 
 :root {
-  /* Light Theme (Derived from photo pastel lavender/periwinkle gradient) */
-  --theme-bg: #f4f2fd;
-  --theme-bg-gradient: linear-gradient(135deg, #fdfcff 0%, #f4f2fd 50%, #eae8fd 100%);
-  --theme-surface: #ffffff;
-  --theme-surface-subtle: #f8f7fe;
-  --theme-border: #e4e2f8;
-  --theme-border-subtle: #ede9fe;
-  --theme-text-primary: #0f172a;
-  --theme-text-secondary: #334155;
-  --theme-text-muted: #64748b;
-
-  --ink-950: #ffffff;
-  --ink-900: #f4f2fd;
-  --ink-800: #ede9fe;
-  --ink-700: #e2e0f8;
-  --ink-600: #64748b;
-
-  --brand-400: #6366f1;
-  --brand-500: #4338ca;
-  --brand-600: #3730a3;
-  --brand-700: #312e81;
-
-  --background: oklch(0.975 0.015 295);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -164,16 +140,16 @@ input[type='range'].evermore-range::-moz-range-thumb {
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.95 0.02 295);
+  --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.95 0.02 295);
+  --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.95 0.02 295);
+  --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.02 295);
-  --input: oklch(0.91 0.02 295);
-  --ring: oklch(0.6 0.18 275);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -191,28 +167,6 @@ input[type='range'].evermore-range::-moz-range-thumb {
 }
 
 .dark {
-  /* Dark Theme */
-  --theme-bg: #09090b;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #18181b 0%, #09090b 100%);
-  --theme-surface: #18181b;
-  --theme-surface-subtle: #121215;
-  --theme-border: #27272a;
-  --theme-border-subtle: #1f1f23;
-  --theme-text-primary: #f8fafc;
-  --theme-text-secondary: #cbd5e1;
-  --theme-text-muted: #94a3b8;
-
-  --ink-950: #09090b;
-  --ink-900: #0c0c0e;
-  --ink-800: #18181b;
-  --ink-700: #27272a;
-  --ink-600: #52525b;
-
-  --brand-400: #818cf8;
-  --brand-500: #6366f1;
-  --brand-600: #4f46e5;
-  --brand-700: #4338ca;
-
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -256,199 +210,4 @@ input[type='range'].evermore-range::-moz-range-thumb {
   html {
     @apply font-sans;
   }
-}
-
-/* Light Mode Contrast & Visibility Rules */
-html:not(.dark) {
-  color-scheme: light;
-}
-
-/* Base typography in light mode */
-html:not(.dark) h1:not([class*="text-brand-"]):not([class*="from-"]):not([class*="text-transparent"]),
-html:not(.dark) h2:not([class*="text-brand-"]):not([class*="from-"]):not([class*="text-transparent"]),
-html:not(.dark) h3:not([class*="text-brand-"]):not([class*="from-"]):not([class*="text-transparent"]),
-html:not(.dark) h4:not([class*="text-brand-"]):not([class*="from-"]):not([class*="text-transparent"]),
-html:not(.dark) h5:not([class*="text-brand-"]):not([class*="from-"]):not([class*="text-transparent"]),
-html:not(.dark) h6:not([class*="text-brand-"]):not([class*="from-"]):not([class*="text-transparent"]) {
-  color: #0f172a;
-}
-
-/* Ensure text-white on light mode is legible dark slate, unless on buttons, links, brand badges, or colored backgrounds */
-html:not(.dark) :is(h1, h2, h3, h4, h5, h6, p, span, div, label, dt, dd, li, td, th, b, strong).text-white:not(button):not(button *):not(a):not(a *):not([class*="bg-brand-"]):not([class*="bg-indigo-"]):not([class*="bg-emerald-"]):not([class*="bg-rose-"]):not([class*="bg-amber-"]):not([class*="bg-purple-"]):not([class*="bg-gradient-"]):not([class*="from-"]):not([class*="text-transparent"]):not(.shadow-glow) {
-  color: #0f172a;
-}
-
-/* Ensure ALL solid colored buttons, links, and action elements strictly display crisp pure white text in light mode */
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-brand-500"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-brand-600"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-brand-700"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-emerald-"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-rose-"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-indigo-600"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-indigo-700"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-slate-900"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-zinc-900"],
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"]):where(.bg-brand-500, .bg-brand-600, .bg-brand-700, .bg-emerald-500, .bg-emerald-600, .bg-rose-500, .bg-rose-600) {
-  color: #ffffff !important;
-}
-
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-brand-500"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-brand-600"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-brand-700"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-emerald-"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-rose-"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-indigo-600"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-indigo-700"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-slate-900"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"])[class*="bg-zinc-900"] *,
-html:not(.dark) :is(button, a, input[type="submit"], input[type="button"]):where(.bg-brand-500, .bg-brand-600, .bg-brand-700, .bg-emerald-500, .bg-emerald-600, .bg-rose-500, .bg-rose-600) * {
-  color: #ffffff !important;
-  stroke: #ffffff;
-}
-
-/* Ensure any brand blue text in light mode is dark, bold, and fully visible instead of faint blue */
-html:not(.dark) .text-brand-600,
-html:not(.dark) .text-brand-700,
-html:not(.dark) .text-brand-800 {
-  color: #1e1b4b !important; /* high-contrast deep midnight */
-}
-
-html:not(.dark) .text-brand-500:not(button):not(button *):not(a):not(a *) {
-  color: #312e81; /* deep readable indigo */
-}
-
-/* Secondary & soft badges in light mode: use dark high-contrast slate text, never low-contrast blue */
-html:not(.dark) :is(span, div, li, p):where(
-  [class*="bg-brand-500/10"],
-  [class*="bg-brand-500/15"],
-  [class*="bg-brand-500/20"],
-  .bg-indigo-50,
-  .bg-indigo-100
-) {
-  color: #0f172a !important; /* high-contrast dark slate */
-}
-
-/* Ensure secondary/outline buttons (like "My Events", "Message Creator", "View Portfolio", "Take photo") look great in light mode */
-html:not(.dark) :is(button, a):where(.border-white\/10, .border-white\/15, .border-white\/20):not([class*="bg-brand-"]):not([class*="bg-emerald-"]):not([class*="bg-rose-"]) {
-  background-color: #ffffff;
-  border-color: #cbd5e1;
-  color: #1e293b;
-}
-html:not(.dark) :is(button, a):where(.border-white\/10, .border-white\/15, .border-white\/20):not([class*="bg-brand-"]):not([class*="bg-emerald-"]):not([class*="bg-rose-"]):hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-  color: #0f172a;
-}
-
-/* Subtle & muted metadata text contrast enhancements in light mode */
-html:not(.dark) .text-zinc-500,
-html:not(.dark) .text-slate-500 {
-  color: #64748b;
-}
-
-html:not(.dark) .text-zinc-400,
-html:not(.dark) .text-slate-400,
-html:not(.dark) .text-zinc-450,
-html:not(.dark) .text-zinc-350 {
-  color: #475569;
-}
-
-html:not(.dark) .text-zinc-300,
-html:not(.dark) .text-slate-300,
-html:not(.dark) .text-zinc-355 {
-  color: #334155;
-}
-
-html:not(.dark) .text-zinc-200,
-html:not(.dark) .text-slate-200 {
-  color: #1e293b;
-}
-
-html:not(.dark) .text-zinc-100,
-html:not(.dark) .text-slate-100 {
-  color: #0f172a;
-}
-
-/* Light mode card containers & surfaces across the whole site */
-html:not(.dark) article:where([class*="bg-zinc-"], [class*="bg-slate-"], .bg-white\/\[0\.01\], .bg-white\/\[0\.02\], .bg-white\/\[0\.03\], .bg-white\/\[0\.04\], .bg-white\/\[0\.05\], .bg-white\/5),
-html:not(.dark) aside:where([class*="bg-zinc-"], [class*="bg-slate-"], .bg-white\/\[0\.01\], .bg-white\/\[0\.02\], .bg-white\/\[0\.03\], .bg-white\/\[0\.04\], .bg-white\/\[0\.05\], .bg-white\/5),
-html:not(.dark) section:where(.bg-white\/\[0\.01\], .bg-white\/\[0\.02\], .bg-white\/\[0\.03\], .bg-white\/\[0\.04\], .bg-white\/\[0\.05\], .bg-white\/5, .bg-ink-800\/90),
-html:not(.dark) div:where([class*="rounded-2xl"], [class*="rounded-3xl"]):where(.bg-white\/\[0\.01\], .bg-white\/\[0\.02\], .bg-white\/\[0\.03\], .bg-white\/\[0\.04\], .bg-white\/\[0\.05\], .bg-white\/5, .bg-slate-900\/60, .bg-slate-900\/20, .bg-zinc-900\/40, .bg-zinc-900\/50),
-html:not(.dark) form:where(.bg-white\/\[0\.01\], .bg-white\/\[0\.02\], .bg-white\/\[0\.03\], .bg-white\/\[0\.04\], .bg-white\/\[0\.05\], .bg-white\/5) {
-  background-color: #ffffff;
-  border-color: #e2e0f8;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-}
-
-/* Inner card containers & sub-sections */
-html:not(.dark) div:where(.bg-ink-950\/40, .bg-ink-950\/60, .bg-zinc-950\/50, .bg-slate-800\/40) {
-  background-color: #f8f7fe;
-  border-color: #e2e0f8;
-}
-
-/* Light mode input fields, search bars & textareas */
-html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="range"]):not([type="submit"]):not([type="button"]),
-html:not(.dark) select,
-html:not(.dark) textarea {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
-  color-scheme: light !important;
-}
-
-html:not(.dark) input::placeholder,
-html:not(.dark) textarea::placeholder {
-  color: #64748b !important; /* crisp, high-contrast slate-500 */
-  opacity: 1 !important;
-}
-
-html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="range"]):focus,
-html:not(.dark) select:focus,
-html:not(.dark) textarea:focus {
-  border-color: #6366f1 !important;
-  outline: none !important;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
-}
-
-html:not(.dark) input[type="date"] {
-  color-scheme: light !important;
-  color: #0f172a !important;
-}
-
-/* Light mode borders */
-html:not(.dark) :where(.border-white\/5, .border-white\/10, .border-white\/15, .border-white\/20, .border-white\/25, .border-zinc-800, .border-zinc-850, .border-zinc-900, .border-slate-800, .border-slate-800\/80, .border-slate-700) {
-  border-color: #e2e0f8;
-}
-
-/* Light mode dividers */
-html:not(.dark) :where(.divide-white\/5, .divide-white\/10, .divide-zinc-800, .divide-slate-800) > * + * {
-  border-color: #e2e0f8;
-}
-
-/* Light mode badges and tags */
-html:not(.dark) li.bg-zinc-950\/80,
-html:not(.dark) span.bg-zinc-900,
-html:not(.dark) span.bg-zinc-950 {
-  background-color: #ffffff;
-  color: #0f172a;
-  border-color: #e2e0f8;
-}
-
-/* Light mode code element */
-html:not(.dark) code {
-  background-color: #f1f5f9;
-  color: #0f172a;
-  border-color: #cbd5e1;
-}
-
-/* Range Slider Light Mode Styles */
-html:not(.dark) .mantine-Slider-track,
-html:not(.dark) .mantine-RangeSlider-track {
-  background-color: #e2e0f8 !important;
-}
-
-html:not(.dark) .mantine-Slider-label,
-html:not(.dark) .mantine-RangeSlider-label {
-  background-color: #1e1b4b !important;
-  color: #ffffff !important;
 }

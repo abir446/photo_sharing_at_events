@@ -271,20 +271,20 @@ export default function HostBookingsClient({
 
   return (
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[80vh]">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-indigo-100 dark:border-white/5">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-white/5">
         <div>
-          <p className="text-sm font-bold text-indigo-950 dark:text-brand-400">Manage Your Sessions</p>
-          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <p className="text-sm font-medium text-brand-400">Manage Your Sessions</p>
+          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-white">
             Your Booked Creators
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="mt-3 max-w-xl text-[15px] text-slate-400 leading-relaxed">
             Track photographer response, complete deposit payments once accepted, and unlock milestones.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="bg-white dark:bg-white/[0.04] border border-indigo-150/80 dark:border-white/10 px-5 py-4 rounded-2xl shadow-xs dark:shadow-none backdrop-blur-xl text-center min-w-[140px]">
-            <span className="block text-2xl font-bold text-slate-900 dark:text-white">{bookings.length}</span>
+          <div className="bg-white/[0.04] border border-white/10 px-5 py-4 rounded-2xl backdrop-blur-xl text-center min-w-[140px]">
+            <span className="block text-2xl font-bold text-white">{bookings.length}</span>
             <span className="text-[11px] text-slate-500 font-semibold tracking-wider uppercase">Active Bookings</span>
           </div>
         </div>
@@ -319,10 +319,10 @@ export default function HostBookingsClient({
             return (
               <article
                 key={booking.id}
-                className="rounded-3xl border border-indigo-150/80 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 md:p-8 shadow-sm dark:shadow-none backdrop-blur-xl transition-all duration-300 hover:border-brand-300 dark:hover:border-brand-500/30"
+                className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-8 backdrop-blur-xl transition-all duration-300 hover:border-brand-500/30"
               >
                 {/* Top Details & Creator Profile Header */}
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-indigo-100 dark:border-white/5">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-white/5">
                   <div className="flex items-start gap-4">
                     <span
                       className="flex h-14 w-14 items-center justify-center rounded-2xl text-base font-bold text-white shrink-0 shadow-lg"
@@ -332,43 +332,43 @@ export default function HostBookingsClient({
                     </span>
                     <div>
                       <div className="flex flex-wrap items-center gap-2.5">
-                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">{booking.photographerName}</h2>
+                        <h2 className="text-xl font-bold text-white">{booking.photographerName}</h2>
                         
                         {isPending && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-xs font-bold text-amber-600 dark:text-amber-400">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-xs font-bold text-amber-400">
                             <Loader2Icon className="h-3 w-3 animate-spin" />
                             Awaiting Acceptance
                           </span>
                         )}
                         {isAccepted && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-0.5 text-xs font-bold text-blue-600 dark:text-blue-400">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-0.5 text-xs font-bold text-blue-400">
                             Accepted · Pay Deposit
                           </span>
                         )}
                         {isConfirmed && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-bold text-emerald-400">
                             <CheckCircle2Icon className="h-3 w-3" />
                             Booking Confirmed
                           </span>
                         )}
                         {isRejected && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 text-xs font-bold text-rose-600 dark:text-rose-400">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 text-xs font-bold text-rose-400">
                             <XCircleIcon className="h-3 w-3" />
                             Declined by Photographer
                           </span>
                         )}
                       </div>
-                      <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-400">
+                      <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-400">
                         <span className="flex items-center gap-1.5">
-                          <CalendarDaysIcon className="h-4 w-4 text-indigo-700 dark:text-brand-400" />
+                          <CalendarDaysIcon className="h-4 w-4 text-brand-400" />
                           {formatReadableDate(booking.date)}
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <ClockIcon className="h-4 w-4 text-indigo-700 dark:text-brand-400" />
+                          <ClockIcon className="h-4 w-4 text-brand-400" />
                           {booking.coverage}
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <MapPinIcon className="h-4 w-4 text-indigo-700 dark:text-brand-400" />
+                          <MapPinIcon className="h-4 w-4 text-brand-400" />
                           {booking.location}
                         </span>
                       </p>
@@ -378,7 +378,7 @@ export default function HostBookingsClient({
                   <div className="flex items-center gap-3 self-start lg:self-center">
                     <Link
                       href={`/photographer/${booking.photographerId}`}
-                      className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white hover:bg-indigo-50 text-slate-800 shadow-xs dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white px-4.5 py-2.5 text-xs font-semibold transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4.5 py-2.5 text-xs font-semibold text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer"
                     >
                       View Portfolio
                     </Link>
@@ -398,31 +398,31 @@ export default function HostBookingsClient({
                   {/* Column 1: Package Pricing Summary */}
                   <div className="space-y-4">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Booking Summary</h3>
-                    <div className="rounded-2xl border border-indigo-150/80 bg-indigo-50/40 dark:border-white/5 dark:bg-ink-950/40 p-5 space-y-3.5">
+                    <div className="rounded-2xl border border-white/5 bg-ink-950/40 p-5 space-y-3.5">
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-600 dark:text-slate-400">{booking.packageName}</span>
-                        <span className="font-semibold text-slate-900 dark:text-white">₹{booking.packagePrice.toLocaleString()}</span>
+                        <span className="text-slate-400">{booking.packageName}</span>
+                        <span className="font-semibold text-white">₹{booking.packagePrice.toLocaleString()}</span>
                       </div>
 
                       {booking.addOns.map((addOnId) => (
                         <div key={addOnId} className="flex justify-between text-sm">
-                          <span className="text-slate-600 dark:text-slate-400">
+                          <span className="text-slate-400">
                             {addOnId === "qr" ? "Guest QR upload service" : "Cloud storage & delivery"}
                           </span>
-                          <span className="font-semibold text-slate-900 dark:text-white">
+                          <span className="font-semibold text-white">
                             +₹{(addOnId === "qr" ? 9960 : 4980).toLocaleString()}
                           </span>
                         </div>
                       ))}
 
-                      <div className="flex justify-between border-t border-indigo-100 dark:border-white/10 pt-3 text-sm">
-                        <span className="text-slate-600 dark:text-slate-400">Total Price</span>
-                        <span className="font-bold text-slate-900 dark:text-white">₹{booking.totalAmount.toLocaleString()}</span>
+                      <div className="flex justify-between border-t border-white/10 pt-3 text-sm">
+                        <span className="text-slate-400">Total Price</span>
+                        <span className="font-bold text-white">₹{booking.totalAmount.toLocaleString()}</span>
                       </div>
 
-                      <div className="flex justify-between border-t border-indigo-100 dark:border-white/10 pt-3 text-sm">
-                        <span className="text-indigo-950 dark:text-brand-400 font-bold">Deposit Paid Today</span>
-                        <span className="font-extrabold text-slate-900 dark:text-white">₹{booking.dueToday.toLocaleString()}</span>
+                      <div className="flex justify-between border-t border-white/10 pt-3 text-sm">
+                        <span className="text-brand-400 font-semibold">Deposit Paid Today</span>
+                        <span className="font-extrabold text-white">₹{booking.dueToday.toLocaleString()}</span>
                       </div>
 
                       {isConfirmed && booking.paymentId && (
@@ -458,7 +458,7 @@ export default function HostBookingsClient({
                           <div>
                             <div className="flex justify-between items-start">
                               <span className="h-6 w-6 rounded-lg bg-brand-500 text-white flex items-center justify-center text-xs font-bold">1</span>
-                              <span className="text-[10px] font-extrabold uppercase tracking-wider bg-indigo-100 text-indigo-950 border border-indigo-200 dark:bg-brand-500/20 dark:text-brand-400 px-2 py-0.5 rounded-md animate-pulse">Due Now</span>
+                              <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-500/20 text-brand-400 px-2 py-0.5 rounded-md animate-pulse">Due Now</span>
                             </div>
                             <h4 className="text-sm font-bold text-white mt-2.5">20% Booking Deposit</h4>
                             <p className="text-[11px] text-slate-400 mt-1">Pay deposit to secure date.</p>
@@ -515,32 +515,32 @@ export default function HostBookingsClient({
                       )}
 
                       {/* Milestone 2 */}
-                      <div className="rounded-2xl border border-indigo-150/80 bg-indigo-50/40 dark:border-white/5 dark:bg-ink-950/40 p-4.5 flex flex-col justify-between h-40">
+                      <div className="rounded-2xl border border-white/5 bg-ink-950/40 p-4.5 flex flex-col justify-between h-40">
                         <div>
                           <div className="flex justify-between items-start">
-                            <span className="h-6 w-6 rounded-lg bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-slate-400 flex items-center justify-center text-xs font-bold">2</span>
-                            <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-200/60 text-slate-700 dark:bg-white/5 dark:text-slate-500 px-2 py-0.5 rounded-md">Upcoming</span>
+                            <span className="h-6 w-6 rounded-lg bg-white/10 text-slate-400 flex items-center justify-center text-xs font-bold">2</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider bg-white/5 text-slate-500 px-2 py-0.5 rounded-md">Upcoming</span>
                           </div>
-                          <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-3.5">50% Event Day Payment</h4>
-                          <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Auto-charged morning of event.</p>
+                          <h4 className="text-sm font-bold text-white mt-3.5">50% Event Day Payment</h4>
+                          <p className="text-[11px] text-slate-400 mt-1">Auto-charged morning of event.</p>
                         </div>
-                        <div className="mt-auto border-t border-indigo-100 dark:border-white/5 pt-2 text-right">
-                          <span className="text-base font-extrabold text-slate-700 dark:text-slate-400">₹{Math.round(booking.packagePrice * 0.5).toLocaleString()}</span>
+                        <div className="mt-auto border-t border-white/5 pt-2 text-right">
+                          <span className="text-base font-extrabold text-slate-400">₹{Math.round(booking.packagePrice * 0.5).toLocaleString()}</span>
                         </div>
                       </div>
 
                       {/* Milestone 3 */}
-                      <div className="rounded-2xl border border-indigo-150/80 bg-indigo-50/40 dark:border-white/5 dark:bg-ink-950/40 p-4.5 flex flex-col justify-between h-40">
+                      <div className="rounded-2xl border border-white/5 bg-ink-950/40 p-4.5 flex flex-col justify-between h-40">
                         <div>
                           <div className="flex justify-between items-start">
-                            <span className="h-6 w-6 rounded-lg bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-slate-400 flex items-center justify-center text-xs font-bold">3</span>
-                            <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-200/60 text-slate-700 dark:bg-white/5 dark:text-slate-500 px-2 py-0.5 rounded-md">Escrow</span>
+                            <span className="h-6 w-6 rounded-lg bg-white/10 text-slate-400 flex items-center justify-center text-xs font-bold">3</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider bg-white/5 text-slate-500 px-2 py-0.5 rounded-md">Escrow</span>
                           </div>
-                          <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-3.5">30% Media Delivery</h4>
-                          <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Released upon final approval.</p>
+                          <h4 className="text-sm font-bold text-white mt-3.5">30% Media Delivery</h4>
+                          <p className="text-[11px] text-slate-400 mt-1">Released upon final approval.</p>
                         </div>
-                        <div className="mt-auto border-t border-indigo-100 dark:border-white/5 pt-2 text-right">
-                          <span className="text-base font-extrabold text-slate-700 dark:text-slate-400">₹{Math.round(booking.packagePrice * 0.3).toLocaleString()}</span>
+                        <div className="mt-auto border-t border-white/5 pt-2 text-right">
+                          <span className="text-base font-extrabold text-slate-400">₹{Math.round(booking.packagePrice * 0.3).toLocaleString()}</span>
                         </div>
                       </div>
 

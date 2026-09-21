@@ -5,7 +5,7 @@ export default function FormHeader() {
   return (
     <>
       {/* Top Icon Badge */}
-      <div className="w-14 h-14 bg-brand-500/10 border border-brand-500/20 rounded-full flex items-center justify-center text-brand-600 dark:text-brand-400 mx-auto mb-4 shadow-xs">
+      <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-brand-400 mx-auto mb-4">
         <svg
           className="w-7 h-7"
           viewBox="0 0 24 24"
@@ -25,16 +25,16 @@ export default function FormHeader() {
       </div>
 
       {/* Headers */}
-      <h2 className="text-center text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-1">
+      <h2 className="text-center text-2xl font-extrabold text-white tracking-tight mb-1">
         Create a New Event
       </h2>
-      <p className="text-center text-xs md:text-sm text-slate-600 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+      <p className="text-center text-xs md:text-sm text-slate-400 max-w-xs mx-auto leading-relaxed">
         Set up your event page and instantly generate guest QR codes.
       </p>
 
       {/* Horizontal Line with Heart using Divider primitive */}
       <Divider>
-        <span className="text-brand-500 dark:text-indigo-400">💜</span>
+        <span className="text-indigo-400">💜</span>
       </Divider>
     </>
   );

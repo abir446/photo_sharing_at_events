@@ -157,7 +157,7 @@ export default function PhotographerDashboard({
   return (
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10 min-h-[80vh]">
       {/* Header section with stats */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-indigo-100 dark:border-zinc-900">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-zinc-900">
         <div>
           <div className="flex items-center gap-3">
             <span
@@ -167,26 +167,26 @@ export default function PhotographerDashboard({
               {profile.initials}
             </span>
             <div>
-              <p className="text-sm font-bold text-indigo-950 dark:text-brand-400">Creator Hub</p>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{profile.name}</h1>
+              <p className="text-sm font-medium text-brand-400">Creator Hub</p>
+              <h1 className="text-2xl font-bold text-white">{profile.name}</h1>
             </div>
           </div>
-          <p className="mt-3 max-w-xl text-[15px] text-slate-600 dark:text-zinc-400 leading-relaxed">
+          <p className="mt-3 max-w-xl text-[15px] text-zinc-400 leading-relaxed">
             Manage your schedule, accept incoming leads, and monitor deposit releases for your event sessions.
           </p>
           <div className="mt-4 flex flex-wrap gap-2.5">
             <Link
               href={`/photographer/${profile.id}`}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-white hover:bg-indigo-50 text-slate-800 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:text-zinc-300 dark:shadow-none font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
             >
-              <UserIcon className="h-3.5 w-3.5 text-indigo-700 dark:text-brand-400" />
+              <UserIcon className="h-3.5 w-3.5 text-brand-400" />
               View Portfolio Page
             </Link>
             <Link
               href="/photographer/register"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-white hover:bg-indigo-50 text-slate-800 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:text-brand-400 dark:shadow-none font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-brand-400 font-semibold px-4 py-2 text-xs transition-all cursor-pointer"
             >
-              <SparklesIcon className="h-3.5 w-3.5 text-indigo-700 dark:text-brand-400" />
+              <SparklesIcon className="h-3.5 w-3.5" />
               Edit Profile
             </Link>
           </div>
@@ -196,7 +196,7 @@ export default function PhotographerDashboard({
           {stats.map(({ label, value, color }) => (
             <div
               key={label}
-              className="min-w-[150px] rounded-2xl border border-indigo-150/80 bg-white dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-sm px-5 py-4 shadow-sm dark:shadow-none"
+              className="min-w-[150px] rounded-2xl border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm px-5 py-4"
             >
               <dt className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{label}</dt>
               <dd className={`mt-1.5 text-2xl font-extrabold ${color}`}>{value}</dd>
@@ -216,51 +216,51 @@ export default function PhotographerDashboard({
             {pendingRequests.map((booking) => (
               <article
                 key={booking.id}
-                className="rounded-3xl border border-indigo-150/80 bg-white dark:border-zinc-800 dark:bg-zinc-900/50 p-6 flex flex-col justify-between hover:border-brand-300 dark:hover:border-zinc-700 transition-all shadow-sm"
+                className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 flex flex-col justify-between hover:border-zinc-700 transition-all shadow-sm"
               >
                 <div>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[10px] font-bold text-amber-400">
                         <Loader2Icon className="h-3 w-3 animate-spin" />
                         Pending Action
                       </span>
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-2">
+                      <h3 className="text-lg font-bold text-white mt-2">
                         {booking.eventDetails.packageName}
                       </h3>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 flex items-center gap-1">
-                        <UserIcon className="h-3 w-3 text-indigo-700 dark:text-brand-400" />
+                      <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                        <UserIcon className="h-3 w-3 text-brand-400" />
                         Host: {booking.userEmail}
                       </p>
                     </div>
-                    <span className="text-xl font-black text-slate-900 dark:text-white shrink-0">
+                    <span className="text-xl font-black text-white shrink-0">
                       ₹{booking.totalAmount.toLocaleString()}
                     </span>
                   </div>
 
-                  <dl className="mt-5 grid grid-cols-1 gap-2.5 text-xs text-slate-700 dark:text-slate-300">
+                  <dl className="mt-5 grid grid-cols-1 gap-2.5 text-xs text-slate-300">
                     <div className="flex items-center gap-2">
-                      <CalendarDaysIcon className="h-4 w-4 text-indigo-700 dark:text-brand-400 shrink-0" />
+                      <CalendarDaysIcon className="h-4 w-4 text-brand-400 shrink-0" />
                       <span>{formatReadableDate(booking.eventDetails.date)}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <ClockIcon className="h-4 w-4 text-indigo-700 dark:text-brand-400 shrink-0" />
+                      <ClockIcon className="h-4 w-4 text-brand-400 shrink-0" />
                       <span>{booking.eventDetails.coverage}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPinIcon className="h-4 w-4 text-indigo-700 dark:text-brand-400 shrink-0" />
+                      <MapPinIcon className="h-4 w-4 text-brand-400 shrink-0" />
                       <span className="truncate">{booking.eventDetails.location}</span>
                     </div>
                   </dl>
 
                   {booking.addOns.length > 0 && (
-                    <div className="mt-4 border-t border-indigo-100 dark:border-zinc-850 pt-3.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Selected Add-ons:</span>
+                    <div className="mt-4 border-t border-zinc-850 pt-3.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Selected Add-ons:</span>
                       <ul className="mt-1.5 flex flex-wrap gap-1.5">
                         {booking.addOns.map((ao) => (
                           <li
                             key={ao}
-                            className="text-[10px] bg-indigo-50 text-indigo-900 border border-indigo-100 dark:bg-zinc-950 dark:border-zinc-800 px-2 py-0.5 rounded dark:text-zinc-400 font-semibold"
+                            className="text-[10px] bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded text-zinc-400 font-semibold"
                           >
                             {ao === "qr" ? "Live Guest QR upload" : "Secure Cloud Storage"}
                           </li>
@@ -270,12 +270,12 @@ export default function PhotographerDashboard({
                   )}
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-indigo-100 dark:border-zinc-850 flex gap-3">
+                <div className="mt-6 pt-4 border-t border-zinc-850 flex gap-3">
                   <button
                     type="button"
                     disabled={respondingId !== null}
                     onClick={() => handleRespond(booking.id, "accept")}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-sm"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
                   >
                     {respondingId === booking.id ? (
                       <Loader2Icon className="h-3.5 w-3.5 animate-spin" />
@@ -288,7 +288,7 @@ export default function PhotographerDashboard({
                     type="button"
                     disabled={respondingId !== null}
                     onClick={() => handleRespond(booking.id, "reject")}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 py-2.5 text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-rose-950/20 border border-rose-500/30 text-rose-400 hover:bg-rose-950/40 py-2.5 text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
                   >
                     <XIcon className="h-3.5 w-3.5" />
                     Reject
@@ -326,11 +326,11 @@ export default function PhotographerDashboard({
               return (
                 <div
                   key={booking.id}
-                  className="rounded-2xl border border-indigo-150/80 bg-white dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-sm p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs dark:shadow-sm"
+                  className="rounded-2xl border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm"
                 >
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                      <h4 className="text-sm font-bold text-white">
                         {booking.eventDetails.packageName}
                       </h4>
                       {isConfirmed && (

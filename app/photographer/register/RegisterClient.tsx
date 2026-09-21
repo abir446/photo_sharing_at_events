@@ -109,29 +109,29 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-12">
       <header className="text-center">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-400">
           <SparklesIcon className="h-5 w-5" />
         </span>
-        <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+        <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           {existingProfile ? 'Edit Your Listing Profile' : 'List Your Creator Business'}
         </h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-400 text-sm">
+        <p className="mt-2 text-slate-400 text-sm">
           {existingProfile 
             ? 'Update your operational details, aesthetic styles, starting rate, and options.'
             : 'List your business and stand out to premium hosts searching for event coverage.'}
         </p>
       </header>
 
-      <form onSubmit={handlePayAndRegister} className="mt-8 space-y-6 rounded-3xl border border-indigo-150/80 bg-white p-8 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
+      <form onSubmit={handlePayAndRegister} className="mt-8 space-y-6 rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl">
         {error && (
-          <div role="alert" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm font-semibold text-rose-600 dark:text-rose-300">
+          <div role="alert" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm font-semibold text-rose-300">
             {error}
           </div>
         )}
 
         <div className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+            <label htmlFor="name" className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
               Creator / Brand Name
             </label>
             <input
@@ -141,12 +141,12 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Mara Oswin Photography"
-              className="mt-2 w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-white/10 dark:bg-ink-950/60 dark:text-white"
+              className="mt-2 w-full rounded-xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             />
           </div>
 
           <div>
-            <label htmlFor="location" className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+            <label htmlFor="location" className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
               Operational Location
             </label>
             <input
@@ -156,13 +156,13 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="e.g. Seattle, WA"
-              className="mt-2 w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-white/10 dark:bg-ink-950/60 dark:text-white"
+              className="mt-2 w-full rounded-xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="startingPrice" className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+              <label htmlFor="startingPrice" className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Starting Rate (₹)
               </label>
               <input
@@ -172,11 +172,11 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
                 value={startingPrice}
                 onChange={(e) => setStartingPrice(e.target.value)}
                 placeholder="e.g. 99600"
-                className="mt-2 w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-white/10 dark:bg-ink-950/60 dark:text-white"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
             <div>
-              <label htmlFor="responseTime" className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+              <label htmlFor="responseTime" className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Average Response Time
               </label>
               <input
@@ -186,13 +186,13 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
                 value={responseTime}
                 onChange={(e) => setResponseTime(e.target.value)}
                 placeholder="e.g. Usually responds in 1 hour"
-                className="mt-2 w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-white/10 dark:bg-ink-950/60 dark:text-white"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="accent" className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+            <label htmlFor="accent" className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
               Accent Color
             </label>
             <div className="mt-2 flex items-center gap-3">
@@ -207,13 +207,13 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
                 type="text"
                 value={accent}
                 onChange={(e) => setAccent(e.target.value)}
-                className="w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-white/10 dark:bg-ink-950/60 dark:text-white"
+                className="w-full rounded-xl border border-white/10 bg-ink-950/60 px-4 py-3 text-sm text-white focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
           </div>
 
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+            <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
               Aesthetic Styles (Select all that apply)
             </span>
             <div className="mt-2.5 flex flex-wrap gap-2">
@@ -226,11 +226,11 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
                     onClick={() => handleStyleToggle(style)}
                     className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                       selected
-                        ? 'border-brand-500 bg-brand-50 text-brand-700 dark:border-brand-500 dark:bg-brand-500/10 dark:text-white'
-                        : 'border-indigo-100 bg-indigo-50/50 text-slate-700 hover:border-brand-300 hover:bg-white dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:border-white/25'
+                        ? 'border-brand-500 bg-brand-500/10 text-white'
+                        : 'border-white/15 bg-white/5 text-slate-300 hover:border-white/25'
                     }`}
                   >
-                    {selected && <CheckIcon className="h-3 w-3 text-brand-600 dark:text-brand-400" />}
+                    {selected && <CheckIcon className="h-3 w-3" />}
                     {style}
                   </button>
                 );
@@ -239,7 +239,7 @@ export default function RegisterClient({ defaultName, defaultEmail, existingProf
           </div>
         </div>
 
-        <div className="border-t border-indigo-100 dark:border-white/10 pt-6">
+        <div className="border-t border-white/10 pt-6">
           <button
             type="submit"
             disabled={loading}
