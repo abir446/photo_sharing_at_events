@@ -2,6 +2,7 @@
 
 import React from "react";
 import { MantineProvider, createTheme } from "@mantine/core";
+import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 
 // Theme configured to match the application's aesthetic
 const theme = createTheme({
@@ -37,10 +38,25 @@ const theme = createTheme({
   primaryShade: 5,
 });
 
-export function Providers({ children }: { children: React.ReactNode }) {
+function MantineThemeWrapper({ children }: { children: React.ReactNode }) {
+  const { theme: currentTheme, mounted } = useTheme();
+  const colorScheme = mounted ? currentTheme : "dark";
+
   return (
-    <MantineProvider theme={theme} defaultColorScheme="dark" forceColorScheme="dark">
+    <MantineProvider
+      theme={theme}
+      defaultColorScheme="dark"
+      forceColorScheme={colorScheme}
+    >
       {children}
     </MantineProvider>
+  );
+}
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider>
+      <MantineThemeWrapper>{children}</MantineThemeWrapper>
+    </ThemeProvider>
   );
 }

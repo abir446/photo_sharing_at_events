@@ -73,8 +73,35 @@ export default function RootLayout({
     <html
       lang="en"
       className="dark h-full antialiased font-sans"
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-ink-900 text-slate-200">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('dropcast_theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var theme = saved || (prefersDark ? 'dark' : 'dark');
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.classList.add('light');
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    document.documentElement.style.colorScheme = 'light';
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-slate-50 dark:bg-ink-900 text-slate-900 dark:text-slate-200 transition-colors duration-200">
         <Providers>
           <JsonLd />
           <Header />

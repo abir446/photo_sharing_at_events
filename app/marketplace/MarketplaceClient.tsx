@@ -82,25 +82,25 @@ export default function MarketplaceClient({ initialPhotographers, bookedDates = 
       {/* Mobile/Tablet responsive header */}
       <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-zinc-900">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             Find Your Event Photographer
           </h1>
-          <p className="mt-2.5 sm:mt-3 max-w-xl text-sm sm:text-[15px] text-zinc-400 leading-relaxed">
+          <p className="mt-2.5 sm:mt-3 max-w-xl text-sm sm:text-[15px] text-slate-600 dark:text-zinc-400 leading-relaxed">
             Compare vetted creators near you, then lock in your date with a
             milestone-based deposit.
           </p>
         </div>
         <div className="w-full lg:w-auto">
           {/* Responsive stats counter table */}
-          <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-zinc-800 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm w-full shadow-sm">
+          <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 dark:divide-zinc-800 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/40 backdrop-blur-sm w-full shadow-sm">
             {[
               { label: 'Creators available', value: `${initialPhotographers.length}` },
               { label: 'Avg. rating', value: initialPhotographers.length > 0 ? avgRating : '0.0' },
               { label: 'Median starting price', value: '₹1,22,425' }
             ].map(({ label, value }) => (
               <div key={label} className="px-5 py-3 sm:px-6 sm:py-4 text-center sm:text-left">
-                <dt className="text-[10px] sm:text-xs font-semibold text-zinc-450 uppercase tracking-wider">{label}</dt>
-                <dd className="mt-1 text-lg sm:text-xl font-bold text-white">{value}</dd>
+                <dt className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-zinc-450 uppercase tracking-wider">{label}</dt>
+                <dd className="mt-1 text-lg sm:text-xl font-bold text-slate-900 dark:text-white">{value}</dd>
               </div>
             ))}
           </dl>
@@ -111,7 +111,7 @@ export default function MarketplaceClient({ initialPhotographers, bookedDates = 
       <div className="mt-6 sm:mt-8 flex flex-col lg:flex-row items-start gap-7">
         {/* Desktop filter sidebar container */}
         <aside 
-          className="hidden lg:block sticky top-24 w-[280px] shrink-0 self-start overflow-hidden rounded-2xl border border-zinc-850 bg-zinc-900/50 shadow-sm"
+          className="hidden lg:block sticky top-24 w-[280px] shrink-0 self-start overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-zinc-850 dark:bg-zinc-900/50 shadow-sm"
           aria-label="Desktop filters"
         >
           <FilterSidebar
@@ -130,13 +130,13 @@ export default function MarketplaceClient({ initialPhotographers, bookedDates = 
         {/* Results layout section */}
         <section className="min-w-0 flex-1 w-full" aria-label="Photographer results">
           {/* Responsive search filter toolbar */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-2xl border border-zinc-900 bg-zinc-950/40 backdrop-blur-sm p-4 sm:px-5 sm:py-3.5 shadow-sm">
-            <p className="flex items-center gap-2 text-sm text-zinc-350">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-2xl border border-slate-200 bg-white dark:border-zinc-900 dark:bg-zinc-950/40 backdrop-blur-sm p-4 sm:px-5 sm:py-3.5 shadow-sm">
+            <p className="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-350">
               <SlidersHorizontalIcon
                 className="h-4 w-4 text-brand-400"
                 aria-hidden="true"
               />
-              <span className="font-bold text-white">{results.length}</span>
+              <span className="font-bold text-slate-900 dark:text-white">{results.length}</span>
               creators match your filters
             </p>
             
@@ -151,22 +151,22 @@ export default function MarketplaceClient({ initialPhotographers, bookedDates = 
                 Filters
               </button>
               
-              <label className="flex items-center gap-2 text-sm text-zinc-400">
+              <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400 font-medium">
                 Sort by
                 <span className="relative">
                   <select
                     value={sort}
                     onChange={(e) => setSort(e.target.value)}
-                    className="appearance-none rounded-lg border border-zinc-800 bg-zinc-900 py-1.5 pl-3 pr-8 text-sm font-medium text-white focus:border-brand-500 focus:outline-none cursor-pointer"
+                    className="appearance-none rounded-lg border border-slate-200 bg-white text-slate-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white py-1.5 pl-3 pr-8 text-sm font-medium shadow-sm dark:shadow-none focus:border-brand-500 focus:outline-none cursor-pointer [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-zinc-900 dark:[&>option]:text-white"
                   >
                     {SORTS.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="bg-white text-slate-900 dark:bg-zinc-900 dark:text-white">
                         {option}
                       </option>
                     ))}
                   </select>
                   <ChevronDownIcon
-                    className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                    className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
                     aria-hidden="true"
                   />
                 </span>

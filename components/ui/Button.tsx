@@ -10,20 +10,20 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white shadow-glow disabled:bg-white/10 disabled:text-slate-500",
+          "bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white shadow-glow disabled:bg-slate-300 dark:disabled:bg-white/10 disabled:text-slate-500",
         secondary:
-          "bg-white/5 hover:bg-white/10 active:bg-white/15 text-white border border-white/10 disabled:bg-white/5 disabled:text-slate-500",
+          "bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:active:bg-white/15 dark:text-white dark:border-white/10 disabled:bg-slate-100/50 dark:disabled:bg-white/5 disabled:text-slate-400 dark:disabled:text-slate-500",
         outline:
-          "border border-white/15 bg-white/[0.02] hover:bg-white/10 active:bg-white/15 text-slate-200 hover:text-white disabled:bg-transparent disabled:text-slate-600",
+          "border border-slate-300 dark:border-white/15 bg-white dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/10 active:bg-slate-100 dark:active:bg-white/15 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white disabled:bg-transparent disabled:text-slate-400 dark:disabled:text-slate-600 shadow-sm dark:shadow-none",
         ghost:
-          "bg-transparent hover:bg-white/10 active:bg-white/15 text-slate-400 hover:text-white disabled:bg-transparent disabled:text-slate-600",
+          "bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 active:bg-slate-200 dark:active:bg-white/15 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white disabled:bg-transparent disabled:text-slate-400 dark:disabled:text-slate-600",
         danger:
-          "bg-rose-500/10 hover:bg-rose-500/20 active:bg-rose-500/30 text-rose-300 border border-rose-500/30 disabled:bg-rose-500/5 disabled:text-rose-500/40",
+          "bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 active:bg-rose-200 dark:active:bg-rose-500/30 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30 disabled:bg-rose-50/50 dark:disabled:bg-rose-500/5 disabled:text-rose-400 dark:disabled:text-rose-500/40",
         light:
-          "bg-white text-ink-950 hover:bg-slate-100 active:bg-slate-200 font-semibold disabled:bg-slate-300",
+          "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 active:bg-slate-100 dark:active:bg-slate-700 font-semibold shadow-sm disabled:bg-slate-200 dark:disabled:bg-slate-700",
         // Fallback standard shadcn variants
         default:
-          "bg-brand-500 hover:bg-brand-600 text-white shadow-glow disabled:bg-white/10",
+          "bg-brand-500 hover:bg-brand-600 text-white shadow-glow disabled:bg-slate-300 dark:disabled:bg-white/10",
       },
       size: {
         sm: "px-3 py-1.5 text-xs gap-1.5 h-8",

@@ -910,7 +910,7 @@ export default function AdminDashboard({
                 <select
                   value={bookingStatusFilter}
                   onChange={(e) => setBookingStatusFilter(e.target.value)}
-                  className="bg-ink-900 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-brand-500 cursor-pointer"
+                  className="bg-white dark:bg-ink-900 border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-800 dark:text-white shadow-sm dark:shadow-none focus:outline-none focus:border-brand-500 cursor-pointer [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-zinc-900 dark:[&>option]:text-white"
                 >
                   <option value="all">All Statuses</option>
                   <option value="pending">Pending</option>
@@ -982,7 +982,7 @@ export default function AdminDashboard({
                             value={b.status}
                             disabled={updatingBookingId === b.id}
                             onChange={(e) => handleUpdateBookingStatus(b.id, e.target.value)}
-                            className="bg-ink-900 border border-white/10 px-2.5 py-1.5 rounded-lg text-xs font-bold text-white cursor-pointer focus:outline-none focus:border-brand-500"
+                            className="bg-white dark:bg-ink-900 border border-slate-200 dark:border-white/10 px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-800 dark:text-white shadow-sm dark:shadow-none cursor-pointer focus:outline-none focus:border-brand-500 [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-zinc-900 dark:[&>option]:text-white"
                           >
                             <option value="pending">Pending</option>
                             <option value="accepted">Accepted</option>
@@ -1159,7 +1159,7 @@ export default function AdminDashboard({
                 <select
                   value={userRoleFilter}
                   onChange={(e) => setUserRoleFilter(e.target.value)}
-                  className="bg-ink-900 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-brand-500 cursor-pointer"
+                  className="bg-white dark:bg-ink-900 border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-800 dark:text-white shadow-sm dark:shadow-none focus:outline-none focus:border-brand-500 cursor-pointer [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-zinc-900 dark:[&>option]:text-white"
                 >
                   <option value="all">All Roles</option>
                   <option value="admin">Administrator</option>
@@ -1220,7 +1220,7 @@ export default function AdminDashboard({
                               value={u.role}
                               disabled={isSelf || updatingUserId === u.id}
                               onChange={(e) => handleUpdateUserRole(u.id, e.target.value)}
-                              className={`bg-ink-900 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-brand-500 ${
+                              className={`bg-white dark:bg-ink-900 border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-800 dark:text-white shadow-sm dark:shadow-none focus:outline-none focus:border-brand-500 [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-zinc-900 dark:[&>option]:text-white ${
                                 isSelf ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                               }`}
                             >

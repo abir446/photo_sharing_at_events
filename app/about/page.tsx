@@ -229,27 +229,29 @@ export default function AboutPage() {
         </section>
 
         {/* 6. CALL TO ACTION SECTION */}
-        <section className="bg-gradient-to-r from-brand-950/80 via-ink-900 to-slate-950 border border-brand-500/20 rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden shadow-2xl">
+        <section className="relative overflow-hidden rounded-3xl p-8 md:p-12 text-center transition-all duration-300 border bg-gradient-to-br from-indigo-50/90 via-white to-purple-50/80 border-indigo-200/70 shadow-xl shadow-brand-500/5 dark:bg-gradient-to-r dark:from-indigo-950/80 dark:via-zinc-950 dark:to-purple-950/70 dark:border-brand-500/20 dark:shadow-2xl">
           {/* Radial visual patterns */}
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-          <div className="absolute w-80 h-80 rounded-full bg-brand-500/20 blur-3xl -top-20 -left-20 pointer-events-none"></div>
-          <div className="absolute w-80 h-80 rounded-full bg-purple-500/20 blur-3xl -bottom-20 -right-20 pointer-events-none"></div>
+          <div className="absolute inset-0 opacity-[0.12] dark:opacity-10 bg-[radial-gradient(#6366f1_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+          <div className="absolute w-80 h-80 rounded-full bg-brand-400/20 dark:bg-brand-500/20 blur-3xl -top-20 -left-20 pointer-events-none"></div>
+          <div className="absolute w-80 h-80 rounded-full bg-purple-400/20 dark:bg-purple-500/20 blur-3xl -bottom-20 -right-20 pointer-events-none"></div>
 
           <div className="relative space-y-6 max-w-2xl mx-auto z-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">Ready to Collect Every Angle?</h2>
-            <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              Ready to Collect Every Angle?
+            </h2>
+            <p className="text-slate-600 dark:text-slate-300 text-sm md:text-base leading-relaxed">
               Create your event in seconds. Generate your unique QR code, print or display it at your venue, and watch the memories stream in.
             </p>
             <div className="pt-4 flex flex-wrap justify-center gap-4">
               <Link 
                 href="/dashboard/create" 
-                className="px-8 py-3.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold shadow-glow hover:-translate-y-0.5 transition-all duration-200 text-sm"
+                className="px-8 py-3.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-brand-500/35 hover:-translate-y-0.5 transition-all duration-200 text-sm"
               >
                 Create Event Now
               </Link>
               <Link 
                 href="/" 
-                className="px-8 py-3.5 rounded-full border border-white/20 text-white font-bold hover:bg-white/10 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-200 text-sm"
+                className="px-8 py-3.5 rounded-full border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 shadow-sm dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:hover:border-white/40 hover:-translate-y-0.5 transition-all duration-200 text-sm font-bold"
               >
                 Back to Home
               </Link>

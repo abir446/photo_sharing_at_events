@@ -186,13 +186,13 @@ export default async function Page() {
     <main className="mx-auto w-full max-w-[1440px] px-8 py-10">
       
       {/* Header section with stats */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-white/10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-6 border-b border-slate-200 dark:border-white/10">
         <div>
-          <p className="text-sm font-semibold text-brand-400">Welcome back, {user.given_name || "Host"}</p>
-          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-white">
+          <p className="text-sm font-semibold text-brand-600 dark:text-brand-400">Welcome back, {user.given_name || "Host"}</p>
+          <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Plan every moment of your event
           </h1>
-          <p className="mt-3 max-w-xl text-[15px] text-slate-400">
+          <p className="mt-3 max-w-xl text-[15px] text-slate-600 dark:text-slate-400 leading-relaxed">
             Create shared photo galleries, generate custom guest QR codes, and collect every single memory in one place.
           </p>
         </div>
@@ -201,13 +201,13 @@ export default async function Page() {
           {stats.map(({ label, value, icon: Icon }) => (
             <div
               key={label}
-              className="min-w-[150px] rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl px-5 py-4 shadow-xl"
+              className="min-w-[150px] rounded-2xl border border-slate-200 bg-white/80 dark:border-white/10 dark:bg-white/[0.03] backdrop-blur-xl px-5 py-4 shadow-sm dark:shadow-xl"
             >
-              <dt className="flex items-center gap-2 text-xs font-medium text-slate-400">
-                <Icon className="h-3.5 w-3.5 text-brand-400" aria-hidden="true" />
+              <dt className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                <Icon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" aria-hidden="true" />
                 {label}
               </dt>
-              <dd className="mt-1.5 text-2xl font-bold text-white">{value}</dd>
+              <dd className="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{value}</dd>
             </div>
           ))}
         </dl>
@@ -217,12 +217,12 @@ export default async function Page() {
       <div className="mt-9 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
         
         {/* Create New Event CTA card */}
-        <div className="flex flex-col rounded-3xl border border-dashed border-white/15 bg-white/[0.02] p-7 hover:border-brand-500/40 hover:bg-brand-500/[0.03] backdrop-blur-sm transition-all duration-300 items-center justify-center text-center group min-h-[300px] h-full shadow-lg">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-400 border border-brand-500/20 group-hover:scale-110 transition-transform duration-300">
+        <div className="flex flex-col rounded-3xl border border-dashed border-slate-300 dark:border-white/15 bg-white/60 dark:bg-white/[0.02] p-7 hover:border-brand-500/40 hover:bg-brand-500/[0.03] backdrop-blur-sm transition-all duration-300 items-center justify-center text-center group min-h-[300px] h-full shadow-sm dark:shadow-lg">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-500 dark:text-brand-400 border border-brand-500/20 group-hover:scale-110 transition-transform duration-300">
             <PlusIcon className="h-6 w-6" />
           </div>
-          <h2 className="mt-4 text-xl font-bold text-white">Create New Event</h2>
-          <p className="mt-2 text-sm text-slate-400 max-w-[240px] leading-relaxed">
+          <h2 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">Create New Event</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 max-w-[240px] leading-relaxed">
             Set up a live photo sharing space and generate a QR code for your guests instantly.
           </p>
           <Link 
@@ -250,7 +250,7 @@ export default async function Page() {
       {/* Assurance banner */}
       <section
         aria-labelledby="assurance-heading"
-        className="mt-16 grid grid-cols-1 gap-6 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-8 md:grid-cols-3 shadow-xl"
+        className="mt-16 grid grid-cols-1 gap-6 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.02] backdrop-blur-xl p-8 md:grid-cols-3 shadow-sm dark:shadow-xl"
       >
         <h2 id="assurance-heading" className="sr-only">
           Why hosts choose DropCast
@@ -273,12 +273,12 @@ export default async function Page() {
           }
         ].map(({ icon: Icon, title, copy }) => (
           <div key={title} className="flex gap-4.5">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-              <Icon className="h-5 w-5 text-brand-400" aria-hidden="true" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5">
+              <Icon className="h-5 w-5 text-brand-500 dark:text-brand-400" aria-hidden="true" />
             </span>
             <div>
-              <h3 className="text-base font-semibold text-white">{title}</h3>
-              <p className="mt-1.5 text-sm text-slate-400 leading-relaxed">{copy}</p>
+              <h3 className="text-base font-semibold text-slate-900 dark:text-white">{title}</h3>
+              <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{copy}</p>
             </div>
           </div>
         ))}

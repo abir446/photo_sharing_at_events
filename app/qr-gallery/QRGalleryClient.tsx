@@ -239,29 +239,29 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
 
   return (
     <main className="mx-auto w-full max-w-[1440px] px-8 py-8">
-      <header className="flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur-xl">
+      <header className="flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-slate-200 bg-white/80 dark:border-white/10 dark:bg-white/[0.04] px-6 py-5 backdrop-blur-xl shadow-sm dark:shadow-none">
         <div className="flex flex-wrap items-center gap-5">
           <span className="relative">
             <select
               value={selectedEventId}
               onChange={(e) => setSelectedEventId(e.target.value)}
               aria-label="Select event gallery"
-              className="appearance-none rounded-xl border border-white/10 bg-ink-950/60 py-2.5 pl-4 pr-10 text-lg font-bold text-white focus:border-brand-500 focus:outline-none cursor-pointer"
+              className="appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-4 pr-10 text-lg font-bold text-slate-900 shadow-sm transition-colors hover:border-slate-300 focus:border-brand-500 focus:outline-none dark:border-white/10 dark:bg-ink-950/60 dark:text-white dark:shadow-none cursor-pointer [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-zinc-900 dark:[&>option]:text-white"
             >
               {events.map((e) => (
-                <option key={e.id} value={e.id}>
+                <option key={e.id} value={e.id} className="bg-white text-slate-900 dark:bg-zinc-900 dark:text-white">
                   {e.name}
                 </option>
               ))}
             </select>
             <ChevronDownIcon
-              className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
               aria-hidden="true"
             />
           </span>
 
           <div className="flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-sm font-semibold text-emerald-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-300">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
@@ -269,7 +269,7 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
               {approvedMedia.length} Live to Guests
             </span>
             {pendingMedia.length > 0 && (
-              <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1.5 text-sm font-semibold text-amber-300">
+              <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1.5 text-sm font-semibold text-amber-600 dark:text-amber-300">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
@@ -277,8 +277,8 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
                 {pendingMedia.length} Pending Approval
               </span>
             )}
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200">
-              <UsersIcon className="h-4 w-4 text-brand-400" aria-hidden="true" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 px-3 py-1.5 text-sm font-medium">
+              <UsersIcon className="h-4 w-4 text-brand-500 dark:text-brand-400" aria-hidden="true" />
               Connected Live
             </span>
           </div>
@@ -287,7 +287,7 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
         <div className="flex items-center gap-2.5">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 px-3.5 py-2.5 text-sm font-medium transition-colors cursor-pointer"
           >
             <CastIcon className="h-4 w-4" aria-hidden="true" />
             Cast Live Slideshow
@@ -305,7 +305,7 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
       <div className="mt-7 flex flex-col lg:flex-row items-start gap-7">
         <section aria-label="Live guest photo feed" className="min-w-0 flex-1 w-full">
           {/* Moderation Section Switcher Tabs */}
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-4">
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -313,12 +313,12 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === "approved"
                     ? "bg-brand-500 text-white shadow-glow"
-                    : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                    : "bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/10"
                 }`}
               >
                 All Approved
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                  activeTab === "approved" ? "bg-white/20 text-white" : "bg-white/10 text-slate-300"
+                  activeTab === "approved" ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-slate-300"
                 }`}>
                   {approvedMedia.length}
                 </span>
@@ -330,7 +330,7 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === "pending"
                     ? "bg-amber-500 text-ink-950 font-extrabold shadow-glow"
-                    : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                    : "bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/10"
                 }`}
               >
                 Yet to be Approved
@@ -339,7 +339,7 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
                     ? "bg-ink-950/30 text-ink-950"
                     : pendingMedia.length > 0
                     ? "bg-amber-500 text-ink-950 font-bold"
-                    : "bg-white/10 text-slate-300"
+                    : "bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-slate-300"
                 }`}>
                   {pendingMedia.length}
                 </span>
@@ -350,7 +350,7 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
               <button
                 type="button"
                 onClick={handleApproveAll}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 border border-emerald-500/30 dark:bg-emerald-500/20 dark:hover:bg-emerald-500/30 dark:text-emerald-300 text-xs font-bold transition-colors cursor-pointer"
               >
                 <CheckCircleIcon className="w-4 h-4" />
                 Approve All ({pendingMedia.length})
@@ -358,8 +358,8 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
             )}
           </div>
 
-          <div className="mb-4 flex items-center gap-2 text-sm text-slate-400">
-            <ImageIcon className="h-4 w-4 text-brand-400" aria-hidden="true" />
+          <div className="mb-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+            <ImageIcon className="h-4 w-4 text-brand-500 dark:text-brand-400" aria-hidden="true" />
             {activeTab === "pending"
               ? "Pending review queue — approve photos to make them visible to all guests in real-time."
               : "Live feed — photos currently visible to all guests. Hover a photo to moderate."}
@@ -457,12 +457,12 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
               })}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center border border-dashed border-white/15 rounded-2xl p-16 bg-white/[0.01]">
-              <ImageIcon className="h-8 w-8 text-slate-600" />
-              <h3 className="mt-4 text-base font-semibold text-white">
+            <div className="flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-white/15 rounded-2xl p-16 bg-white/50 dark:bg-white/[0.01]">
+              <ImageIcon className="h-8 w-8 text-slate-400 dark:text-slate-600" />
+              <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-white">
                 {activeTab === "pending" ? "No photos waiting for approval" : "No approved photos yet"}
               </h3>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 {activeTab === "pending"
                   ? "When guests upload memories, they will appear here for review before going live to all guests."
                   : "Approved photos will instantly show up here and be visible to your guests."}
@@ -472,16 +472,16 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
         </section>
 
         <aside className="sticky top-24 w-full lg:w-[320px] shrink-0 space-y-5 self-start">
-          <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl">
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-white">
-              <QrCodeIcon className="h-4 w-4 text-brand-400" aria-hidden="true" />
+          <section className="rounded-2xl border border-slate-200 bg-white/80 dark:border-white/10 dark:bg-white/[0.04] p-5 backdrop-blur-xl shadow-sm dark:shadow-none">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
+              <QrCodeIcon className="h-4 w-4 text-brand-500 dark:text-brand-400" aria-hidden="true" />
               Printable QR code
             </h2>
-            <div className="mt-4 rounded-2xl bg-white p-5 text-center">
+            <div className="mt-4 rounded-2xl bg-white p-5 text-center border border-slate-100 dark:border-none shadow-sm dark:shadow-none">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Share your photos
               </p>
-              <p className="mt-1 text-base font-bold text-ink-900">{currentEvent?.name}</p>
+              <p className="mt-1 text-base font-bold text-slate-900">{currentEvent?.name}</p>
               
               {currentEvent?.qrCodeUrl ? (
                 <div className="mt-3 flex justify-center">
@@ -515,13 +515,13 @@ export default function QRGalleryClient({ initialEvents, initialMediaMap }: QRGa
           </section>
 
           {currentEvent?.uploadUrl && (
-            <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl">
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-white">
-                <LinkIcon className="h-4 w-4 text-brand-400" aria-hidden="true" />
+            <section className="rounded-2xl border border-slate-200 bg-white/80 dark:border-white/10 dark:bg-white/[0.04] p-5 backdrop-blur-xl shadow-sm dark:shadow-none">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
+                <LinkIcon className="h-4 w-4 text-brand-500 dark:text-brand-400" aria-hidden="true" />
                 Quick share link
               </h2>
               <div className="mt-3 flex items-center gap-2">
-                <code className="min-w-0 flex-1 truncate rounded-lg border border-white/10 bg-ink-950/60 px-3 py-2 text-xs text-slate-300">
+                <code className="min-w-0 flex-1 truncate rounded-lg border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-ink-950/60 px-3 py-2 text-xs text-slate-700 dark:text-slate-300">
                   {currentEvent.uploadUrl}
                 </code>
                 <button
