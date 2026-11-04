@@ -22,8 +22,8 @@ export function PhotographerCard({ photographer, selectedDate }: Props) {
   const count = photographer.portfolio.length;
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 transition-colors hover:border-brand-500/40 shadow-sm">
-      <div className="relative aspect-[4/3] overflow-hidden bg-zinc-950">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 transition-colors hover:border-brand-500/40 shadow-sm">
+      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-zinc-950">
         {photographer.portfolio.map((src, i) => (
           <img
             key={src + i}
@@ -34,9 +34,9 @@ export function PhotographerCard({ photographer, selectedDate }: Props) {
             }`}
           />
         ))}
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent dark:from-zinc-950 dark:via-zinc-950/20" />
 
-        <span className="absolute left-3 top-3 rounded-lg border border-zinc-800 bg-zinc-950/80 px-2.5 py-1 text-xs font-bold text-zinc-200 shadow-sm">
+        <span className="absolute left-3 top-3 rounded-lg border border-slate-200/90 bg-white/90 dark:border-zinc-800 dark:bg-zinc-950/80 px-2.5 py-1 text-xs font-bold text-slate-800 dark:text-zinc-200 shadow-sm">
           From ₹{photographer.startingPrice.toLocaleString()}
         </span>
 
@@ -45,7 +45,7 @@ export function PhotographerCard({ photographer, selectedDate }: Props) {
           onClick={() => setSaved((v) => !v)}
           aria-pressed={saved}
           aria-label={`${saved ? 'Remove' : 'Save'} ${photographer.name}`}
-          className="absolute right-3 top-3 rounded-lg border border-zinc-800 bg-zinc-950/80 p-1.5 text-zinc-400 transition-colors hover:text-brand-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer"
+          className="absolute right-3 top-3 rounded-lg border border-slate-200/90 bg-white/90 dark:border-zinc-800 dark:bg-zinc-950/80 p-1.5 text-slate-500 dark:text-zinc-400 transition-colors hover:text-brand-500 dark:hover:text-brand-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 cursor-pointer shadow-sm"
         >
           <HeartIcon
             className={`h-4 w-4 ${saved ? 'fill-brand-400 text-brand-400' : ''}`}
@@ -97,17 +97,17 @@ export function PhotographerCard({ photographer, selectedDate }: Props) {
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <h3 className="truncate text-[15px] font-semibold text-white">
+              <h3 className="truncate text-[15px] font-semibold text-slate-900 dark:text-white">
                 {photographer.name}
               </h3>
               {photographer.verified && (
                 <BadgeCheckIcon
-                  className="h-4 w-4 shrink-0 text-brand-400"
+                  className="h-4 w-4 shrink-0 text-brand-500 dark:text-brand-400"
                   aria-label="Verified creator"
                 />
               )}
             </div>
-            <p className="mt-0.5 flex items-center gap-1 text-xs text-zinc-450">
+            <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-500 dark:text-zinc-450">
               <MapPinIcon className="h-3.5 w-3.5" aria-hidden="true" />
               {photographer.location}
             </p>
@@ -117,10 +117,10 @@ export function PhotographerCard({ photographer, selectedDate }: Props) {
               className="h-4 w-4 fill-amber-400 text-amber-400"
               aria-hidden="true"
             />
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-slate-900 dark:text-white">
               {photographer.rating.toFixed(1)}
             </span>
-            <span className="text-xs text-zinc-400">
+            <span className="text-xs text-slate-500 dark:text-zinc-400">
               ({photographer.reviews})
             </span>
           </div>
@@ -130,14 +130,14 @@ export function PhotographerCard({ photographer, selectedDate }: Props) {
           {photographer.styles.map((style) => (
             <li
               key={style}
-              className="rounded-md border border-zinc-800 bg-zinc-950/80 px-2 py-0.5 text-[11px] font-semibold text-zinc-400"
+              className="rounded-md border border-slate-200 bg-slate-100 text-slate-700 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-zinc-400 px-2 py-0.5 text-[11px] font-semibold"
             >
               {style}
             </li>
           ))}
         </ul>
 
-        <p className="mt-3 flex items-center gap-1.5 text-xs text-zinc-450">
+        <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-450">
           <ClockIcon className="h-3.5 w-3.5" aria-hidden="true" />
           {photographer.responseTime}
         </p>

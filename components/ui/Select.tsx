@@ -14,15 +14,17 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={id}
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-400"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400"
           >
             {label}
           </label>
         )}
         <div
           className={cn(
-            "relative flex items-center bg-ink-950/60 border rounded-xl focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all duration-200",
-            error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : "border-white/10"
+            "relative flex items-center bg-white dark:bg-ink-950/60 border rounded-xl focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all duration-200 shadow-sm dark:shadow-none",
+            error
+              ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500"
+              : "border-slate-300 dark:border-white/10"
           )}
         >
           {icon && <div className="pl-3.5 pr-2.5 text-slate-400 flex items-center">{icon}</div>}
@@ -30,7 +32,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ref={ref}
             id={id}
             className={cn(
-              "w-full bg-transparent py-3 text-slate-200 focus:outline-none text-sm appearance-none cursor-pointer [&>option]:bg-ink-900 [&>option]:text-white",
+              "w-full bg-transparent py-3 text-slate-900 dark:text-slate-200 focus:outline-none text-sm appearance-none cursor-pointer [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-ink-900 dark:[&>option]:text-white",
               icon ? "pr-10" : "pl-4 pr-10",
               className
             )}
